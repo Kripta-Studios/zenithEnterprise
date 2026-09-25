@@ -49,4 +49,8 @@ async def search(
             and result.assessment.judgments[0].score_kind
             else None
         ),
+        requested_judge_provider=result.requested_provider,
+        fallback_provider=result.fallback_provider,
+        evidence_status=result.evidence_status.value if result.evidence_status else None,
+        evidence_policy=result.evidence_policy,
     )

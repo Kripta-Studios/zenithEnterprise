@@ -1,5 +1,6 @@
 import secrets
 from pathlib import Path
+from typing import Literal
 
 from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -72,6 +73,7 @@ class Settings(BaseSettings):
     jev_max_pending: int = 8
     jev_queue_timeout_seconds: float = 2.0
     jev_total_deadline_seconds: float = 20.0
+    evidence_judge_provider: Literal["tei", "jev_score6", "jev_noul"] = "tei"
 
     # Empty is not a usable default — the validator rejects it. It exists only so the
     # failure is *our* message rather than Pydantic's "Field required", because the person

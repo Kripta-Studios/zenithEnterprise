@@ -64,3 +64,7 @@ class SearchResponse(BaseModel):
     judge_provider: str | None = None
     judge_model: str | None = None
     judge_score_kind: str | None = None
+    requested_judge_provider: str = "tei"
+    fallback_provider: str | None = None
+    evidence_status: str | None = None
+    evidence_policy: str | None = None
