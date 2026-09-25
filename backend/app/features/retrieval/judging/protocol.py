@@ -68,6 +68,7 @@ class AssessmentBatch:
     elapsed_ms: int
     reported_model: str | None = None
     usage: int | None = None
+    output_tokens: int | None = None
     queue_ms: int | None = None
     completion_state: CompletionState = CompletionState.COMPLETE
     provider_fingerprint: str | None = None
@@ -77,6 +78,10 @@ class AssessmentBatch:
             raise ValueError("negative assessment timing")
         if self.usage is not None and (type(self.usage) is not int or self.usage < 0):
             raise ValueError("invalid assessment usage")
+        if self.output_tokens is not None and (
+            type(self.output_tokens) is not int or self.output_tokens < 0
+        ):
+            raise ValueError("invalid output token usage")
         ids = [item.candidate_id for item in self.judgments]
         if len(set(self.requested_ids)) != len(self.requested_ids):
             raise ValueError("duplicate requested candidate identity")
