@@ -218,16 +218,16 @@ class JevJudge(Judge):
             raise JevFailure("processing_denied")
         if not self.api_key:
             raise JevFailure("missing_credential")
-        # Reject mixed scopes before exporting anything. Every constituent is checked again
-        # immediately before dispatch, because permissions may change while queued.
-        if not all([await self._permitted(question, item) for item in candidates]):
-            raise JevFailure("processing_denied")
         judgments: list[Judgment] = []
         input_tokens = 0
         output_tokens = 0
         usage_known = True
         try:
             async with asyncio.timeout(self.deadline_seconds):
+                # The overall deadline includes the initial scope check. Otherwise a
+                # blocked policy store could hold the request forever before inference.
+                if not all([await self._permitted(question, item) for item in candidates]):
+                    raise JevFailure("processing_denied")
                 for item in candidates:
                     try:
                         judgment, in_tokens, out_tokens = await self._assess_one(question, item)
@@ -495,6 +495,7 @@ def configured_jev_judge(
     purpose: Purpose,
     authorize: Authorize,
     quota: JevQuota | None = None,
+    deadline_seconds: float | None = None,
 ) -> JevJudge:
     """Deployment entrypoint; fail unless an operator accepted single-worker quotas."""
     if not settings.jev_single_worker_ack:
@@ -512,7 +513,11 @@ def configured_jev_judge(
         authorize=authorize,
         quota=quota or _shared_jev_quota(),
         max_concurrency=settings.jev_max_concurrency,
-        deadline_seconds=settings.jev_total_deadline_seconds,
+        deadline_seconds=(
+            deadline_seconds
+            if deadline_seconds is not None
+            else settings.jev_total_deadline_seconds
+        ),
     )
 
 

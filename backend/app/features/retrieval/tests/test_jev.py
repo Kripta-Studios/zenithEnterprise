@@ -328,6 +328,23 @@ async def test_total_deadline_and_cancellation_stop_later_dispatch() -> None:
     assert calls == 1
 
 
+async def test_total_deadline_includes_initial_authorization() -> None:
+    async def stalled(question: str, candidate: Candidate, purpose: Purpose) -> bool:
+        await asyncio.sleep(10)
+        return True
+
+    client = judge(
+        lambda request: pytest.fail("authorization must finish before export"),
+        authorize=stalled,
+        deadline=0.05,
+    )
+    try:
+        batch = await client.assess("q", [Candidate(uuid4(), "public")])
+    finally:
+        await client.aclose()
+    assert batch.judgments[0].failure_code == "deadline"
+
+
 async def test_shared_quota_bounds_concurrent_clients_and_queue() -> None:
     started = asyncio.Event()
     release = asyncio.Event()
