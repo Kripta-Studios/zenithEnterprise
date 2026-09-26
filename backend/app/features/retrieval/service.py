@@ -1090,3 +1090,7 @@ class SearchService:
         if beyond:
             raise PermissionDeniedError(f"you do not hold label(s): {', '.join(beyond)}")
         return TenantContext.for_tenant(self.context.tenant_id, labels)
+
+    def narrowed_context(self, labels: list[UUID] | None) -> TenantContext:
+        """Expose the validated request scope to downstream source expansion."""
+        return self._narrowed(labels)
