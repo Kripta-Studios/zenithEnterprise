@@ -2,7 +2,7 @@
 
 Hybrid retrieval still uses the current lexical, dense, and exact-identifier
 channels, reciprocal-rank fusion, channel-leader promotion, active embedding
-space, and source hydration. `EVIDENCE_JUDGE_PROVIDER` defaults to `tei`, so
+space, and source hydration. `ZENITH_EVIDENCE_JUDGE_PROVIDER` defaults to `tei`, so
 existing ranking and relevance behavior stays in place. An operator may set
 `jev_score6` or `jev_noul` only with the distinct reranking processing flag,
 credential, single-worker acknowledgment, and bounded quotas documented in
@@ -40,5 +40,5 @@ The real-PostgreSQL integration tests in `test_jev_hybrid.py` cover dense-only
 evidence with zero lexical overlap, whole-order TEI fallback, and source
 mutation during a queued assessment. The public fixed-candidate live comparison
 is in `backend/eval/reports/`; it does not validate full retrieval quality.
-Rollback sets `EVIDENCE_JUDGE_PROVIDER=tei` and disables the external
+Rollback sets `ZENITH_EVIDENCE_JUDGE_PROVIDER=tei` and disables the external
 reranking purpose flag. No migration is involved.

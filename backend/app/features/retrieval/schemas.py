@@ -99,3 +99,9 @@ class SearchResponse(BaseModel):
     evidence_status: str | None = None
     evidence_policy: str | None = None
     receipt: CoverageReceiptResponse | None = None
+
+
+class SearchCapabilitiesResponse(BaseModel):
+    """Only deployment-level controls needed to render available search modes."""
+
+    direct_enabled: bool
