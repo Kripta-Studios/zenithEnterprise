@@ -128,6 +128,32 @@ external-processing permission or Jev key is needed because selection is local.
 Disable both flags to restore the old top-eight answer context. This path adds
 no migration, vector rewrite, or new citation ID.
 
+## Experimental strict claim support (PR 07)
+
+`ZENITH_STRICT_CLAIM_SUPPORT_ENABLED=false` remains the default. Strict mode
+buffers the complete generated draft, checks citation references, quoted spans,
+numeric tokens and simple arithmetic, then sends bounded claim/context pairs
+to the distinct Jev claim-support purpose. A single repair is allowed and every
+changed claim is reassessed before prose is released. The streamed endpoint
+therefore sends no provisional answer text in strict mode. It returns
+`support_status` and `took_support_ms` in the final result. A failed, timed-out,
+oversized, or unauthorised assessment returns an abstention with a degraded
+reason, not the unassessed draft. The caller's current source access is
+rechecked under the application role before dispatch and disclosure.
+
+Enable only after approving external processing of the **whole rendered
+context** for claim support. Set `ZENITH_EXTERNAL_PROCESSING_FOR_CLAIM_SUPPORT=true`
+separately from the reranking and segmentation flags, supply the secret key,
+and configure a positive Jev request/token quota and topology as above. The
+default strict bounds are eight clauses, 12,000 bytes per rendered
+claim/context input, a 45-second total support-and-repair deadline, and a
+conservative `0.8` Noul threshold. Those bounds do not imply a model-quality
+guarantee. The [public SciFact trial](../../backend/eval/reports/evidence-v3-scifact-support-2026-09-26.md)
+includes false suppression and is insufficient to promote strict mode by
+default. The answer's normal source markers and stored citation IDs retain
+their meaning. Disable `ZENITH_STRICT_CLAIM_SUPPORT_ENABLED` for immediate
+flag rollback; no schema migration or index change is involved.
+
 ## Rollback
 
 Set `ZENITH_DIRECT_ENABLED=false`,

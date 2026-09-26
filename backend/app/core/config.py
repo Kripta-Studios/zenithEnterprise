@@ -89,6 +89,11 @@ class Settings(BaseSettings):
     evidence_packet_deadline_seconds: float = 5.0
     evidence_counterevidence_enabled: bool = False
     evidence_counterevidence_max_candidates: int = 2
+    strict_claim_support_enabled: bool = False
+    strict_support_max_claims: int = 8
+    strict_support_max_input_bytes: int = 12_000
+    strict_support_total_deadline_seconds: float = 45.0
+    strict_support_min_noul: float = 0.8
 
     # Empty is not a usable default — the validator rejects it. It exists only so the
     # failure is *our* message rather than Pydantic's "Field required", because the person
