@@ -180,6 +180,7 @@ class JevJudge(Judge):
         api_key: str | None,
         model: str = "jev-1.13.0",
         formulation: Formulation = Formulation.SCORE6,
+        rubric: Rubric | None = None,
         policy: ProcessingPolicy | None = None,
         purpose: Purpose = Purpose.RERANKING,
         authorize: Authorize | None = None,
@@ -194,7 +195,9 @@ class JevJudge(Judge):
             raise ValueError("invalid Jev capacity")
         self.api_key = api_key
         self.model = model
-        self.rubric: Rubric = SCORE6 if formulation is Formulation.SCORE6 else NOUL
+        if rubric is not None and rubric.formulation is not formulation:
+            raise ValueError("rubric formulation mismatch")
+        self.rubric: Rubric = rubric or (SCORE6 if formulation is Formulation.SCORE6 else NOUL)
         self.policy = policy or ProcessingPolicy()
         self.purpose = purpose
         self.authorize = authorize
@@ -492,6 +495,7 @@ def _usage(value: object) -> tuple[int | None, int | None]:
 def configured_jev_judge(
     *,
     formulation: Formulation,
+    rubric: Rubric | None = None,
     purpose: Purpose,
     authorize: Authorize,
     quota: JevQuota | None = None,
@@ -504,6 +508,7 @@ def configured_jev_judge(
         api_key=settings.jev_api_key.get_secret_value() if settings.jev_api_key else None,
         model=settings.jev_model,
         formulation=formulation,
+        rubric=rubric,
         policy=ProcessingPolicy(
             reranking=settings.external_processing_for_reranking,
             segmentation=settings.external_processing_for_segmentation,
