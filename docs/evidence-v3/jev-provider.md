@@ -14,7 +14,10 @@ displayed score and confidence, and a separately versioned linear grade-index
 utility. Noul retains its continuous value. Neither is answer correctness
 probability. Failed calls have no ranking value.
 
-The configuration keys are `JEV_API_KEY`, `JEV_MODEL`,
+The names below are `Settings` attributes. Environment variables require the
+`ZENITH_` prefix, for example `ZENITH_JEV_API_KEY`,
+`ZENITH_EXTERNAL_PROCESSING_FOR_RERANKING`, and
+`ZENITH_JEV_MAX_REQUESTS`. The configuration keys are `JEV_API_KEY`, `JEV_MODEL`,
 `EXTERNAL_PROCESSING_FOR_RERANKING`,
 `EXTERNAL_PROCESSING_FOR_SEGMENTATION`, and
 `EXTERNAL_PROCESSING_FOR_CLAIM_SUPPORT`. Each purpose defaults to false and
