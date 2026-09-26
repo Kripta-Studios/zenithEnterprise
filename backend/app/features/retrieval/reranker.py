@@ -77,7 +77,9 @@ class TeiReranker:
         self.profile = profile or active_profile()
         self.transport = transport
 
-    async def rank(self, question: str, passages: list[str]) -> list[Scored]:
+    async def rank(
+        self, question: str, passages: list[str], *, truncate: bool | None = None
+    ) -> list[Scored]:
         """Score every passage against the question, best first.
 
         Returns indexes rather than reordered text so the caller keeps whatever it attached
@@ -99,7 +101,12 @@ class TeiReranker:
                         async with client.stream(
                             "POST",
                             f"{self.url}/rerank",
-                            json={"query": question, "texts": batch, "return_text": False},
+                            json={
+                                "query": question,
+                                "texts": batch,
+                                "return_text": False,
+                                **({"truncate": truncate} if truncate is not None else {}),
+                            },
                         ) as response:
                             if response.status_code >= 400:
                                 raise RerankerUnavailable(
@@ -158,6 +165,21 @@ class TeiReranker:
                     if isinstance(info.get("model_id"), str):
                         return cast(str, info["model_id"]) or None
         except Exception:  # noqa: BLE001 - identity is best-effort; cancellation still propagates
+            pass
+        return None
+
+    async def max_input_length(self) -> int | None:
+        """Read the live pair limit; an unknown limit cannot certify direct coverage."""
+        try:
+            async with httpx.AsyncClient(timeout=2.0, transport=self.transport) as client:
+                response = await client.get(f"{self.url}/info")
+                response.raise_for_status()
+                body: object = response.json()
+                if isinstance(body, dict):
+                    limit = cast(dict[str, object], body).get("max_input_length")
+                    if type(limit) is int and limit > 0:
+                        return limit
+        except Exception:  # noqa: BLE001 - direct coverage fails closed on unknown limit
             pass
         return None
 

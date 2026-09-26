@@ -50,3 +50,8 @@ EXTERNAL_JUDGE_UNAVAILABLE: Final = (
 SOURCE_CHANGED: Final = (
     "Source access or content changed during this search — run the search again."
 )
+
+DIRECT_INCOMPLETE: Final = (
+    "The selected sources could not all be assessed within this search's limits — "
+    "narrow the scope or choose hybrid search."
+)

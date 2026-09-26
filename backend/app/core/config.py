@@ -74,6 +74,15 @@ class Settings(BaseSettings):
     jev_queue_timeout_seconds: float = 2.0
     jev_total_deadline_seconds: float = 20.0
     evidence_judge_provider: Literal["tei", "jev_score6", "jev_noul"] = "tei"
+    direct_enabled: bool = False
+    direct_max_units: int = 16
+    direct_max_windows: int = 32
+    direct_max_source_bytes: int = 48_000
+    direct_max_rendered_bytes: int = 180_000
+    direct_window_chars: int = 1_200
+    direct_window_overlap_chars: int = 100
+    direct_max_pair_bytes: int = 500
+    direct_total_deadline_seconds: float = 25.0
 
     # Empty is not a usable default — the validator rejects it. It exists only so the
     # failure is *our* message rather than Pydantic's "Field required", because the person
