@@ -65,7 +65,18 @@ def test_nginx_proxies_every_prefix_the_api_serves() -> None:
 def test_the_dev_proxy_matches_the_production_one() -> None:
     """Same gap, different file, and development is where it is found last: the two configs
     cannot import each other's route table, so they drift silently."""
-    proxied = set(re.findall(r'"/([a-z0-9-]+)":\s*"http', VITE.read_text()))
+    source = VITE.read_text()
+    proxy = re.search(r"\bproxy:\s*\{(.*?)^\s*\}", source, re.MULTILINE | re.DOTALL)
+    assert proxy, "the Vite proxy object is not where this test expects it"
+    # The target is configurable for a disposable API, so check keys in the
+    # proxy object rather than assuming every value is a literal HTTP URL.
+    proxied = set(
+        re.findall(
+            r'^\s*"/([a-z0-9-]+)":\s*(?:apiTarget|"https?://[^"]+"),?\s*$',
+            proxy.group(1),
+            re.MULTILINE,
+        )
+    )
 
     missing = sorted(served_prefixes() - proxied)
 
