@@ -1,4 +1,4 @@
-# Evidence retrieval operator runbook (M1)
+# Evidence retrieval v3 operator runbook
 
 The default remains local legacy retrieval with the installed TEI reranker. No Jev
 credential, processing permission, or new database schema is required. Search can
@@ -31,12 +31,21 @@ cd ..
 ```
 
 The PostgreSQL tests use disposable real ParadeDB under `zenith_app` RLS, never
-SQLite. On Windows, set `PYTHONUTF8=1` and use a Selector event-loop bootstrap
-for pytest and Alembic subprocesses. The ordinary Windows `make check` currently
-stops on the pre-existing `os.uname` Pyright error recorded in
-[the baseline](phase0-baseline.md); run and record that result rather than
-claiming its downstream targets passed. The licence script uses Bash. On a
-Windows-only host, its equivalent PowerShell gate from `backend/` is:
+SQLite. On Windows, set `PYTHONUTF8=1` and use the tracked Selector bootstrap
+for pytest and Alembic subprocesses:
+
+```powershell
+$env:PYTHONUTF8 = '1'
+$env:PYTHONPATH = (Resolve-Path -LiteralPath 'scripts/windows_selector_bootstrap').Path
+$env:ZENITH_JWT_SECRET = (& python -c 'import secrets; print(secrets.token_urlsafe(48))')
+make check
+```
+
+PR 08 replaced the baseline's Windows-only `os.uname` typing error with
+`platform.machine()`. On Windows, `make check` uses the tracked
+`scripts/check-licences.ps1` and `scripts/run-frontend.ps1`; Linux keeps the
+shell/npm targets. To run the licence gate directly from `backend/` in
+PowerShell, use the equivalent command:
 
 ```powershell
 $shippedPackages = @(uv export --no-dev --no-hashes --no-emit-project | Where-Object { $_ -match '^[a-zA-Z0-9]' } | ForEach-Object { $_ -replace '[=;\[].*', '' })
