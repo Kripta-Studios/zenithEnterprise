@@ -83,6 +83,12 @@ class Settings(BaseSettings):
     direct_window_overlap_chars: int = 100
     direct_max_pair_bytes: int = 500
     direct_total_deadline_seconds: float = 25.0
+    evidence_packets_enabled: bool = False
+    evidence_packet_token_budget: int = 16_000
+    evidence_packet_max_extra: int = 8
+    evidence_packet_deadline_seconds: float = 5.0
+    evidence_counterevidence_enabled: bool = False
+    evidence_counterevidence_max_candidates: int = 2
 
     # Empty is not a usable default — the validator rejects it. It exists only so the
     # failure is *our* message rather than Pydantic's "Field required", because the person

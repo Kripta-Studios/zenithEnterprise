@@ -96,6 +96,38 @@ not whole-scope coverage. A failed Jev judgment may use a complete local TEI
 order; a failed local order remains degraded. The Search screen names these
 coverage states without turning a missing judgment into zero relevance.
 
+## Experimental evidence packets (PR 06)
+
+`ZENITH_EVIDENCE_PACKETS_ENABLED=false` is the default. When enabled, answer
+generation assembles cited chunks with bounded local context from ready,
+currently authorized sources. The packet has a conservative 16,000 UTF-8-byte
+upper bound over the system text, conversation, question, passage text, and
+metadata (`ZENITH_EVIDENCE_PACKET_TOKEN_BUDGET`), plus a maximum of eight extra
+chunks (`ZENITH_EVIDENCE_PACKET_MAX_EXTRA`). This is a tokenizer-independent
+conservative bound, not an exact LLM usage meter. Packet work uses the
+application database role and rechecks every selected chunk before inference
+and disclosure. Each packet-build or final-recheck stage has a five-second
+default deadline (`ZENITH_EVIDENCE_PACKET_DEADLINE_SECONDS`). Packet streaming
+is buffered until the final recheck.
+
+The selector considers local conditions, exceptions, table headers and clear
+same-document section references. If a known dependency is inaccessible or
+cannot fit, it omits that fact and sets `degraded=true` with
+`reason=packet_dependencies_unresolved`; it does not silently send the
+unqualified fact. `reason=packet_unavailable` and `packet_source_changed`
+indicate that source-derived prose was withheld. These reason codes do not
+expose hidden IDs or counts.
+
+`ZENITH_EVIDENCE_COUNTEREVIDENCE_ENABLED=false` independently controls a
+bounded same-document exception probe. Its default maximum is two extra
+candidates (`ZENITH_EVIDENCE_COUNTEREVIDENCE_MAX_CANDIDATES`). A candidate is
+shown to the generator as a *possible* exception with applicability unassessed;
+the lane does not certify a conflict. Both packet modes are experimental and
+remain disabled pending broader answer-quality and load validation. No new
+external-processing permission or Jev key is needed because selection is local.
+Disable both flags to restore the old top-eight answer context. This path adds
+no migration, vector rewrite, or new citation ID.
+
 ## Rollback
 
 Set `ZENITH_DIRECT_ENABLED=false`,
