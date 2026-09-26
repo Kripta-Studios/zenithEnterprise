@@ -114,6 +114,20 @@ export const es: Catalogue = {
   "Answering from": "Respondiendo desde",
   only: "sólo",
   "No answer was found in your documents.": "No hay respuesta en tus documentos.",
+  "A supported answer could not be verified.":
+    "No se pudo verificar una respuesta respaldada por las fuentes.",
+  "Cited claims passed the model support check.":
+    "Las afirmaciones citadas superaron la comprobación de respaldo del modelo.",
+  "Source access changed while checking this answer.":
+    "Cambió el acceso a las fuentes durante la comprobación de la respuesta.",
+  "The support check is unavailable; the draft was withheld.":
+    "La comprobación de respaldo no está disponible; se ha ocultado el borrador.",
+  "The cited sources did not establish every claim.":
+    "Las fuentes citadas no respaldan todas las afirmaciones.",
+  "Evidence context could not be checked.":
+    "No se pudo comprobar el contexto de las fuentes.",
+  "Some required source context was unavailable.":
+    "Faltaba parte del contexto necesario de las fuentes.",
   Documents: "Documentos",
   "No documents match that.": "Ningún documento coincide.",
   "{count} cited": { one: "{count} cita", other: "{count} citas" },
