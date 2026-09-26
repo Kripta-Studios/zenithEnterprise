@@ -113,7 +113,11 @@ async def lexical(
     The score comes back alongside the id and goes nowhere near fusion — it is logged, in
     `query_citations.score_bm25`, and that is the only thing it is for.
     """
-    if engine() == "bm25":
+    # The security-definer BM25 function ranks globally before its caller applies the
+    # document filter. A fixed over-fetch can miss the only scoped hit in a large archive.
+    # Scope inside the existing RLS-protected tsvector query instead; scoped workloads
+    # are deliberately narrow and correctness must not depend on a global cutoff.
+    if engine() == "bm25" and not documents:
         return await _bm25(session, question, limit, documents)
 
     query = await to_tsquery(session, question)

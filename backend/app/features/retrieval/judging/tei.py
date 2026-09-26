@@ -19,8 +19,9 @@ from app.features.retrieval.reranker import RERANK_TIMEOUT, Ranker, RerankerUnav
 class TeiJudge(Judge):
     capabilities = JudgeCapabilities(reported_model_identity=True)
 
-    def __init__(self, reranker: Ranker) -> None:
+    def __init__(self, reranker: Ranker, *, truncate: bool | None = None) -> None:
         self.reranker = reranker
+        self.truncate = truncate
 
     async def assess(self, question: str, candidates: list[Candidate]) -> AssessmentBatch:
         started = time.perf_counter()
@@ -31,7 +32,11 @@ class TeiJudge(Judge):
         unique_texts = list(dict.fromkeys(item.text for item in candidates))
         try:
             async with asyncio.timeout(RERANK_TIMEOUT):
-                scored = await self.reranker.rank(question, unique_texts)
+                scored = (
+                    await self.reranker.rank(question, unique_texts, truncate=self.truncate)
+                    if isinstance(self.reranker, TeiReranker) and self.truncate is not None
+                    else await self.reranker.rank(question, unique_texts)
+                )
                 model = (
                     await self.reranker.model_identity()
                     if candidates and isinstance(self.reranker, TeiReranker)

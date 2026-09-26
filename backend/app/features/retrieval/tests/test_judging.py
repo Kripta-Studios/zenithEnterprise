@@ -44,6 +44,18 @@ async def test_tei_contract_keeps_identities_ties_and_model_identity() -> None:
     assert all(item.provider_confidence is None for item in batch.judgments)
 
 
+async def test_live_tei_input_limit_must_be_validated() -> None:
+    def valid_limit(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={"max_input_length": 512})
+
+    assert await client(valid_limit).max_input_length() == 512
+
+    def invalid_limit(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={"max_input_length": True})
+
+    assert await client(invalid_limit).max_input_length() is None
+
+
 @pytest.mark.parametrize(
     "body",
     [
@@ -82,13 +94,14 @@ async def test_deadline_bounds_all_sequential_batches(monkeypatch: pytest.Monkey
     async def slow(request: httpx.Request) -> httpx.Response:
         nonlocal calls
         calls += 1
-        await asyncio.sleep(0.3)
+        if calls == 2:
+            await asyncio.sleep(1.0)
         count = len(httpx.Response(200, content=request.content).json()["texts"])
         return httpx.Response(200, json=[{"index": n, "score": 0.5} for n in range(count)])
 
     with pytest.raises(RerankerUnavailable, match="deadline"):
         await client(slow).rank("q", ["a", "b", "c", "d", "e"])
-    assert calls >= 2
+    assert calls == 2
 
 
 async def test_cancellation_stops_later_dispatch() -> None:
