@@ -4,11 +4,23 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
 
+from app.core.config import settings
 from app.features.auth.access.dependencies import CurrentProfile, requires
-from app.features.retrieval.schemas import CoverageReceiptResponse, HitResponse, SearchResponse
+from app.features.retrieval.schemas import (
+    CoverageReceiptResponse,
+    HitResponse,
+    SearchCapabilitiesResponse,
+    SearchResponse,
+)
 from app.features.retrieval.service import DEFAULT_LIMIT, EXECUTE, MAX_LIMIT, SearchService
 
 router = APIRouter(tags=["search"])
+
+
+@router.get("/search/capabilities", dependencies=[Depends(requires(EXECUTE))])
+async def search_capabilities() -> SearchCapabilitiesResponse:
+    """Let the UI hide direct controls when the installation has them disabled."""
+    return SearchCapabilitiesResponse(direct_enabled=settings.direct_enabled)
 
 
 @router.get("/search", dependencies=[Depends(requires(EXECUTE))])

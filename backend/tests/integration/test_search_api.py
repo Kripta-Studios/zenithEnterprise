@@ -195,3 +195,28 @@ async def test_operator_can_disable_direct_modes_over_http(
     assert (await client.get("/search?q=fact&mode=direct", headers=auth)).status_code == 409
     assert (await client.get("/search?q=fact&mode=auto", headers=auth)).status_code == 409
     assert (await client.get("/search?q=fact&mode=legacy", headers=auth)).status_code == 200
+
+
+async def test_search_capabilities_reflect_flag_and_require_query_permission(
+    client: AsyncClient, account: Account, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    auth = await headers(client, account.admin_email)
+    monkeypatch.setattr(settings, "direct_enabled", False)
+    response = await client.get("/search/capabilities", headers=auth)
+    assert response.status_code == 200 and response.json() == {"direct_enabled": False}
+    monkeypatch.setattr(settings, "direct_enabled", True)
+    assert (await client.get("/search/capabilities", headers=auth)).json() == {
+        "direct_enabled": True
+    }
+
+    async with owner_session() as session:
+        await session.execute(
+            text(
+                "DELETE FROM role_permissions rp USING roles r "
+                "WHERE rp.role_id = r.id AND r.tenant_id = :t "
+                "AND rp.permission_code = 'query.execute'"
+            ),
+            {"t": account.tenant_id},
+        )
+    member = await headers(client, account.member_email)
+    assert (await client.get("/search/capabilities", headers=member)).status_code == 403
