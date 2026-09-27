@@ -1,6 +1,6 @@
 {
   "schema": "zenith-evidence-v3-local-publication-candidate-v2",
-  "date": "2026-09-27",
+  "date": "2026-09-28",
   "remote_action": "none",
   "upstream_baseline_read_only": "33b48812c95150348c52d2519159780252c92db2",
   "historical_integration": "0a24cc34b05a1b055452069849ebea61a4d9aba6",
@@ -13,115 +13,107 @@
   },
   "local_review_series": [
     {
-      "slice": "portability-prerequisite",
+      "slice": "foundation-prerequisite",
       "base": "33b48812c95150348c52d2519159780252c92db2",
-      "head": "cc92f01e8736e6de1cbd4fae1a7303bb2f3c04e7",
-      "tree": "db06d22adb384f90d132847693fd078d6470de35",
-      "branch": "fix/evidence-v3-series-portability-v9",
+      "head": "5592601d1f1cb44333685c898e065d17dd9d99a5",
+      "tree": "822420f2d4c58178f2fbcfbf221dea97555681de",
+      "branch": "fix/evidence-v3-series-foundation-v10",
       "validation": "pending"
     },
     {
       "slice": "pr01-judge",
-      "base": "cc92f01e8736e6de1cbd4fae1a7303bb2f3c04e7",
-      "head": "b65fc470bbc514040d032c3d4b15ff121d688f30",
-      "tree": "021946c2fd98a28c556ad44581159be4bcbb51d9",
-      "branch": "fix/evidence-v3-series-pr01-v9",
+      "base": "5592601d1f1cb44333685c898e065d17dd9d99a5",
+      "head": "98f7935c3beedb0d9aea0e128ee6bc5adc86a2bf",
+      "tree": "714fe8491afdf4101f617b31ca56da99f21e4f56",
+      "branch": "fix/evidence-v3-series-pr01-v10",
       "validation": "pending"
     },
     {
       "slice": "pr02-jev",
-      "base": "b65fc470bbc514040d032c3d4b15ff121d688f30",
-      "head": "1f0dd1fd12802030472d37b3b193081c62d19fa3",
-      "tree": "365cb7dc6348b002e43dd68656f3b8d522fc8c34",
-      "branch": "fix/evidence-v3-series-pr02-v9",
+      "base": "98f7935c3beedb0d9aea0e128ee6bc5adc86a2bf",
+      "head": "9fa658f681ebde099cb0f641b432c1d5e620431d",
+      "tree": "a8bf28135d08f64c04acbedc7f0a769ca5c38559",
+      "branch": "fix/evidence-v3-series-pr02-v10",
       "validation": "pending"
     },
     {
       "slice": "pr03-hybrid",
-      "base": "1f0dd1fd12802030472d37b3b193081c62d19fa3",
-      "head": "273df29b42d02504516b4caf169d635764b1d82d",
-      "tree": "a082f77f3f0bf4f57759d08142f9eda7ecbf7a7e",
-      "branch": "fix/evidence-v3-series-pr03-v9",
+      "base": "9fa658f681ebde099cb0f641b432c1d5e620431d",
+      "head": "f408e26e903a4c8aaf92c6c9b26c82bd6d5453ee",
+      "tree": "1855b457c083458f1c34aa64fb9af03a15100c66",
+      "branch": "fix/evidence-v3-series-pr03-v10",
       "validation": "pending"
     },
     {
       "slice": "pr04-direct",
-      "base": "273df29b42d02504516b4caf169d635764b1d82d",
-      "head": "e050c308f4ca23e8f5ea523649a98bc767ceb188",
-      "tree": "a1988b9bd4168e8a46feef14dc0b7e8808767a46",
-      "branch": "fix/evidence-v3-series-pr04-v9",
+      "base": "f408e26e903a4c8aaf92c6c9b26c82bd6d5453ee",
+      "head": "e1feb7b758fffca07d71975d75f7cc9822e04de3",
+      "tree": "eee3f7d6cac723540ced392604eac1fa03e213f7",
+      "branch": "fix/evidence-v3-series-pr04-v10",
       "validation": "pending"
     },
     {
       "slice": "proxy-prerequisite",
-      "base": "e050c308f4ca23e8f5ea523649a98bc767ceb188",
-      "head": "4a9e9cde92af79c658eda32160f5702630430b23",
-      "tree": "d5e31ad5ed8acf0e64522d0ef580fa617645aa34",
-      "branch": "fix/evidence-v3-series-prerequisite-v9",
+      "base": "e1feb7b758fffca07d71975d75f7cc9822e04de3",
+      "head": "520d8e7c77b9408621c0d0db2c0d162ed17e1263",
+      "tree": "4e0dd7202f4684d597e5ee9d64a527422f15569e",
+      "branch": "fix/evidence-v3-series-prerequisite-v10",
       "validation": "pending"
     },
     {
       "slice": "pr05-coverage-ui",
-      "base": "4a9e9cde92af79c658eda32160f5702630430b23",
-      "head": "6425c01045a559d472320a82d889cbb713533805",
-      "tree": "26b0ceddba5833112c9f0c448e53c1b7ed321287",
-      "branch": "fix/evidence-v3-series-pr05-v9",
+      "base": "520d8e7c77b9408621c0d0db2c0d162ed17e1263",
+      "head": "146bbf48f9e0bc9eaa4759fd23a56e30dfbf348f",
+      "tree": "a6649a9e14c22d83f13f6f4c38b19baa2fa7a5eb",
+      "branch": "fix/evidence-v3-series-pr05-v10",
       "validation": "pending"
     },
     {
       "slice": "neutral-evaluation-prerequisite",
-      "base": "6425c01045a559d472320a82d889cbb713533805",
-      "head": "1dd18c3e6d21a0b8499474f864b977eb011c4668",
-      "tree": "bb8f6ce41b630d3ceacd3e390c29375c7046c7a5",
-      "branch": "fix/evidence-v3-series-neutral-v9",
+      "base": "146bbf48f9e0bc9eaa4759fd23a56e30dfbf348f",
+      "head": "45d2b75e68c423fec8b5886add59b4c69c533b95",
+      "tree": "419ca603b0e88a69a408cd0e1f67ba4fca537f3e",
+      "branch": "fix/evidence-v3-series-neutral-v10",
       "validation": "pending"
     },
     {
       "slice": "pr06-packets",
-      "base": "1dd18c3e6d21a0b8499474f864b977eb011c4668",
-      "head": "c1d5424b77791289d2ecafe53d01073223e32c4b",
-      "tree": "49095f52bb87a9054f4acb8b443d1ff3e53cde2b",
-      "branch": "fix/evidence-v3-series-pr06-v9",
+      "base": "45d2b75e68c423fec8b5886add59b4c69c533b95",
+      "head": "76f2ba442aecdd92b4b21474c6ae0aab092c406e",
+      "tree": "ece779fc904abecaae1f1af839921e606656bb05",
+      "branch": "fix/evidence-v3-series-pr06-v10",
       "validation": "pending"
     },
     {
       "slice": "pr07-strict-support",
-      "base": "c1d5424b77791289d2ecafe53d01073223e32c4b",
-      "head": "ddb6fc5958f61a7b040ccbdbcaeafd5e16208e72",
-      "tree": "70b39392924d4c0e1c9d59b8a8c13ac2bfe922dd",
-      "branch": "fix/evidence-v3-series-pr07-v9",
+      "base": "76f2ba442aecdd92b4b21474c6ae0aab092c406e",
+      "head": "c17d1090d17940965b3bdbc763c55f29d9e03f35",
+      "tree": "0925a01ff41fe735aaf980abeda89918f6cb2d0f",
+      "branch": "fix/evidence-v3-series-pr07-v10",
       "validation": "pending"
     },
     {
       "slice": "pr08-qualification-ui",
-      "base": "ddb6fc5958f61a7b040ccbdbcaeafd5e16208e72",
-      "head": "e253f300738ff08503168f8ea825b7aaac5765d5",
-      "tree": "21dcd221b25595787f460e807251100a0c898988",
-      "branch": "fix/evidence-v3-series-pr08-v9",
-      "validation": "pending"
-    },
-    {
-      "slice": "integrated-security",
-      "base": "e253f300738ff08503168f8ea825b7aaac5765d5",
-      "head": "0a94ed4d6b61acfe92338b33d1381d7e734454f4",
+      "base": "c17d1090d17940965b3bdbc763c55f29d9e03f35",
+      "head": "9a2f69ffa56d9190c362cb9d0a14cd6e4ce85cf7",
       "tree": "b06532618c8bc7f1ac6a91fac714b4c61f251d4d",
-      "branch": "fix/evidence-v3-series-security-v9",
+      "branch": "fix/evidence-v3-series-pr08-v10",
       "validation": "pending"
     },
     {
       "slice": "release-validation-report",
-      "base": "0a94ed4d6b61acfe92338b33d1381d7e734454f4",
-      "head": "b7302ebf66109c929bbb2d2e231aba6c30f9a9af",
+      "base": "9a2f69ffa56d9190c362cb9d0a14cd6e4ce85cf7",
+      "head": "1ba0239337bf762330ae48656cb1745af4085684",
       "tree": "dd85a940276d8cd00cf90a88861acb43f352217f",
-      "branch": "fix/evidence-v3-series-release-v9",
+      "branch": "fix/evidence-v3-series-release-v10",
       "validation": "pending"
     },
     {
       "slice": "hardening-core",
-      "base": "b7302ebf66109c929bbb2d2e231aba6c30f9a9af",
-      "head": "7e446fd7927022eedfc15dde8d7c61d1e7bfcacd",
+      "base": "1ba0239337bf762330ae48656cb1745af4085684",
+      "head": "910bc125bb6f731ca681f20ac8ae19d97a5e0874",
       "tree": "93a088dbf604811b938e5e73b18566937d200626",
-      "branch": "fix/evidence-v3-series-hardening-v9",
+      "branch": "fix/evidence-v3-series-hardening-v10",
       "validation": "pending"
     }
   ],
@@ -134,12 +126,12 @@
   },
   "fork_main_integration_candidate": {
     "base": "33b48812c95150348c52d2519159780252c92db2",
-    "branch": "fix/evidence-v3-series-hardening-v9",
-    "head": "7e446fd7927022eedfc15dde8d7c61d1e7bfcacd",
+    "branch": "fix/evidence-v3-series-hardening-v10",
+    "head": "910bc125bb6f731ca681f20ac8ae19d97a5e0874",
     "tree": "93a088dbf604811b938e5e73b18566937d200626",
     "eligible_for_remote_main": false
   },
-  "report_branch": "fix/evidence-v3-series-report-v9",
+  "report_branch": "fix/evidence-v3-series-report-v10",
   "report_head": "resolve branch ref after final docs commit",
   "defaults": {
     "judge": "tei",
@@ -149,13 +141,14 @@
     "external_processing_purposes_changed": false
   },
   "validation": {
-    "v9_intermediate_gates": "running; see per-pr-validation.md for completed exact heads",
-    "v9_final_windows_make_check": "pending",
-    "v9_linux_static": "passed exact final tree: Ruff, format, Pyright",
-    "v9_linux_backend": "pending",
-    "v9_linux_frontend": "pending; earlier code tree passed",
-    "v9_authenticated_browser": "pending exact head; earlier runtime-identical core passed 11 default, 10 experimental and 12 local concurrent searches",
-    "real_inference": "one approved narrow pass: application-role/RLS, real Jev Noul, local Ollama, cited answer, Jev support; synthetic embedder and no browser"
+    "real_inference": "one approved narrow pass: application-role/RLS, real Jev Noul, local Ollama, cited answer, Jev support; synthetic embedder and no browser",
+    "v10_intermediate_gates": "running; see per-pr-validation.md for completed exact heads",
+    "v10_final_windows_make_check": "pending",
+    "v10_linux_static": "passed exact final tree: Ruff, format, Pyright",
+    "v10_linux_backend": "pending",
+    "v10_linux_frontend": "pending; earlier code tree passed",
+    "v10_authenticated_browser": "pending exact head; earlier runtime-identical core passed 11 default, 10 experimental and 12 local concurrent searches",
+    "foundation_clean_install_and_production_audit": "passed; 0 advisories; full gate pending"
   },
   "live_pilots": {
     "first": {
@@ -197,14 +190,21 @@
     "docs/evidence-v3-hardening/",
     ".artifacts/"
   ],
-  "safe_publication_paths_status": "Tracked public/synthetic candidate files only; full commit-history credential/private-corpus audit remains required before remote publication",
+  "safe_publication_paths_status": "Tracked public/synthetic candidate files only; provenance and manual history review remain required before remote publication",
+  "history_screen": {
+    "scope": "all 40 local commits from upstream baseline to v10 code head",
+    "unique_text_blobs": 226,
+    "binary_or_large_blobs_skipped": 0,
+    "credential_or_sensitive_path_pattern_flags": 0,
+    "limitation": "Automated path and credential-pattern screening is not a complete human provenance audit"
+  },
   "excluded_local_paths": [
     ".scratch/",
     "Zenith_v3_Remediation_and_Publication/",
     "Zenith_v3_Remediation_and_Publication.zip"
   ],
   "remaining_gates": [
-    "Complete exact v9 per-slice Windows gates and final Windows/Linux/browser checks",
+    "Complete exact v10 per-slice Windows gates and final Windows/Linux/browser checks",
     "Clarify Score HTTP contract with provider or retain typed failure",
     "Independently label generated answers for strict whole-claim support calibration",
     "Obtain non-ceiling representative R1/packet evidence before activation",
