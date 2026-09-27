@@ -9,8 +9,8 @@ from pathlib import Path
 import pytest
 
 from eval import qasper_heldout_jev as trial
-from eval.lossless_trial import TrialUnit
-from eval.qasper_trial import Case
+from eval.evidence_common import TrialUnit
+from eval.qasper_common import Case
 
 
 def test_binary_rank_metrics_and_zero_candidate_hit() -> None:

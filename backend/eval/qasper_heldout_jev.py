@@ -27,8 +27,8 @@ from app.features.retrieval.judging.protocol import Candidate, Outcome, ScoreKin
 from app.features.retrieval.judging.rubrics import NOUL, Formulation
 from app.features.retrieval.reranker import TeiReranker
 from eval.embedder import TeiEmbedder
-from eval.lossless_trial import TrialUnit, displayed_range, rank, rendered_token_counts
-from eval.qasper_trial import Case, Paper, build_paper, score_case
+from eval.evidence_common import TrialUnit, displayed_range, rank, rendered_token_counts
+from eval.qasper_common import Case, Paper, build_paper, score_case
 
 TEST_SHA256 = "6e29ad410e6e39aa1936017fb965b30a20eb2e7751997f55b97c9d281aa884e5"
 ARCHIVE_SHA256 = "72a52a41193e2838b8074f80ac074b94f956b84886c36a61c58a7df4171bdd72"
