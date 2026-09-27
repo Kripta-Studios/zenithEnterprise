@@ -82,7 +82,7 @@ async def test_partial_jev_uses_complete_local_order(
     def handler(request: httpx.Request) -> httpx.Response:
         nonlocal calls
         calls += 1
-        return httpx.Response(529 if calls == 2 else 200, json=response())
+        return httpx.Response(529 if calls in {2, 3} else 200, json=response())
 
     def factory(**kwargs: object) -> JevJudge:
         return JevJudge(
@@ -110,7 +110,7 @@ async def test_partial_jev_uses_complete_local_order(
         judge_mode="jev_score6",
     ).search("controller taxpayer employees")
 
-    assert calls == 3
+    assert calls == 4  # one bounded retry, then a complete local ordering
     assert [hit.chunk_id for hit in experimental.hits] == [hit.chunk_id for hit in local.hits]
     assert experimental.fallback_provider == "tei"
     assert experimental.assessment is not None and experimental.assessment.provider == "tei"
@@ -160,7 +160,9 @@ async def test_source_change_during_queued_assessment_stops_export_and_disclosur
         reranker=reranker(reverse_order),
         judge_mode="jev_score6",
     ).search("controller taxpayer employees")
-    assert calls == 1
+    # At most the already admitted two-wide window may be in flight when the
+    # first response changes the source. Later windows must not export it.
+    assert 1 <= calls <= 2
     assert result.hits == []
     assert result.reason == SOURCE_CHANGED
     assert result.degraded

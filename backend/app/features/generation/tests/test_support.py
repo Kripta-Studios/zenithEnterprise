@@ -93,6 +93,20 @@ def test_conjunction_and_number_are_separate_claim_checks() -> None:
     assert prepared[0].assessment.claim_hash != prepared[1].assessment.claim_hash
 
 
+def test_decimal_comma_and_point_are_equivalent_without_ignoring_percent_units() -> None:
+    source = hit("La tasa aplicable es 1.5%.")
+    equivalent = support.prepare(
+        "La tasa aplicable es 1,5% [1].", [source], max_claims=8, max_input_bytes=12000
+    )
+    wrong_unit = support.prepare(
+        "La tasa aplicable es 1,5 [1].", [source], max_claims=8, max_input_bytes=12000
+    )
+    assert equivalent[0].assessment.values_valid
+    assert equivalent[0].assessment.failure_layer is None
+    assert not wrong_unit[0].assessment.values_valid
+    assert wrong_unit[0].assessment.failure_layer == "numeric_value"
+
+
 def test_quote_presence_is_not_semantic_support() -> None:
     source = hit('The term "5%" applies only to residents.')
     prepared = support.prepare(

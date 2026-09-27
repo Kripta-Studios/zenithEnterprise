@@ -11,6 +11,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from enum import StrEnum
 from functools import lru_cache
+from pathlib import Path
 from typing import cast
 
 import httpx
@@ -41,6 +42,7 @@ MAX_RESPONSE_BYTES = 65_536
 MAX_STATE_BYTES = 16_384
 MODEL_ID = re.compile(r"^jev-[0-9]+\.[0-9]+\.[0-9]+$")
 PROBABILITY_TOLERANCE = 0.0001
+VALIDATOR_VERSION = "zenith-jev-score-strict-v2"
 # The API rounds both six displayed probabilities and the score to hundredths.
 # At most 0.005 * sum(0..5) + 0.005 = 0.08 grade points can be hidden by that
 # display precision. The small margin below covers binary float representation.
@@ -70,9 +72,110 @@ class ProcessingPolicy:
 class JevFailure(Exception):
     """Safe provider failure; never includes a source-bearing response or a key."""
 
-    def __init__(self, code: str) -> None:
+    def __init__(self, code: str, *, retry_after: float | None = None) -> None:
         super().__init__(code)
         self.code = code
+        self.retry_after = retry_after
+
+
+class PublicScoreRecorder:
+    """Opt-in pre-parser capture for explicitly approved public/synthetic runs.
+
+    The caller supplies an ignored .scratch directory. Request content and
+    credentials are never written; the bounded raw response is retained because
+    a hash alone cannot diagnose a malformed distribution.
+    """
+
+    def __init__(self, directory: Path, *, classification: str) -> None:
+        if classification not in {"public", "synthetic"}:
+            raise ValueError("raw capture requires public or synthetic inputs")
+        if ".scratch" not in directory.resolve().parts:
+            raise ValueError("raw capture must stay under ignored .scratch")
+        self.directory = directory
+        self.classification = classification
+
+    def record(
+        self,
+        *,
+        request: bytes,
+        response: bytes,
+        status: int,
+        content_type: str,
+        request_id: str | None,
+        model: str,
+        rubric_hash: str,
+        elapsed_ms: int,
+    ) -> None:
+        self.directory.mkdir(parents=True, exist_ok=True)
+        safe_id = (
+            request_id if request_id and re.fullmatch(r"[A-Za-z0-9_-]{1,80}", request_id) else None
+        )
+        payload = {
+            "classification": self.classification,
+            "request_sha256": hashlib.sha256(request).hexdigest(),
+            "rubric_sha256": rubric_hash,
+            "requested_model": model,
+            "model_sha256": hashlib.sha256(model.encode()).hexdigest(),
+            "validator_version": VALIDATOR_VERSION,
+            "status": status,
+            "content_type": content_type[:100],
+            "request_id": safe_id,
+            "elapsed_ms": elapsed_ms,
+            "body_sha256": hashlib.sha256(response).hexdigest(),
+            "score_diagnostics": _score_diagnostics(response),
+            "raw_response_utf8": response.decode("utf-8", errors="replace"),
+        }
+        target = self.directory / f"{payload['request_sha256']}-{time.time_ns()}.json"
+        with target.open("x", encoding="utf-8") as output:
+            output.write(json.dumps(payload, ensure_ascii=False) + "\n")
+        target.chmod(0o600)
+
+
+def _score_diagnostics(raw: bytes) -> dict[str, object]:
+    duplicates: list[str] = []
+
+    def pairs(items: list[tuple[str, object]]) -> dict[str, object]:
+        found: dict[str, object] = {}
+        for key, value in items:
+            if key in found:
+                duplicates.append(key)
+            found[key] = value
+        return found
+
+    try:
+        decoded: object = json.loads(raw, object_pairs_hook=pairs)
+        if not isinstance(decoded, dict):
+            return {"shape": "non_object", "duplicate_keys": duplicates}
+        answers = cast(dict[str, object], decoded).get("answers")
+        answer = (
+            cast(dict[str, object], answers).get(QUESTION_ID) if isinstance(answers, dict) else None
+        )
+        probabilities = (
+            cast(dict[str, object], answer).get("probabilities")
+            if isinstance(answer, dict)
+            else None
+        )
+        if not isinstance(probabilities, dict):
+            return {"shape": "missing_distribution", "duplicate_keys": duplicates}
+        expected = {str(index) for index in range(6)}
+        distribution = cast(dict[str, object], probabilities)
+        numeric_values: list[float] = []
+        for value in distribution.values():
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                break
+            if not math.isfinite(value):
+                break
+            numeric_values.append(float(value))
+        mass = sum(numeric_values) if len(numeric_values) == len(distribution) else None
+        return {
+            "shape": "distribution",
+            "duplicate_keys": duplicates,
+            "missing_keys": sorted(expected - distribution.keys()),
+            "extra_keys": sorted(distribution.keys() - expected),
+            "probability_mass": mass,
+        }
+    except (UnicodeError, ValueError, RecursionError):
+        return {"shape": "invalid_json", "duplicate_keys": duplicates}
 
 
 class JevQuota:
@@ -186,12 +289,14 @@ class JevJudge(Judge):
         authorize: Authorize | None = None,
         quota: JevQuota | None = None,
         max_concurrency: int = 2,
+        max_retries: int = 1,
         deadline_seconds: float = 20.0,
         transport: httpx.AsyncBaseTransport | None = None,
+        score_recorder: PublicScoreRecorder | None = None,
     ) -> None:
         if not MODEL_ID.fullmatch(model):
             raise ValueError("Jev requires a pinned versioned model")
-        if max_concurrency < 1 or deadline_seconds <= 0:
+        if max_concurrency < 1 or max_retries not in {0, 1} or deadline_seconds <= 0:
             raise ValueError("invalid Jev capacity")
         self.api_key = api_key
         self.model = model
@@ -203,6 +308,11 @@ class JevJudge(Judge):
         self.authorize = authorize
         self.quota = quota or JevQuota(0, 0, max_concurrency=max_concurrency)
         self.deadline_seconds = deadline_seconds
+        self.max_concurrency = max_concurrency
+        self.max_retries = max_retries
+        self.score_recorder = score_recorder
+        if score_recorder is not None and self.rubric.formulation is not Formulation.SCORE6:
+            raise ValueError("raw capture is limited to Score diagnostics")
         self.client = httpx.AsyncClient(
             timeout=httpx.Timeout(connect=3.0, read=10.0, write=3.0, pool=2.0),
             follow_redirects=False,
@@ -231,18 +341,33 @@ class JevJudge(Judge):
                 # blocked policy store could hold the request forever before inference.
                 if not all([await self._permitted(question, item) for item in candidates]):
                     raise JevFailure("processing_denied")
-                for item in candidates:
-                    try:
-                        judgment, in_tokens, out_tokens = await self._assess_one(question, item)
-                    except JevFailure as exc:
-                        judgment = self._failed(item, exc.code)
-                        in_tokens = out_tokens = None
-                    judgments.append(judgment)
-                    if in_tokens is None or out_tokens is None:
-                        usage_known = False
-                    else:
-                        input_tokens += in_tokens
-                        output_tokens += out_tokens
+
+                async def assess_item(item: Candidate) -> tuple[Judgment, int | None, int | None]:
+                    for attempt in range(self.max_retries + 1):
+                        try:
+                            return await self._assess_one(question, item)
+                        except JevFailure as exc:
+                            if attempt < self.max_retries and exc.code in {
+                                "rate_limited",
+                                "overloaded",
+                            }:
+                                delay = exc.retry_after if exc.retry_after is not None else 0.2
+                                await asyncio.sleep(delay)
+                                continue
+                            return self._failed(item, exc.code), None, None
+                    raise AssertionError("bounded Jev retry loop exhausted")
+
+                for offset in range(0, len(candidates), self.max_concurrency):
+                    window = candidates[offset : offset + self.max_concurrency]
+                    for judgment, in_tokens, out_tokens in await asyncio.gather(
+                        *(assess_item(item) for item in window)
+                    ):
+                        judgments.append(judgment)
+                        if in_tokens is None or out_tokens is None:
+                            usage_known = False
+                        else:
+                            input_tokens += in_tokens
+                            output_tokens += out_tokens
         except TimeoutError:
             judgments.extend(
                 self._failed(item, "deadline") for item in candidates[len(judgments) :]
@@ -276,6 +401,7 @@ class JevJudge(Judge):
         # UTF-8 byte count plus headroom is a conservative token reservation. Missing
         # provider usage retains the whole reservation rather than becoming a free call.
         reservation = len(rendered) + 4096
+        sent_at = time.perf_counter()
         try:
             async with self.quota.slot():
                 await self.quota.check_breaker()
@@ -291,8 +417,6 @@ class JevJudge(Judge):
                     },
                     content=rendered,
                 ) as response:
-                    if response.status_code >= 300:
-                        raise JevFailure(_http_failure(response.status_code))
                     parts: list[bytes] = []
                     size = 0
                     async for part in response.aiter_bytes():
@@ -300,7 +424,31 @@ class JevJudge(Judge):
                         if size > MAX_RESPONSE_BYTES:
                             raise JevFailure("response_too_large")
                         parts.append(part)
-            body = _strict_json(b"".join(parts))
+            raw = b"".join(parts)
+            if self.score_recorder is not None:
+                self.score_recorder.record(
+                    request=rendered,
+                    response=raw,
+                    status=response.status_code,
+                    content_type=response.headers.get("content-type", ""),
+                    request_id=response.headers.get("x-request-id"),
+                    model=self.model,
+                    rubric_hash=self.rubric.hash,
+                    elapsed_ms=int((time.perf_counter() - sent_at) * 1000),
+                )
+            if response.status_code >= 300:
+                retry_header = response.headers.get("retry-after", "")
+                try:
+                    retry_after = float(retry_header)
+                except ValueError:
+                    retry_after = None
+                if retry_after is not None and (not math.isfinite(retry_after) or retry_after < 0):
+                    retry_after = None
+                raise JevFailure(
+                    _http_failure(response.status_code),
+                    retry_after=min(retry_after, 2.0) if retry_after is not None else None,
+                )
+            body = _strict_json(raw)
             judgment, in_tokens, out_tokens = self._parse(body, candidate, rendered)
             await self.quota.reconcile(reservation, in_tokens)
             await self.quota.record_provider_result(transient_failure=False)
