@@ -1,5 +1,10 @@
 # Held-out QASPER: Jev Noul against current-main TEI reranking
 
+The original frozen 240-paper result below is preserved as a distinct run.
+The later [preregistered remaining-176-paper extension](evidence-v3-qasper-extension-2026-09-27.md)
+used new public test papers and reused these saved predictions for a descriptive
+416-paper join. It did not repeat or replace this experiment.
+
 **Decision:** Jev Noul improved evidence ranking on this public, English research-paper task. Keep it as an **optional, explicitly authorized reranking provider**, with the TEI fallback. Do not change the default: this study does not measure complete generated-answer correctness, Spanish or enterprise documents, sustainable concurrent throughput, or the full hybrid retrieval path. The model is slower per eight-candidate batch in the tested serial topology.
 
 ## Frozen method
