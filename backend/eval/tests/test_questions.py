@@ -133,7 +133,6 @@ def test_recorded_pages_are_exactly_the_pages_that_contain_the_anchor() -> None:
             assert found == source.pages, f"{question.id}: {source.document} moved"
 
 
-@needs_corpus
 def test_anchors_are_distinctive_enough_to_be_evidence() -> None:
     """A phrase appearing across half a document is not evidence that the right passage was
     found — it would score a hit almost wherever retrieval landed.
