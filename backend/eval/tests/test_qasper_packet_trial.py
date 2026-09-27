@@ -6,8 +6,8 @@ from pathlib import Path
 
 from eval.evidence_common import TrialUnit
 from eval.packet_case_export import ROUTES, export
-from eval.qasper_packet_trial import make_hits, packet_routes
 from eval.qasper_common import Case, Paper
+from eval.qasper_packet_trial import make_hits, packet_routes
 
 
 async def test_packet_trial_recovers_exception_outside_topk() -> None:
