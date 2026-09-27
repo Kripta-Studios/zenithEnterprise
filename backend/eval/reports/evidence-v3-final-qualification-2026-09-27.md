@@ -2,18 +2,34 @@
 
 ## Current release-validation status
 
-This report's PR 08 and final-gate narrative below records historical stages.
-The later full `make check` at integrated head
-`0a24cc34b05a1b055452069849ebea61a4d9aba6` **passed**: 1,003 backend
-tests passed, 15 skipped, 449 frontend tests passed, and lint, format, strict
-typing, and licence checks passed. It supersedes this report's precommit
-"final check pending" wording, but it does not validate later repairs.
+The local release-validation code/test/configuration head is
+`1862072e55f3d79877334964b0e1b3a8f473a39f` on
+`fix/evidence-v3-release-validation`. Its full `make check` **passed**:
+1,013 backend tests passed, nine skipped, 450 frontend tests passed, and
+lint, format, strict Windows typing, and the 123-package licence check passed.
+Clean backend/frontend installs and builds passed; the production-only npm
+audit found zero advisories. Five development-tool advisories remain.
+The documentation-only report commit `17422bb1b35e1a791ac93e93744e06ac3bdd75d5`
+does not change executable, test, or configuration content.
 
-The additive `fix/evidence-v3-release-validation` branch closes the local
-authenticated browser gap with the real migrated application, disposable
-PostgreSQL, application-role RLS, queue worker, actual UI login, local GPU TEI,
-and original text/PDF source highlighting. It also audits conditional skips
-and repairs strict failure metadata and credential-rotation handling. The
+A fresh local Chrome run against the real migrated app, application-role RLS,
+worker, Vite proxy, and local GPU TEI passed 11 default and 10 experimental
+browser checks plus 12 real-route isolation searches at the tested code head.
+Login used the real UI/server auth path; text ranges and PDF page-two source
+highlights were visibly checked. Experimental answer generation alone was
+scripted at the model boundary. The browser evidence index in ignored local
+storage has SHA-256
+`248d6b0f6af2c36b1bed22862ffd390595629c08748494db2bf21898270aa280`.
+This is local application acceptance, not live generated-answer quality.
+
+The earlier full `make check` at preserved integration head
+`0a24cc34b05a1b055452069849ebea61a4d9aba6` also passed, with 1,003
+backend passed/15 skipped and 449 frontend passed. The PR 08 narrative below
+records historical stages, including pre-repair failures and pending gates;
+those statements are superseded for the later tested head above.
+
+The additive branch also audits conditional skips and repairs strict failure
+metadata and credential-rotation handling. The
 [separately frozen 176-paper Jev study](evidence-v3-qasper-extension-2026-09-27.md)
 found 93/147 complete-evidence cases versus 75/147 for TEI on unused public
 English QASPER test papers; the full 416-paper join is descriptive reuse.

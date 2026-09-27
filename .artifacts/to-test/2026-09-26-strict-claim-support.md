@@ -1,5 +1,13 @@
 # PR 07 optional strict claim-support assessment
 
+This is the dated PR 07 plan and slice result. The Windows typing blocker
+below was repaired in PR 08, and the later integrated local `make check`
+passed at `1862072`. Release validation additionally fixed fail-closed
+metadata on an unverifiable final source check and exercised strict browser
+abstention. Strict support remains off by default because false suppression
+and broad generated-answer quality are not qualified. See
+`backend/eval/reports/evidence-v3-final-qualification-2026-09-27.md`.
+
 Base: PR 06 commit `e8a61b84aaf09f49428608bd5525da687af9cd32` on
 `feat/claim-support-assessment`. The existing citation binder and ordinary
 default answer path remain intact. No migration or index change is involved.

@@ -42,6 +42,12 @@ for a verified one-worker topology. These settings bound requests and input
 tokens, not a monetary invoice or output-token charge. Establish a separate
 spend control before live operation.
 
+The in-process quota and breaker are tied to the credential present when the
+worker first configures Jev. A changed credential in that same process is
+rejected with `credential_changed_restart_required`; restart the single worker
+to rotate the credential and establish a fresh budget and breaker. This is a
+single-worker safeguard, not a shared quota across workers or credentials.
+
 Rollback is to set all `EXTERNAL_PROCESSING_FOR_*` flags false and remove the
 credential through the established secret mechanism. The existing local TEI
 route remains available. PR 02 adds no database migration, vector index, or

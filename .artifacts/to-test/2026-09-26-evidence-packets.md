@@ -1,5 +1,14 @@
 # PR 06 evidence packets
 
+This is the dated PR 06 plan and slice result. The later integrated local
+`make check` passed at `1862072`; the Windows typing and first model-loading
+issues below are historical. Packet and counterevidence flags remain off by
+default because the measured source-span trials did not show a net gain.
+Generated-answer quality remains unqualified. See
+`backend/eval/reports/evidence-v3-final-qualification-2026-09-27.md` for the
+current decision and `docs/evidence-v3/release-validation-2026-09-27.md` for
+authenticated browser acceptance.
+
 Base: R1 commit `2c08f104b5667fb393391e92f301a43d8c510bf9` on `feat/context-preserving-evidence-packets`. The default generation path still reads the top eight retrieved chunks. No schema or active-index change is planned.
 
 The opt-in packet path selects whole evidence bundles under a conservative rendered-prompt budget. It reads only ready same-document chunks through the application's RLS session. A leading exception/condition or table row can require preceding context; a following exception and an explicit same-document section reference can add context. A fact with a known missing or over-budget dependency is omitted and the query response reports partial evidence. Candidate ranking never acts as a source-access check. Every final constituent is reauthorized before and after model inference. Packet streaming buffers the final answer until the post-inference check. Citation markers are assigned from the final rendered hit list, so an answer using an expanded span cites that span's existing chunk identity.

@@ -115,7 +115,9 @@ entire archive beyond the selected scope.
 
 External reranking requires an operator-approved purpose covering the complete
 rendered question and source context. Use a secret mechanism for
-`ZENITH_JEV_API_KEY`; never put a real key in the repository or a command log.
+`ZENITH_JEV_API_KEY`. For disposable local research, an ignored `backend/.env`
+may hold the key; production should use its managed secret mechanism. Never
+commit a key, put it in a command log, or copy it into a report.
 Only after approval, set `ZENITH_EXTERNAL_PROCESSING_FOR_RERANKING=true`,
 choose `ZENITH_EVIDENCE_JUDGE_PROVIDER=jev_score6` or `jev_noul`, pin
 `ZENITH_JEV_MODEL`, and set positive `ZENITH_JEV_MAX_REQUESTS` and

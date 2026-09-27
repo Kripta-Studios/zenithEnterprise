@@ -19,7 +19,8 @@ not count any skip as a pass.
 
 After provisioning BERT and correcting the metadata-only marker, the
 configured corpus subset recorded 15 passed and four corpus-dependent skips.
-The default full suite should have **nine** remaining conditional skips:
+The default full suite at tested code head `1862072` had **nine** remaining
+conditional skips:
 three GDPR-only cases, two full-question-corpus anchor cases, two differently
 scoped live Jev tests, the direct
 pilot, and the local Ollama case. The latter two can pass in separate
