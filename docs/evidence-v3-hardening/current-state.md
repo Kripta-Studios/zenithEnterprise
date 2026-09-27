@@ -10,17 +10,17 @@ QASPER consists of real papers and human evidence labels. The old 240-paper and 
 
 | Workstream | Current disposition |
 | --- | --- |
-| Proxy guard and neutral evaluation helpers | Code repaired and placed in local prerequisite slices before dependent PRs; intermediate full checks remain pending. |
+| Proxy guard and neutral evaluation helpers | Code repaired and placed in local prerequisite slices before dependent PRs; the exact v9 intermediate gates are running. |
 | Score | Raw public diagnostic captured one new 0.99-mass response; strict typed failure retained. Old payloads remain unavailable. |
-| Strict support | Deterministic numeric equivalence and failure-layer trace repaired; generated-answer calibration remains unqualified. |
-| R1 and packets | Existing human-label results preserved; no new representative locked experiment in this pass. Optional, default off. |
+| Strict support | Deterministic numeric equivalence and failure-layer trace repaired. A frozen public HealthVer transfer used disjoint development and test claims, but its broad relation labels did not establish the stricter whole-claim contract; generated-answer calibration remains unqualified. |
+| R1 and packets | Existing human-label results preserved. A frozen public Spanish/English transfer reindexed structural chunks and compared flat, structural, and packet variants at equal 512-token budgets; all achieved 24/24 top-1, so benefit remained inconclusive at a ceiling. Optional, default off. |
 | Jev operations | Bounded concurrency and one known-rate/overload retry added; single-worker guard retained. Sustained capacity and distributed coordination unqualified. |
 | Frontend tooling | Vitest 4 targeted upgrade and two-worker test setting; final build/audit/browser gates recorded separately. |
-| Publication | Local review series materialized through `4092f2735d30e7bc360bce88113c246eaf1fda60`, with R1 separate. No push, PR, fork-main advancement, default change, or deployment. |
+| Publication | Local review series v9 materialized through `7e446fd7927022eedfc15dde8d7c61d1e7bfcacd` (tree `93a088dbf604811b938e5e73b18566937d200626`), with R1 separate. This moves Windows licence/frontend gates and shell line endings before PR01 and PR06 import order into PR06. Exact intermediate validation is running. No push, PR, fork-main advancement, default change, or deployment. |
 
 ## Dependency sketch
 
-`upstream main -> historical PR 01-04 -> one proxy/portability prerequisite -> PR 05 -> neutral evaluation helpers -> PR 06-08 -> security/release validation -> hardening`. Optional R1 branches from the neutral prerequisite and is preserved separately. The graph is materialized locally; this does not assert that each proposed merge ref passed a full gate. Runtime code does not import `backend/eval`; packet evaluation obtains shared scoring from neutral modules rather than R1 trial modules.
+`upstream main -> Windows/diagnostics portability prerequisite -> PR 01-04 -> proxy prerequisite -> PR 05 -> neutral evaluation helpers -> PR 06-08 -> security/release validation -> hardening`. Optional R1 branches from the neutral prerequisite and is preserved separately. The graph is materialized locally; this does not assert that each proposed merge ref passed a full gate. Runtime code does not import `backend/eval`; packet evaluation obtains shared scoring from neutral modules rather than R1 trial modules.
 
 ## Local validation commands
 

@@ -13,6 +13,6 @@
 | Proxy prerequisite | focused positive/negative guard fixtures | security compatibility, not model quality | normal local routes | include once before dependent UI slice |
 | Single-worker Jev quota | local reservation and guard tests | not applicable | supported only under declared single-worker scope; restart accounting not durable | do not claim multiworker |
 | Multiworker Jev | no shared coordinator | not applicable | `not_run`/unsupported | `not_deployed` |
-| Full live inference E2E | one approved disposable application-role/RLS test joined Jev ranking, local Ollama generation, citation binding and Jev strict support; browser with real auth/RLS/TEI remains separately covered | one supported synthetic-source generated claim; no matched independent Spanish-domain gold or insufficient-evidence generated-answer test | no production load; final v6 exact-tip rerun pending | `narrow_pass`, no promotion claim |
+| Full live inference E2E | one approved disposable application-role/RLS test joined Jev ranking, local Ollama generation, citation binding and Jev strict support; browser with real auth/RLS/TEI remains separately covered | one supported synthetic-source generated claim; no matched independent Spanish-domain gold or insufficient-evidence generated-answer test | no production load; final v9 exact-tip rerun pending | `narrow_pass`, no promotion claim |
 
 The evaluation history is retained even where optional mechanisms have null or negative effects. No default or external-purpose processing flag changed in this pass.
