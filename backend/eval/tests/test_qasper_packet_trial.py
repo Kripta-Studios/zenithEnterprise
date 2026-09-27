@@ -4,10 +4,10 @@ import csv
 import json
 from pathlib import Path
 
-from eval.lossless_trial import TrialUnit
+from eval.evidence_common import TrialUnit
 from eval.packet_case_export import ROUTES, export
 from eval.qasper_packet_trial import make_hits, packet_routes
-from eval.qasper_trial import Case, Paper
+from eval.qasper_common import Case, Paper
 
 
 async def test_packet_trial_recovers_exception_outside_topk() -> None:

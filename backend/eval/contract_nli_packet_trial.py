@@ -13,7 +13,7 @@ import statistics
 from pathlib import Path
 from typing import cast
 
-from eval.contract_nli_trial import ARCHIVE_SHA256, DEV_SHA256, load_documents
+from eval.contract_nli_common import ARCHIVE_SHA256, DEV_SHA256, load_documents
 from eval.qasper_packet_trial import evaluate_papers
 
 TRIAL_VERSION = "zenith-contract-nli-packets-dev-v3"

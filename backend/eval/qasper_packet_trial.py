@@ -23,7 +23,7 @@ from app.features.retrieval.reranker import TeiReranker
 from app.features.retrieval.search import Hit
 from app.features.tenancy.context import TenantContext
 from eval.embedder import TeiEmbedder
-from eval.lossless_trial import (
+from eval.evidence_common import (
     EMBED_MODEL,
     RENDER_BUDGET_TOKENS,
     TrialUnit,
@@ -31,7 +31,7 @@ from eval.lossless_trial import (
     rank,
     rendered_token_counts,
 )
-from eval.qasper_trial import Case, Paper, load_papers, score_case, units_for_paper
+from eval.qasper_common import Case, Paper, legacy_units_for_paper, load_papers, score_case
 
 TRIAL_VERSION = "zenith-qasper-packets-fixed-legacy-206-v4"
 BOOTSTRAP_SEED = 1729
@@ -191,7 +191,7 @@ async def evaluate_papers(
     reranker = TeiReranker(url=rerank_url, profile=PROFILES["gpu"])
     rows: list[dict[str, object]] = []
     for paper_number, paper in enumerate(papers, 1):
-        units, _ = units_for_paper(paper, source_version=source_version)
+        units = legacy_units_for_paper(paper)
         hits, by_id = make_hits(paper, units, source_version=source_version)
         vectors = embedder.encode([unit.text for unit in units], batch=4)
         queries = embedder.encode([case.question for case in paper.cases], batch=4)
