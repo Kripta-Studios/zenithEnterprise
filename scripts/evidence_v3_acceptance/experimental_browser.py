@@ -82,11 +82,22 @@ def main():
         context = browser.new_context(viewport={"width": 1440, "height": 1000}, locale="en-US")
 
         def watch(tab):
-            tab.on("pageerror", lambda error: events.append({"pageerror": str(error)}))
+            tab.on(
+                "pageerror",
+                lambda error: events.append(
+                    {"origin": urlsplit(tab.url).netloc, "pageerror": str(error)}
+                ),
+            )
             tab.on(
                 "console",
                 lambda message: (
-                    events.append({"console": message.type, "text": message.text})
+                    events.append(
+                        {
+                            "origin": urlsplit(tab.url).netloc,
+                            "console": message.type,
+                            "text": message.text,
+                        }
+                    )
                     if message.type == "error"
                     else None
                 ),
@@ -94,7 +105,13 @@ def main():
             tab.on(
                 "response",
                 lambda response: (
-                    events.append({"status": response.status, "path": urlsplit(response.url).path})
+                    events.append(
+                        {
+                            "origin": urlsplit(response.url).netloc,
+                            "status": response.status,
+                            "path": urlsplit(response.url).path,
+                        }
+                    )
                     if response.status >= 400
                     else None
                 ),
