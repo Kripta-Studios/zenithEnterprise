@@ -44,16 +44,20 @@ class Rubric:
     formulation: Formulation
     instructions: str
     levels: tuple[str, ...] | None = None
+    binary_criteria: tuple[str, str] | None = None
 
     @property
     def hash(self) -> str:
+        identity: dict[str, object] = {
+            "id": self.id,
+            "formulation": self.formulation,
+            "instructions": self.instructions,
+            "levels": self.levels,
+        }
+        if self.binary_criteria is not None:
+            identity["binary_criteria"] = self.binary_criteria
         encoded = json.dumps(
-            {
-                "id": self.id,
-                "formulation": self.formulation,
-                "instructions": self.instructions,
-                "levels": self.levels,
-            },
+            identity,
             ensure_ascii=False,
             separators=(",", ":"),
         ).encode()
@@ -66,15 +70,14 @@ class Rubric:
                 "instructions": self.instructions,
                 "criteria": list(self.levels or ()),
             }
+        criteria = self.binary_criteria or (
+            "Concrete useful evidence, including a necessary qualification or partial fact.",
+            "Unrelated, merely topical, or no useful evidence for this question.",
+        )
         return {
             "type": "noul",
             "instructions": self.instructions,
-            "criteria": {
-                "true": (
-                    "Concrete useful evidence, including a necessary qualification or partial fact."
-                ),
-                "false": "Unrelated, merely topical, or no useful evidence for this question.",
-            },
+            "criteria": {"true": criteria[0], "false": criteria[1]},
         }
 
 
