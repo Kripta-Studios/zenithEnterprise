@@ -6,6 +6,17 @@ performed in this validation session. Read-only `gh auth status` identifies
 `Martinhdeez/zenithEnterprise`. Both remote `main` refs were
 `33b48812c95150348c52d2519159780252c92db2` at the final read-only check.
 Recheck these and branch permissions when publication is separately approved.
+The preserved stack still ends at `0a24cc3`; the additive local
+release-validation branch's latest executable/test/configuration content is
+`1862072e55f3d79877334964b0e1b3a8f473a39f`; the complete local
+`make check` exited 0 there (1,013 backend passed, nine skipped; 450 frontend
+passed; static and licence checks passed). Authenticated browser acceptance
+passed again at this head with a fresh fixture. The child of
+`fb0a35b488632e5ad8f4909065a6c6b6938c69c3` changes only a
+checkout-guard self-test. The additive branch's source repairs and acceptance
+harness belong after the security slice in the stacked review.
+Any later documentation-only report commit must identify both its SHA and
+the gate-tested SHA without implying that remote CI ran.
 
 ## Review graph and intermediate viability
 
@@ -30,11 +41,18 @@ Publish and merge this small guard repair after PR 04 and before PR 05, or
 redraw the review boundaries with the same repair included. The historical
 feature commits stay intact. PR merge refs must be checked against their
 actual proposed bases; a final integrated green gate alone does not certify
-each old tip.
+each old tip. The backport tip passed the three proxy tests. A local simulated
+PR 05 merge commit `7831e0680bfb749a0b248efea96f86cc08965315` merged the
+historical PR 05 into that backport without conflicts; its three proxy tests
+passed and Linux-target Pyright reported zero errors. This is representative
+merge-ref evidence, not a full per-tip CI run.
 
 The lockfile security patch is one file only. The local standalone branch
 `chore/evidence-v3-frontend-audit-standalone` starts from unchanged upstream
-`main` and copies only that lockfile diff. It is an optional independent
+`main` and copies only that lockfile diff. Its local commit is
+`c11755806dd4b6bd159bee37d8c7aae49f7f5d5f`; `npm ci`, frontend lint,
+437 standalone frontend tests, production build, and production-only audit
+passed. It is an optional independent
 security submission. The historical stacked tip `0a24cc3` includes the whole
 v3 ancestry and must never be submitted to upstream as an independent
 security-only PR. The clean branch recorded zero production npm advisories
@@ -49,8 +67,10 @@ The current CI workflow runs on `pull_request` and `main` pushes on an Ubuntu
 runner, installs backend/frontend dependencies, runs lint, format, typing,
 tests, and licence checks. It contains no Jev key or production secret step.
 Thus fork PR checks can run without granting provider credentials to untrusted
-code. Local browser, builds, and `npm audit --omit=dev` remain explicit
-prepublication gates because the workflow does not run them.
+code, subject to the destination repository's Actions approval/settings.
+Local browser, builds, and `npm audit --omit=dev` remain explicit
+prepublication gates because the workflow does not run them. No remote CI was
+triggered in this assignment.
 
 ## Valid remote sequence after separate authorization
 
