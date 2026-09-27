@@ -244,6 +244,32 @@ async def test_changed_source_during_assessment_withholds_draft(
     assert result.reason == "support_source_changed"
 
 
+@pytest.mark.parametrize("fail_on_check", [1, 2])
+async def test_failed_source_reauthorization_withholds_consulted_metadata(
+    account: Account, monkeypatch: pytest.MonkeyPatch, fail_on_check: int
+) -> None:
+    await seed(account.tenant_id, account.default_label)
+    monkeypatch.setattr(settings, "strict_claim_support_enabled", True)
+    calls = 0
+
+    async def unavailable(*args: object, **kwargs: object) -> bool:
+        nonlocal calls
+        calls += 1
+        if calls == fail_on_check:
+            raise RuntimeError("authorization database unavailable")
+        return True
+
+    monkeypatch.setattr(support, "verify_current", unavailable)
+    service = await service_for(
+        account, MockProvider(["Controllers implement technical measures [1]."]), FakeSupportJudge()
+    )
+    result = await service.answer("What must controllers implement?")
+    assert result.abstained and result.citations == [] and result.consulted == []
+    assert result.support_status == "not_assessed"
+    assert result.reason == "support_source_unverified"
+    assert "Controllers implement" not in result.answer
+
+
 async def test_assessment_total_deadline_withholds_draft(
     account: Account, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -257,7 +283,7 @@ async def test_assessment_total_deadline_withholds_draft(
     )
     result = await service.answer("What must controllers implement?")
     assert result.abstained and result.citations == []
-    assert result.reason == "support_unavailable"
+    assert result.consulted == [] and result.reason == "support_source_unverified"
 
 
 async def test_repair_cannot_reuse_old_support_after_source_change(

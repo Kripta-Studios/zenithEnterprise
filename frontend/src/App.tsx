@@ -374,6 +374,16 @@ export function App() {
   // effect rather than being a no-op React sees as "the same prop".
   const [prefill, setPrefill] = useState<{ text: string; nonce: number } | null>(null);
   const [pdfExpanded, setPdfExpanded] = useState(false);
+  const [narrow, setNarrow] = useState(() =>
+    typeof matchMedia === "function" && matchMedia("(max-width: 767px)").matches,
+  );
+  useEffect(() => {
+    if (typeof matchMedia !== "function") return;
+    const media = matchMedia("(max-width: 767px)");
+    const update = () => setNarrow(media.matches);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
   // Remembered across reloads: someone who collapsed the bar to get room back does not
   // want it handed to them again on every refresh. `localStorage` rather than session,
   // because unlike the tokens beside it this is a preference and discloses nothing.
@@ -399,7 +409,7 @@ export function App() {
    * for ever after one search.
    */
   const [autoCollapsed, setAutoCollapsed] = useState(false);
-  const collapsed = collapsedPreference || autoCollapsed;
+  const collapsed = collapsedPreference || autoCollapsed || narrow;
 
   useEffect(() => {
     write("local", SIDEBAR_KEY, String(collapsedPreference));
@@ -914,7 +924,7 @@ export function App() {
         }}
       />
 
-      <ResizablePanelGroup orientation="horizontal" className="min-w-0 flex-1 gap-3">
+      <ResizablePanelGroup orientation={narrow ? "vertical" : "horizontal"} className="min-w-0 flex-1 gap-3">
         <ResizablePanel
           // Only meaningful while the preview is mounted; with nothing beside it this
           // panel is the entire row regardless of the number.

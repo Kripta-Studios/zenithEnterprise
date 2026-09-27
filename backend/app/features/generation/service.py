@@ -180,7 +180,9 @@ class AnswerService:
                     )
                 if support_review.status is not support.SupportStatus.SUPPORTED:
                     reason = (
-                        "support_source_changed"
+                        "support_source_unverified"
+                        if support_review.source_current is None
+                        else "support_source_changed"
                         if not support_review.source_current
                         else "support_unavailable"
                         if support_review.status is support.SupportStatus.NOT_ASSESSED
@@ -372,7 +374,9 @@ class AnswerService:
                     if binding.bind(draft, hits).abstained:
                         break
         except Exception:  # noqa: BLE001 - a failed assessor or repair never discloses draft
-            review = support.SupportReview(support.SupportStatus.NOT_ASSESSED, (), True)
+            # The exception may be the final authorization check itself. Source currency
+            # is unknown, so neither the draft nor consulted source metadata may escape.
+            review = support.SupportReview(support.SupportStatus.NOT_ASSESSED, (), None)
         safe_text = (
             STRICT_UNASSESSED
             if review.status is support.SupportStatus.NOT_ASSESSED

@@ -7,7 +7,10 @@ from uuid import uuid4
 
 import httpx
 import pytest
+from pydantic import SecretStr
 
+from app.core.config import settings
+from app.features.retrieval.judging import jev
 from app.features.retrieval.judging.jev import (
     JevFailure,
     JevJudge,
@@ -396,3 +399,18 @@ async def test_provider_breaker_is_shared_and_does_not_export_after_opening() ->
     finally:
         await first.aclose()
         await second.aclose()
+
+
+def test_configured_credential_rotation_requires_restart(monkeypatch: pytest.MonkeyPatch) -> None:
+    jev._startup_jev_quota.cache_clear()  # pyright: ignore[reportPrivateUsage]
+    try:
+        monkeypatch.setattr(settings, "jev_api_key", SecretStr("synthetic-first-key"))
+        first = jev._shared_jev_quota()  # pyright: ignore[reportPrivateUsage]
+        assert jev._shared_jev_quota() is first  # pyright: ignore[reportPrivateUsage]
+        monkeypatch.setattr(settings, "jev_api_key", SecretStr("synthetic-second-key"))
+        with pytest.raises(JevFailure, match="credential_changed_restart_required"):
+            jev._shared_jev_quota()  # pyright: ignore[reportPrivateUsage]
+        monkeypatch.setattr(settings, "jev_api_key", SecretStr("synthetic-first-key"))
+        assert jev._shared_jev_quota() is first  # pyright: ignore[reportPrivateUsage]
+    finally:
+        jev._startup_jev_quota.cache_clear()  # pyright: ignore[reportPrivateUsage]
