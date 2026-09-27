@@ -3,6 +3,7 @@
 import asyncio
 import json
 from collections.abc import Awaitable, Callable
+from pathlib import Path
 from uuid import uuid4
 
 import httpx
@@ -16,6 +17,7 @@ from app.features.retrieval.judging.jev import (
     JevJudge,
     JevQuota,
     ProcessingPolicy,
+    PublicScoreRecorder,
     Purpose,
 )
 from app.features.retrieval.judging.protocol import Candidate, CompletionState, Outcome, ScoreKind
@@ -59,6 +61,8 @@ def judge(
     quota: JevQuota | None = None,
     key: str | None = "synthetic-test-key",
     deadline: float = 5.0,
+    max_concurrency: int = 1,
+    max_retries: int = 1,
 ) -> JevJudge:
     return JevJudge(
         api_key=key,
@@ -67,6 +71,8 @@ def judge(
         policy=policy or ProcessingPolicy(reranking=True),
         quota=quota or JevQuota(10, 100_000),
         deadline_seconds=deadline,
+        max_concurrency=max_concurrency,
+        max_retries=max_retries,
         transport=httpx.MockTransport(handler),  # type: ignore[arg-type]
     )
 
@@ -108,6 +114,58 @@ async def test_score_preserves_distribution_utility_identity_and_exact_export() 
     assert item.input_fingerprint and item.deployment_fingerprint
     assert batch.usage == 210 and batch.output_tokens == 20
     assert batch.completion_state is CompletionState.COMPLETE
+
+
+async def test_score_diagnostic_captures_raw_body_before_mass_rejection(tmp_path: Path) -> None:
+    body = response()
+    answer = dict(body["answers"]["contribution"])  # type: ignore[index]
+    answer["probabilities"] = {str(i): 0.1 for i in range(6)}
+    body["answers"] = {"contribution": answer}
+    recorder = PublicScoreRecorder(tmp_path / ".scratch" / "score", classification="public")
+    client = JevJudge(
+        api_key="synthetic-test-key",
+        authorize=permitted,
+        policy=ProcessingPolicy(reranking=True),
+        quota=JevQuota(1, 100_000),
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, json=body)),
+        score_recorder=recorder,
+    )
+    try:
+        batch = await client.assess("public question", [Candidate(uuid4(), "public passage")])
+    finally:
+        await client.aclose()
+    assert batch.judgments[0].failure_code == "probability_mass"
+    captured = json.loads(next(recorder.directory.glob("*.json")).read_text())
+    assert json.loads(captured["raw_response_utf8"]) == body
+    assert captured["score_diagnostics"]["probability_mass"] == pytest.approx(0.6)
+    assert captured["score_diagnostics"]["missing_keys"] == []
+    assert captured["validator_version"]
+    assert "synthetic-test-key" not in str(captured)
+    with pytest.raises(ValueError, match="public or synthetic"):
+        PublicScoreRecorder(tmp_path / ".scratch", classification="private")
+
+
+async def test_configured_concurrency_preserves_candidate_order() -> None:
+    active = 0
+    peak = 0
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal active, peak
+        active += 1
+        peak = max(peak, active)
+        await asyncio.sleep(0.02)
+        active -= 1
+        return httpx.Response(200, json=response(Formulation.NOUL))
+
+    candidates = [Candidate(uuid4(), f"public {index}") for index in range(4)]
+    client = judge(handler, formulation=Formulation.NOUL, max_concurrency=2)
+    try:
+        batch = await client.assess("q", candidates)
+    finally:
+        await client.aclose()
+    assert peak == 2
+    assert batch.requested_ids == tuple(item.id for item in candidates)
+    assert tuple(item.candidate_id for item in batch.judgments) == batch.requested_ids
 
 
 async def test_noul_uses_continuous_probability_without_threshold() -> None:
@@ -215,6 +273,61 @@ async def test_duplicate_json_keys_and_redirect_are_rejected_without_following()
         await second.aclose()
     assert calls == 1
     assert batch.judgments[0].failure_code == "redirect_denied"
+
+
+async def test_known_429_retries_once_with_a_second_quota_reservation() -> None:
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            return httpx.Response(429, headers={"Retry-After": "0"})
+        return httpx.Response(200, json=response(Formulation.NOUL))
+
+    quota = JevQuota(2, 100_000)
+    client = judge(handler, formulation=Formulation.NOUL, quota=quota)
+    try:
+        batch = await client.assess("q", [Candidate(uuid4(), "public")])
+    finally:
+        await client.aclose()
+    assert calls == 2
+    assert quota.requests == 2
+    assert batch.judgments[0].outcome is Outcome.ASSESSED
+
+
+async def test_diagnostic_run_disables_retries_to_match_dispatch_ledger() -> None:
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        return httpx.Response(429, headers={"Retry-After": "0"})
+
+    client = judge(handler, max_retries=0)
+    try:
+        batch = await client.assess("q", [Candidate(uuid4(), "public")])
+    finally:
+        await client.aclose()
+    assert calls == 1
+    assert batch.judgments[0].failure_code == "rate_limited"
+
+
+async def test_auth_error_never_retries() -> None:
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        return httpx.Response(401)
+
+    client = judge(handler)
+    try:
+        batch = await client.assess("q", [Candidate(uuid4(), "public")])
+    finally:
+        await client.aclose()
+    assert calls == 1
+    assert batch.judgments[0].failure_code == "invalid_credential"
 
 
 async def test_denied_mixed_batch_and_missing_key_send_nothing() -> None:
@@ -390,10 +503,10 @@ async def test_provider_breaker_is_shared_and_does_not_export_after_opening() ->
     first = judge(overloaded, quota=shared)
     second = judge(overloaded, quota=shared)
     try:
-        for client in (first, second):
-            batch = await client.assess("q", [Candidate(uuid4(), "public")])
-            assert batch.judgments[0].failure_code == "overloaded"
         batch = await first.assess("q", [Candidate(uuid4(), "public")])
+        assert batch.judgments[0].failure_code == "overloaded"
+        # The retry is a second counted transient failure, opening the shared breaker.
+        batch = await second.assess("q", [Candidate(uuid4(), "public")])
         assert batch.judgments[0].failure_code == "provider_circuit_open"
         assert calls == 2
     finally:

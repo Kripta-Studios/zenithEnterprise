@@ -10,6 +10,7 @@ import asyncio
 import hashlib
 import re
 from dataclasses import dataclass, replace
+from decimal import Decimal, InvalidOperation
 from enum import StrEnum
 from uuid import NAMESPACE_URL, uuid5
 
@@ -44,6 +45,7 @@ class ClaimAssessment:
     span_valid: bool
     values_valid: bool
     support_status: SupportStatus
+    failure_layer: str | None = None
     assessor_provider: str | None = None
     assessor_model: str | None = None
     rubric_id: str | None = None
@@ -97,6 +99,17 @@ def _arithmetic_valid(claim: str) -> bool:
     return True
 
 
+def _numeric_values(text: str) -> set[tuple[Decimal, bool]]:
+    """Compare written values without confusing a decimal comma with a new fact."""
+    values: set[tuple[Decimal, bool]] = set()
+    for token in NUMBER.findall(text):
+        try:
+            values.add((Decimal(token.rstrip("%").replace(",", ".")), token.endswith("%")))
+        except InvalidOperation:
+            continue
+    return values
+
+
 def prepare(
     draft: str, hits: list[Hit], *, max_claims: int, max_input_bytes: int
 ) -> tuple[PreparedClaim, ...]:
@@ -128,7 +141,13 @@ def prepare(
                 (),
                 Candidate(uuid5(NAMESPACE_URL, identity + evidence), ""),
                 ClaimAssessment(
-                    identity, evidence, False, False, False, SupportStatus.NOT_ASSESSED
+                    identity,
+                    evidence,
+                    False,
+                    False,
+                    False,
+                    SupportStatus.NOT_ASSESSED,
+                    "claim_extraction_or_bound",
                 ),
             ),
         )
@@ -142,18 +161,17 @@ def prepare(
         )
         quotes = [next(value for value in groups if value) for groups in QUOTED.findall(clause)]
         span_valid = referenced and all(quote in cited_text for quote in quotes)
-        numbers = NUMBER.findall(clause)
+        numbers = _numeric_values(clause)
+        arithmetic_valid = _arithmetic_valid(clause)
         values_valid = (
-            referenced
-            and _arithmetic_valid(clause)
-            and all(number in NUMBER.findall(cited_text) for number in numbers)
+            referenced and arithmetic_valid and numbers.issubset(_numeric_values(cited_text))
         )
         evidence = _render_evidence(hits, markers)
         candidate = Candidate(uuid5(NAMESPACE_URL, claim_hash + evidence_hash), evidence)
         input_fits = len((clause + evidence).encode()) <= max_input_bytes
         status = (
             SupportStatus.CONTRADICTED
-            if not _arithmetic_valid(clause)
+            if not arithmetic_valid
             else SupportStatus.INSUFFICIENT
             if not (referenced and span_valid and values_valid)
             else SupportStatus.NOT_ASSESSED
@@ -161,6 +179,19 @@ def prepare(
         if not input_fits:
             status = SupportStatus.NOT_ASSESSED
             candidate = Candidate(candidate.id, "")
+        failure_layer = (
+            "arithmetic"
+            if not arithmetic_valid
+            else "input_bound"
+            if not input_fits
+            else "citation"
+            if not referenced
+            else "quoted_span"
+            if not span_valid
+            else "numeric_value"
+            if not values_valid
+            else None
+        )
         prepared.append(
             PreparedClaim(
                 clause,
@@ -173,6 +204,7 @@ def prepare(
                     span_valid,
                     values_valid,
                     status,
+                    failure_layer,
                 ),
             )
         )
@@ -205,7 +237,11 @@ async def review(
         raise ValueError("invalid support threshold")
     claims = prepare(draft, hits, max_claims=max_claims, max_input_bytes=max_input_bytes)
     if not await verify_current(profile, context, tuple(hits)):
-        return SupportReview(SupportStatus.NOT_ASSESSED, tuple(c.assessment for c in claims), False)
+        return SupportReview(
+            SupportStatus.NOT_ASSESSED,
+            tuple(replace(c.assessment, failure_layer="source_access") for c in claims),
+            False,
+        )
     allowed = {claim.candidate.id: claim for claim in claims if claim.candidate.text}
 
     async def permitted(question: str, candidate: Candidate, purpose: Purpose) -> bool:
@@ -238,7 +274,7 @@ async def review(
                 assessed.append(prior)
                 continue
             if judge is None:
-                assessed.append(prior)
+                assessed.append(replace(prior, failure_layer="assessor_unavailable"))
                 continue
             try:
                 batch = await judge.assess(claim.text, [claim.candidate])
@@ -256,7 +292,7 @@ async def review(
                 )
                 score = item.rank_value
                 if not valid or score is None:
-                    assessed.append(prior)
+                    assessed.append(replace(prior, failure_layer="assessor_invalid"))
                     continue
                 assessed.append(
                     replace(
@@ -266,6 +302,7 @@ async def review(
                             if score >= min_noul
                             else SupportStatus.INSUFFICIENT
                         ),
+                        failure_layer=None if score >= min_noul else "semantic_threshold",
                         assessor_provider=item.provider,
                         assessor_model=item.reported_model,
                         rubric_id=item.rubric_id,
@@ -276,12 +313,16 @@ async def review(
             except asyncio.CancelledError:
                 raise
             except Exception:  # noqa: BLE001 - provider details may contain source text
-                assessed.append(prior)
+                assessed.append(replace(prior, failure_layer="assessor_error"))
     finally:
         if client is not None:
             await client.aclose()
     current = await verify_current(profile, context, tuple(hits))
-    results = tuple(assessed)
+    results = (
+        tuple(assessed)
+        if current
+        else tuple(replace(item, failure_layer="source_access") for item in assessed)
+    )
     return SupportReview(
         _overall(results) if current else SupportStatus.NOT_ASSESSED, results, current
     )
