@@ -9,6 +9,8 @@ const apiTarget = process.env.VITE_API_PROXY_TARGET || "http://localhost:8000";
 export default defineConfig({
   plugins: [react()],
   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
+  // Disposable multi-origin acceptance gives each Vite process its own optimizer cache.
+  cacheDir: process.env.ZENITH_VITE_CACHE_DIR || undefined,
   // The API is served next to the bundle in production, so development proxies rather than
   // hard-coding a host anywhere in the source. Nothing in `src/` knows where the API lives.
   server: {

@@ -203,7 +203,12 @@ def main():
                     "--strictPort",
                 ],
                 ROOT / "frontend",
-                {"VITE_API_PROXY_TARGET": "http://127.0.0.1:18100"},
+                {
+                    "VITE_API_PROXY_TARGET": "http://127.0.0.1:18100",
+                    "ZENITH_VITE_CACHE_DIR": str(
+                        OUT / f"vite-cache-default-{secrets.token_hex(8)}"
+                    ),
+                },
             )
             for index, name, overrides in (
                 (1, "experimental", {}),
@@ -242,7 +247,12 @@ def main():
                         "--strictPort",
                     ],
                     ROOT / "frontend",
-                    {"VITE_API_PROXY_TARGET": f"http://127.0.0.1:{18100 + index}"},
+                    {
+                        "VITE_API_PROXY_TARGET": f"http://127.0.0.1:{18100 + index}",
+                        "ZENITH_VITE_CACHE_DIR": str(
+                            OUT / f"vite-cache-{name}-{secrets.token_hex(8)}"
+                        ),
+                    },
                 )
                 fixture[f"{name}_url"] = f"http://127.0.0.1:{18110 + index}"
             wait_http(fixture["base_url"] + "/auth/me", processes)
