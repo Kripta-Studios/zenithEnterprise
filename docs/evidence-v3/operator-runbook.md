@@ -70,6 +70,36 @@ document is ready. `mode=direct` requires an enabled direct flag and a scope
 within the configured budgets. `mode=auto` falls back to hybrid with a
 candidate-only receipt if full direct assessment cannot complete.
 
+For repeatable local browser acceptance on Windows, start the pinned BGE-M3
+embedding and TEI reranker containers at `127.0.0.1:18081/18083`, install
+backend dev and frontend dependencies, and run from `backend/`:
+
+```powershell
+$env:PYTHONUTF8 = '1'
+uv run python ../scripts/evidence_v3_acceptance/serve.py
+```
+
+This creates a disposable ParadeDB/PostgreSQL container, migrates both
+schemas, provisions synthetic tenants/users through the real onboarding path,
+starts an ingestion worker, four isolated API configurations, and four Vite
+origins. Wait for `READY`, then in another shell in `backend/` run:
+
+```powershell
+$env:PYTHONUTF8 = '1'
+uv run --with playwright==1.58.0 python ../scripts/evidence_v3_acceptance/browser.py
+uv run --with playwright==1.58.0 python ../scripts/evidence_v3_acceptance/experimental_browser.py
+uv run python ../scripts/evidence_v3_acceptance/load_check.py
+```
+
+The scripts use installed Chrome and actual server-issued sessions. Only the
+generation model boundary in the experimental instance uses the shipped mock
+provider; application auth, RLS, routing, TEI, source files, and queue remain
+real. The ignored `.scratch/release-validation/fixture.json` contains random
+test credentials and must not be committed. Run the experimental script on a
+fresh fixture because it deliberately ingests a fifth passage to cross its
+four-unit direct cap. Create `.scratch/release-validation/stop` to shut down
+the helper and disposable database. Keep screenshots, traces, and logs private.
+
 ## Configure experimental paths
 
 All environment names below include the `ZENITH_` prefix from `Settings`.
@@ -97,6 +127,11 @@ deadline to 20 seconds. These controls do not enforce a monetary invoice cap;
 approve and monitor spend separately. Reranking permission does not enable
 segmentation or claim support: their distinct flags remain false unless each
 purpose receives separate approval.
+The in-process quota and breaker belong to one configured credential. Rotate
+that credential by restarting the single API worker; a credential changed
+inside a running worker is rejected rather than sharing the prior key's
+budget or breaker state. Multiple credentials or workers require a separate
+shared quota design and qualification.
 
 Keep the returned provider, effective model, rubric, utility mapping and input
 identities with evaluation artifacts. Score6 utility and Noul ranking values

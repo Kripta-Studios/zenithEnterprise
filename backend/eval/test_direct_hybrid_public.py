@@ -52,7 +52,7 @@ def _metrics(
 
 
 async def test_public_direct_vs_hybrid_same_tei_and_scope(
-    account: Account, monkeypatch: pytest.MonkeyPatch
+    account: Account, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     if os.environ.get("ZENITH_RUN_PUBLIC_DIRECT_HYBRID") != "1":
         pytest.skip("public direct/hybrid pilot requires explicit opt-in")
@@ -142,5 +142,5 @@ async def test_public_direct_vs_hybrid_same_tei_and_scope(
         "rows": rows,
         "missing_vector_probe": missing_vector_probe,
     }
-    output = Path(os.environ.get("ZENITH_PUBLIC_DIRECT_REPORT", "public-direct-hybrid.json"))
+    output = Path(os.environ.get("ZENITH_PUBLIC_DIRECT_REPORT", str(tmp_path / "direct-hybrid.json")))
     output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
