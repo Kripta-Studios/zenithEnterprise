@@ -209,7 +209,9 @@ async def test_label_change_during_assessment_prevents_export_and_disclosure(
         reranker=reranker(reverse_order),
         judge_mode="jev_score6",
     ).search("controller taxpayer employees")
-    assert calls == 1
+    # The second candidate can already be in the admitted two-wide window.
+    # The changed label must still prevent every hit from being disclosed.
+    assert 1 <= calls <= 2
     assert result.hits == []
     assert result.reason == SOURCE_CHANGED
 
