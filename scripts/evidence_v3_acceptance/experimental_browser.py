@@ -205,7 +205,7 @@ def main():
             )
             assert_buffered(result, stream)
             expect(
-                page.get_by_text("Some required source context was unavailable.")
+                page.get_by_text("Some required source context was unavailable.").last
             ).to_be_visible()
             evidence.append({"packet_unresolved": result, "fixture_document": partial["id"]})
             page.screenshot(path=str(OUT / "packet-unresolved.png"))
