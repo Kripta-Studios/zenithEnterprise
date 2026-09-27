@@ -1,0 +1,51 @@
+{
+  "schema": "zenith-evidence-v3-local-publication-candidate-v1",
+  "date": "2026-09-27",
+  "remote_action": "none",
+  "upstream_baseline_read_only": "33b48812c95150348c52d2519159780252c92db2",
+  "historical_integration": "0a24cc34b05a1b055452069849ebea61a4d9aba6",
+  "historical_release_code": "1862072e55f3d79877334964b0e1b3a8f473a39f",
+  "historical_release_report": "5cd3f9ca917a5e14a2db8d448e712c9d45d69606",
+  "hardening_development": {
+    "branch": "fix/evidence-v3-hardening",
+    "code_head": "890f5a98d373e85846630e2d05e5ee5ccb41c5b4",
+    "code_tree": "ada0b6c37ac5a63bfb5e591f010211ad62015dfb",
+    "contains_optional_r1": true
+  },
+  "local_review_series": [
+    {"slice":"pr01-judge","base":"33b48812c95150348c52d2519159780252c92db2","head":"b354b8ee29af99975bd5308d2197a9f002c512cb","tree":"1b0032d9f04d5ea39643e643891a10e978db432a","validation":"historical_only"},
+    {"slice":"pr02-jev","base":"b354b8ee29af99975bd5308d2197a9f002c512cb","head":"e5f37c2c970e5c380998478548dd78a78a05a988","tree":"c453e09c7609139f5fc51ecc565ee93c1e18b11f","validation":"historical_only"},
+    {"slice":"pr03-hybrid","base":"e5f37c2c970e5c380998478548dd78a78a05a988","head":"bab1578782aa26dad858ef7d258407f749e85d08","tree":"a547a0b373c098ffbb2350614885329ee68359c4","validation":"historical_only"},
+    {"slice":"pr04-direct","base":"bab1578782aa26dad858ef7d258407f749e85d08","head":"92e42bde2ac5522950242ae06ed3834b46f5497a","tree":"e5a0ba8b0dc4f65aafdfc2b60ae0cf4b0a890315","validation":"historical_only"},
+    {"slice":"proxy-portability-prerequisite","base":"92e42bde2ac5522950242ae06ed3834b46f5497a","head":"f0b81150e67048c7973e0e25582c08e808a8dd52","tree":"08799525106a5d47cf6676f097ebb11ed09231b2","validation":"focused_only"},
+    {"slice":"pr05-coverage-ui","base":"f0b81150e67048c7973e0e25582c08e808a8dd52","head":"87e4981770dd6e1245bb0503a9b90e29ff8a1959","tree":"d7ecf91bad0760d80c377cd38ed35509a350183a","validation":"focused_only"},
+    {"slice":"neutral-evaluation-prerequisite","base":"87e4981770dd6e1245bb0503a9b90e29ff8a1959","head":"a9f7f39934ed13fe2fe469ebb27e3d9d5cc4e10f","tree":"09e6529b99c460bbd5d8d9495cc91447798ff1f3","validation":"focused_only"},
+    {"slice":"pr06-packets","base":"a9f7f39934ed13fe2fe469ebb27e3d9d5cc4e10f","head":"636d474be4caa20e0c35703ffedeb403ea0f853b","tree":"a63170a15f8a4a7fb33e0d6fd5a8d431f172a4e1","validation":"focused_only"},
+    {"slice":"pr07-strict-support","base":"636d474be4caa20e0c35703ffedeb403ea0f853b","head":"772afa2f405d930b3f63c95c2818d43df8f6cecf","tree":"535394f02f787623f08088072e49b40af2b696e4","validation":"focused_only"},
+    {"slice":"pr08-qualification-ui","base":"772afa2f405d930b3f63c95c2818d43df8f6cecf","head":"6b0a090ec881eb8cf96061ab135ba318de368bbc","tree":"e93cc9e69d302a4ead9cbdad3854a7e1323f880e","validation":"focused_only"},
+    {"slice":"integrated-security","base":"6b0a090ec881eb8cf96061ab135ba318de368bbc","head":"06d8ca55ac85fd49621852b0626ee78d1515ab6d","tree":"5b6904c8b3b6515337f5d0cd921d347678bfadf7","validation":"focused_only"},
+    {"slice":"release-validation-report","base":"06d8ca55ac85fd49621852b0626ee78d1515ab6d","head":"b6a9305d3df7ad6eec451a08d2bc1fa0ed7b6653","tree":"f29ff69cba93837853458515141367dac34d913e","validation":"historical_only"},
+    {"slice":"hardening-core","base":"b6a9305d3df7ad6eec451a08d2bc1fa0ed7b6653","head":"4092f2735d30e7bc360bce88113c246eaf1fda60","tree":"d69c37070fe22d0069804abea5708c835add8317","validation":"local_engineering_pass"}
+  ],
+  "optional_research": {
+    "r1_branch": "fix/evidence-v3-series-r1",
+    "r1_base": "a9f7f39934ed13fe2fe469ebb27e3d9d5cc4e10f",
+    "r1_head": "0d0844ba236a08d4983bfc93cb98b76ab0497406",
+    "r1_tree": "02a08168f7d1c50c1e94b4dbecbdc4f0f3210fdb",
+    "disposition": "isolated_optional_preserved"
+  },
+  "fork_main_integration_candidate": {
+    "base": "33b48812c95150348c52d2519159780252c92db2",
+    "head": "4092f2735d30e7bc360bce88113c246eaf1fda60",
+    "tree": "d69c37070fe22d0069804abea5708c835add8317",
+    "branch": "fix/evidence-v3-series-hardening-v3",
+    "eligible_for_remote_main": false
+  },
+  "defaults": {"judge":"tei","jev_enabled":false,"strict_support_enabled":false,"r1_enabled":false,"external_processing_purposes_changed":false},
+  "exact_candidate_validation": {"windows_make_check_exit":0,"windows_backend_passed":1004,"windows_backend_skipped":14,"windows_frontend_passed":450,"windows_frontend_files":43,"windows_gate_log_sha256":"a57c7137dc2a00b14ef2a46f3f5c1c11ccba09b68e7f5f249ee63be07c1f1154","windows_frontend_build_exit":0,"windows_audit_vulnerabilities":0,"linux_backend_ruff_format_pyright_exit":0,"linux_backend_passed":1004,"linux_backend_skipped":14,"linux_backend_test_log_sha256":"445b283edb1c7581d38fed54872026056bd0d3d07028b22611cae7118a32fc9d","linux_frontend_clean_install_types_build_audit_exit":0,"linux_frontend_passed":450,"linux_frontend_files":43,"linux_frontend_production_audit_vulnerabilities":0,"linux_initial_concurrent_test":"one_five_second_timeout_then_isolated_full_pass","authenticated_browser_default_checks":11,"authenticated_browser_experimental_checks":10,"browser_generator":"scripted","browser_jev_enabled":false,"browser_local_search_requests":12,"browser_local_search_all_200":true,"browser_local_search_degraded":0,"browser_evidence_index_sha256":"18fceca70a5df53cbe43346dbe3c174b46e758ceb67bb4313c5417fdfdc6d96d","combined_real_inference":"not_run"},
+  "safe_publication_paths": ["backend/app/", "backend/eval/", "backend/tests/", "frontend/", "scripts/", "docs/evidence-v3/", "docs/evidence-v3-hardening/", ".artifacts/"],
+  "safe_publication_paths_status": "Only tracked public/synthetic candidate files are proposed; full commit-history credential/private-corpus audit remains a gate before remote publication",
+  "excluded_local_paths": [".scratch/", "Zenith_v3_Remediation_and_Publication/", "Zenith_v3_Remediation_and_Publication.zip"],
+  "live_pilot": {"provider":"TypeSafe Jev","approved_calls":320,"used_calls":204,"approved_input_tokens":500000,"conservatively_accounted_input_tokens":131195,"approved_output_tokens":30000,"known_output_tokens":6066,"approved_usd":3,"invoiced_usd":null,"raw_capture":"Score only under ignored .scratch"},
+  "remaining_gates": ["Combined real generator plus Jev and strict support with separately authorized scope", "Independent strict-support calibration and representative R1/packet study", "Sustained provider load and multiworker admission/accounting if proposed", "Per-slice merge-ref full checks, current remote refresh, credential/private-data history audit, maintainer authorization before any remote publication"]
+}

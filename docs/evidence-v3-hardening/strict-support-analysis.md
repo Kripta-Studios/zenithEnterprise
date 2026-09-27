@@ -1,0 +1,9 @@
+# Strict-support diagnosis
+
+The current strict route remains optional and default off. The prior final-source recheck repair is retained: inaccessible, revoked, or changed sources withhold the draft and consulted-source metadata. Source access is a security gate, never a tunable semantic threshold.
+
+The hardening patch adds a local failure-layer trace to each claim assessment: source access, input bound/context, citation/quote, numeric mismatch, assessor unavailable/error/invalid, or semantic threshold. Decimal normalization now treats equivalent comma/dot decimal notation as the same quantity and preserves percentage distinctions. It does not infer unit conversions. Existing source/citation checks still run before semantic release. Local tests exercise the format equivalence and the existing fail-closed behavior.
+
+Historical SciFact public oracle-document data: default `0.8` accepted 12/24 supported and 0/24 contradicted in development; a previously frozen `0.6` check accepted 8/10 supported and 0/10 contradicted in a separate within-development sample. This is not generated Spanish enterprise answer calibration. The new self-authored synthetic pilot at current `0.8` accepted 11/12 supported and 0/12 unsupported in 24 valid calls; these small constructed labels cannot certify safety or select a threshold. No threshold was changed.
+
+Required next evidence is a disjoint, independently labeled claim-plus-complete-evidence corpus by document family, with supported, contradicted, insufficient, and unassessable cases; matched generated-answer runs; and prespecified unsupported-release and supported-suppression targets. Measure semantic-only and operational failures separately, including missing context and source changes. Until then strict support remains `experimental_isolated`; TEI relevance is not used as entailment.
