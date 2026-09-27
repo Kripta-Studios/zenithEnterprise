@@ -16,6 +16,7 @@ import os
 import random
 import statistics
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 from uuid import NAMESPACE_URL, uuid5
@@ -44,6 +45,36 @@ RESERVED_INPUT_TOKENS = 20_000_000
 MODEL = "jev-1.13.0"
 BOOTSTRAP_SEED = 1729
 BOOTSTRAP_SAMPLES = 2000
+
+
+@dataclass(frozen=True)
+class TrialPlan:
+    """Explicit frozen identity and authorization; historical defaults are unchanged."""
+
+    trial_id: str = TRIAL_ID
+    papers: int = PAPERS
+    manifest_sha256: str = MANIFEST_SHA256
+    additional_call_cap: int = ADDITIONAL_CALL_CAP
+    additional_usd_cap: float = ADDITIONAL_USD_CAP
+    input_token_cap: int = RESERVED_INPUT_TOKENS
+    excluded_papers: frozenset[str] = frozenset()
+
+
+DEFAULT_PLAN = TrialPlan()
+
+
+def _validate_budget(rows: list[dict[str, object]], plan: TrialPlan) -> tuple[int, int]:
+    calls = sum(len(cast(list[object], row["candidates"])) for row in rows)
+    tokens = sum(
+        len(str(row["question"]).encode()) + len(str(candidate["text"]).encode()) + 6000
+        for row in rows
+        for candidate in cast(list[dict[str, object]], row["candidates"])
+    )
+    if calls > plan.additional_call_cap or tokens > plan.input_token_cap:
+        raise ValueError("frozen trial exceeds additional call/token reservation")
+    if plan.input_token_cap * INPUT_USD_PER_TOKEN >= plan.additional_usd_cap:
+        raise ValueError("frozen trial token reservation exceeds authorized dollars")
+    return calls, tokens
 
 
 def _test_json(path: Path) -> dict[str, dict[str, Any]]:
@@ -81,13 +112,17 @@ def _save(path: Path, data: dict[str, object]) -> None:
     temporary.replace(path)
 
 
-async def prepare(path: Path, embed_url: str, rerank_url: str, output: Path) -> dict[str, object]:
+async def prepare(
+    path: Path, embed_url: str, rerank_url: str, output: Path, *, plan: TrialPlan = DEFAULT_PLAN
+) -> dict[str, object]:
     raw = _test_json(path)
     embedder = TeiEmbedder(embed_url)
     tei = TeiReranker(url=rerank_url, profile=PROFILES["gpu"])
     rows: list[dict[str, object]] = []
     ordered = sorted(raw, key=lambda identity: hashlib.sha256(identity.encode()).hexdigest())
     for paper_id in ordered:
+        if paper_id in plan.excluded_papers:
+            continue
         source = raw[paper_id]
         qas = cast(list[dict[str, Any]], source["qas"])
         if not qas:
@@ -129,27 +164,24 @@ async def prepare(path: Path, embed_url: str, rerank_url: str, output: Path) -> 
                 "tei_elapsed_ms": round((time.perf_counter() - started) * 1000),
             }
         )
-        print(f"prepared public paper {len(rows)}/{PAPERS}", flush=True)
-        if len(rows) == PAPERS:
+        print(f"prepared public paper {len(rows)}/{plan.papers}", flush=True)
+        if len(rows) == plan.papers:
             break
-    if len(rows) != PAPERS:
+    if len(rows) != plan.papers:
         raise ValueError("not enough source-bearing test papers")
-    planned_calls = sum(len(cast(list[object], row["candidates"])) for row in rows)
-    estimated_tokens = sum(
-        len(str(row["question"]).encode()) + len(str(candidate["text"]).encode()) + 6000
-        for row in rows
-        for candidate in cast(list[dict[str, object]], row["candidates"])
-    )
-    if planned_calls > ADDITIONAL_CALL_CAP or estimated_tokens > RESERVED_INPUT_TOKENS:
-        raise ValueError("frozen trial exceeds additional call/token reservation")
-    if RESERVED_INPUT_TOKENS * INPUT_USD_PER_TOKEN >= ADDITIONAL_USD_CAP:
-        raise ValueError("frozen trial token reservation exceeds authorized dollars")
+    planned_calls, estimated_tokens = _validate_budget(rows, plan)
     manifest: dict[str, object] = {
-        "trial_id": TRIAL_ID,
+        "trial_id": plan.trial_id,
         "dataset_sha256": TEST_SHA256,
         "archive_sha256": ARCHIVE_SHA256,
-        "selection": "first 240 SHA-ranked source-bearing test papers; lowest SHA-ranked "
-        "question per paper, without reading answers",
+        "selection": f"first {plan.papers} SHA-ranked source-bearing test papers; "
+        "lowest SHA-ranked "
+        "question per paper, without reading answers"
+        + (
+            f"; excluding {len(plan.excluded_papers)} previously selected papers"
+            if plan.excluded_papers
+            else ""
+        ),
         "candidate_policy": "BGE-M3 dense top eight of current-main chunks; same frozen "
         "candidates for TEI and Jev",
         "tei_model": await tei.model_identity(),
@@ -158,32 +190,39 @@ async def prepare(path: Path, embed_url: str, rerank_url: str, output: Path) -> 
         "jev_rubric_hash": NOUL.hash,
         "planned_calls": planned_calls,
         "conservative_input_tokens": estimated_tokens,
-        "approved_additional_calls": ADDITIONAL_CALL_CAP,
-        "approved_additional_usd": ADDITIONAL_USD_CAP,
+        "approved_additional_calls": plan.additional_call_cap,
+        "approved_additional_usd": plan.additional_usd_cap,
         "rows": rows,
     }
     _save(output, manifest)
     return manifest
 
 
-async def run(manifest_path: Path, ledger_path: Path, key: str) -> dict[str, object]:
-    if hashlib.sha256(manifest_path.read_bytes()).hexdigest() != MANIFEST_SHA256:
+async def run(
+    manifest_path: Path, ledger_path: Path, key: str, *, plan: TrialPlan = DEFAULT_PLAN
+) -> dict[str, object]:
+    if hashlib.sha256(manifest_path.read_bytes()).hexdigest() != plan.manifest_sha256:
         raise ValueError("held-out manifest differs from the frozen candidate snapshot")
     manifest = cast(dict[str, object], json.loads(manifest_path.read_text(encoding="utf-8")))
-    if manifest.get("trial_id") != TRIAL_ID or manifest.get("dataset_sha256") != TEST_SHA256:
+    if manifest.get("trial_id") != plan.trial_id or manifest.get("dataset_sha256") != TEST_SHA256:
         raise ValueError("manifest identity does not match frozen held-out trial")
     manifest_rows = cast(list[dict[str, object]], manifest["rows"])
+    _validate_budget(manifest_rows, plan)
+    if len(manifest_rows) != plan.papers or any(
+        str(row["paper_id"]) in plan.excluded_papers for row in manifest_rows
+    ):
+        raise ValueError("manifest cohort differs from the frozen plan")
     if ledger_path.exists():
         ledger = cast(dict[str, object], json.loads(ledger_path.read_text(encoding="utf-8")))
         if (
-            ledger.get("trial_id") != TRIAL_ID
+            ledger.get("trial_id") != plan.trial_id
             or ledger.get("manifest_sha256")
             != hashlib.sha256(manifest_path.read_bytes()).hexdigest()
         ):
             raise ValueError("ledger belongs to a different manifest")
     else:
         ledger: dict[str, object] = {
-            "trial_id": TRIAL_ID,
+            "trial_id": plan.trial_id,
             "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
             "reserved": [],
             "rows": [],
@@ -209,7 +248,7 @@ async def run(manifest_path: Path, ledger_path: Path, key: str) -> dict[str, obj
         policy=ProcessingPolicy(reranking=True),
         purpose=Purpose.RERANKING,
         authorize=public_only,
-        quota=JevQuota(ADDITIONAL_CALL_CAP, RESERVED_INPUT_TOKENS, max_concurrency=1),
+        quota=JevQuota(plan.additional_call_cap, plan.input_token_cap, max_concurrency=1),
         max_concurrency=1,
         deadline_seconds=90.0,
     )
@@ -224,7 +263,7 @@ async def run(manifest_path: Path, ledger_path: Path, key: str) -> dict[str, obj
                 )
                 for item in cast(list[dict[str, object]], row["candidates"])
             ]
-            if len(reserved) * TOP_K + len(candidates) > ADDITIONAL_CALL_CAP:
+            if len(reserved) * TOP_K + len(candidates) > plan.additional_call_cap:
                 raise ValueError("additional Jev call cap exhausted")
             reserved.append(str(row["question_id"]))
             _save(ledger_path, ledger)  # Reserve every candidate before dispatch.
@@ -415,7 +454,7 @@ def score(
         _measured(row, "elapsed_ms") for row in cast(list[dict[str, object]], ledger["rows"])
     ]
     report: dict[str, object] = {
-        "trial_id": TRIAL_ID,
+        "trial_id": manifest["trial_id"],
         "dataset_sha256": TEST_SHA256,
         "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
         "model": MODEL,

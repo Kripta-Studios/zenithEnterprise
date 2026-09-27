@@ -1,5 +1,27 @@
 # Evidence retrieval v3: integrated qualification
 
+## Current release-validation status
+
+This report's PR 08 and final-gate narrative below records historical stages.
+The later full `make check` at integrated head
+`0a24cc34b05a1b055452069849ebea61a4d9aba6` **passed**: 1,003 backend
+tests passed, 15 skipped, 449 frontend tests passed, and lint, format, strict
+typing, and licence checks passed. It supersedes this report's precommit
+"final check pending" wording, but it does not validate later repairs.
+
+The additive `fix/evidence-v3-release-validation` branch closes the local
+authenticated browser gap with the real migrated application, disposable
+PostgreSQL, application-role RLS, queue worker, actual UI login, local GPU TEI,
+and original text/PDF source highlighting. It also audits conditional skips
+and repairs strict failure metadata and credential-rotation handling. The
+[separately frozen 176-paper Jev study](evidence-v3-qasper-extension-2026-09-27.md)
+found 93/147 complete-evidence cases versus 75/147 for TEI on unused public
+English QASPER test papers; the full 416-paper join is descriptive reuse.
+The [tracked release-validation record](../../../docs/evidence-v3/release-validation-2026-09-27.md)
+is authoritative for revised-branch commit IDs, final local gates, browser
+evidence, remaining skips, and publication limits. No remote CI, maintainer
+review, or staging/production qualification is implied by these local runs.
+
 ## Configuration decisions
 
 | Configuration | Decision | Basis and limit |
@@ -14,7 +36,7 @@
 
 No model default change, production rollout, or external processing permission is proposed here. Expected utility is a ranking aid, not an answer-correctness probability. Historical receipts, source coordinates, and citations retain their actual model/source identities.
 
-## Integrated engineering evidence
+## Historical PR 08 engineering evidence
 
 PR 01–07 are committed in dependency order and integrated locally. The PR 07 frozen backend suite passed 351 tests on disposable ParadeDB/PostgreSQL under the `zenith_app` application role, including tenant and label RLS, query-history privacy, source reauthorization, deadlines, fallback, and strict support. The full serial frontend suite passed 449 tests; Ruff, format, Linux-target Pyright, backend/frontend builds, and the production-package licence check passed. The clean detached integrated worktree installed 103 backend packages with `uv sync --group dev`, 630 frontend packages with `npm ci`, built the frontend, and passed four migration/support tests including upgrade, downgrade, and re-upgrade on disposable application-role PostgreSQL. These are actual local runs; exact commands, exit codes, and ignored logs are recorded in the local handoff `VALIDATION_RESULTS.md`.
 
@@ -32,6 +54,6 @@ Use the [operator runbook](../../../docs/evidence-v3/operator-runbook.md) for cl
 
 For immediate rollback, set the judge provider to `tei`, direct mode and packet/strict flags to false, and all three external-processing purposes to false. Remove the Jev credential from the secret mechanism. Historical query rows and source links should remain readable; the tested migration downgrade/re-upgrade is for disposable qualification only. If reverting commits, do it in reverse dependency order PR 08 through PR 01 rather than resetting user work. No migration or vector rewrite is required by these features.
 
-## Final gate status
+## Historical precommit final-gate status
 
 The final checks against the final integrated PR 08 commit, clean-install rerun, load result, and final code/security review are recorded in the local checkpoint. Do not treat an earlier PR result or a synthetic fixture as a passed final gate. Remote publication and deployment require separate authorization.
