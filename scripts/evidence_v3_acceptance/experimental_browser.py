@@ -2,6 +2,7 @@
 
 import json
 import time
+from urllib.parse import urlsplit
 
 from browser import OUT, fixture, login, search
 from playwright.sync_api import expect, sync_playwright
@@ -75,12 +76,32 @@ def assert_buffered(result, stream):
 
 
 def main():
-    evidence, errors = [], []
+    evidence, events = [], []
     with sync_playwright() as p:
         browser = p.chromium.launch(channel="chrome", headless=True)
         context = browser.new_context(viewport={"width": 1440, "height": 1000}, locale="en-US")
+
+        def watch(tab):
+            tab.on("pageerror", lambda error: events.append({"pageerror": str(error)}))
+            tab.on(
+                "console",
+                lambda message: (
+                    events.append({"console": message.type, "text": message.text})
+                    if message.type == "error"
+                    else None
+                ),
+            )
+            tab.on(
+                "response",
+                lambda response: (
+                    events.append({"status": response.status, "path": urlsplit(response.url).path})
+                    if response.status >= 400
+                    else None
+                ),
+            )
+
+        context.on("page", watch)
         page = context.new_page()
-        page.on("pageerror", lambda e: errors.append(str(e)))
         try:
             origin = fixture["experimental_url"]
             page.goto(origin, wait_until="domcontentloaded")
@@ -149,6 +170,9 @@ def main():
             unavailable = context.new_page()
             unavailable.goto(fixture["unavailable_url"], wait_until="domcontentloaded")
             login(unavailable, "alpha-member")
+            body = search(unavailable, "When does the cobalt telescope open?")
+            assert body["degraded"], body
+            evidence.append({"legacy_unavailable": body["relevance"]})
             unavailable.locator("#search-mode").select_option("direct")
             body = search(unavailable, "When does the cobalt telescope open?")
             assert body["degraded"] and not body["receipt"]["manifest_assessment_complete"], body
@@ -195,7 +219,7 @@ def main():
             )
             assert response.ok and private_question_id not in response.text()
             evidence.append({"same_tenant_own_history_private": True})
-            assert not errors, errors
+            assert not events, events
             print(
                 f"PASS: {len(evidence)} experimental browser checks "
                 "(scripted generation, real auth/RLS/TEI)"
@@ -209,7 +233,7 @@ def main():
         finally:
             (OUT / "experimental-result.json").write_text(
                 json.dumps(
-                    {"head": fixture["head"], "evidence": evidence, "pageerrors": errors}, indent=2
+                    {"head": fixture["head"], "evidence": evidence, "events": events}, indent=2
                 ),
                 encoding="utf-8",
             )

@@ -56,6 +56,14 @@ answer correctness, the entire hybrid retrieval pipeline, multi-user provider
 throughput, or invoice spend. The unusual new-cohort local TEI median is an
 observed warm-service batch latency, not a service-level guarantee.
 
+The regenerated descriptive combined manifest has SHA-256
+`b3bcdad1093c4dacbd7e2d0d5e0d5c354529b068ffc786604cc9a4786e930377`.
+It records 3,312 planned calls and 23,419,306 conservatively estimated input
+tokens as sums of the two component manifests, with each component's own
+manifest hash and historical or new authorization cap. There is no single
+combined spending authorization. The component manifests and prediction
+ledgers were unchanged; offline rescoring left all metrics above unchanged.
+
 ## Reproducibility
 
 The source-text-free [new case CSV](evidence-v3-qasper-heldout-new176-2026-09-27.csv)
