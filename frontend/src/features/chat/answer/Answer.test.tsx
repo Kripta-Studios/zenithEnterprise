@@ -154,4 +154,11 @@ describe("<Answer />", () => {
 
     expect(screen.getByRole("alert").textContent).toBe("No model configured.");
   });
+
+  it("distinguishes unverified source access from a confirmed permission change", () => {
+    render(<Answer state={final({ abstained: true, degraded: true, citations: [], consulted: [],
+      support_status: "not_assessed", reason: "support_source_unverified" })} onCitation={vi.fn()} />);
+    expect(screen.getByText("Current source access could not be verified; the draft was withheld.")).toBeTruthy();
+    expect(screen.queryByText("Source access changed while checking this answer.")).toBeNull();
+  });
 });

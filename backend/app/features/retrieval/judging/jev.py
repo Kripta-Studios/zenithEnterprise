@@ -526,10 +526,22 @@ def configured_jev_judge(
     )
 
 
-@lru_cache(maxsize=1)
 def _shared_jev_quota() -> JevQuota:
-    """One budget for all configured clients in the acknowledged single API worker."""
-    return JevQuota(
+    """One startup credential per process; rotation requires a worker restart."""
+    fingerprint, quota = _startup_jev_quota()
+    if fingerprint != _credential_fingerprint():
+        raise JevFailure("credential_changed_restart_required")
+    return quota
+
+
+def _credential_fingerprint() -> str:
+    key = settings.jev_api_key.get_secret_value() if settings.jev_api_key else ""
+    return hashlib.sha256(key.encode()).hexdigest()
+
+
+@lru_cache(maxsize=1)
+def _startup_jev_quota() -> tuple[str, JevQuota]:
+    return _credential_fingerprint(), JevQuota(
         settings.jev_max_requests,
         settings.jev_max_input_tokens,
         max_concurrency=settings.jev_max_concurrency,

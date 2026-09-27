@@ -236,7 +236,9 @@ function Actions({ answer, result }: { answer: string; result: QueryResult }) {
 function Footer({ result }: { result: QueryResult }) {
   const t = useT();
   const reason =
-    result.reason === "support_source_changed" || result.reason === "packet_source_changed"
+    result.reason === "support_source_unverified"
+      ? t("Current source access could not be verified; the draft was withheld.")
+      : result.reason === "support_source_changed" || result.reason === "packet_source_changed"
       ? t("Source access changed while checking this answer.")
       : result.reason === "support_unavailable"
         ? t("The support check is unavailable; the draft was withheld.")

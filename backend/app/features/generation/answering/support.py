@@ -63,7 +63,8 @@ class PreparedClaim:
 class SupportReview:
     status: SupportStatus
     assessments: tuple[ClaimAssessment, ...]
-    source_current: bool
+    # None means the authorization check could not complete, not a proved change.
+    source_current: bool | None
 
 
 def _evidence_hash(hits: list[Hit], markers: tuple[int, ...]) -> str:

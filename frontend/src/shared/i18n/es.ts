@@ -120,6 +120,8 @@ export const es: Catalogue = {
     "Las afirmaciones citadas superaron la comprobación de respaldo del modelo.",
   "Source access changed while checking this answer.":
     "Cambió el acceso a las fuentes durante la comprobación de la respuesta.",
+  "Current source access could not be verified; the draft was withheld.":
+    "No se pudo verificar el acceso actual a las fuentes; se ha ocultado el borrador.",
   "The support check is unavailable; the draft was withheld.":
     "La comprobación de respaldo no está disponible; se ha ocultado el borrador.",
   "The cited sources did not establish every claim.":
