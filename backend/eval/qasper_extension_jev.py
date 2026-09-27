@@ -58,10 +58,48 @@ def combine(baseline: Path, output: Path) -> None:
     rows = [row for manifest in manifests for row in manifest["rows"]]
     if len(rows) != 416 or len({row["paper_id"] for row in rows}) != 416:
         raise ValueError("combined cohort is incomplete or overlapping")
+    shared_fields = (
+        "dataset_sha256",
+        "archive_sha256",
+        "candidate_policy",
+        "tei_model",
+        "jev_model",
+        "jev_rubric_id",
+        "jev_rubric_hash",
+    )
+    if any(manifests[0][key] != manifests[1][key] for key in shared_fields):
+        raise ValueError("combined trials used different datasets, candidates, or judges")
+    component_trials: list[dict[str, Any]] = []
+    for manifest, ledger, path in zip(
+        manifests,
+        ledgers,
+        [baseline / "heldout-240-frozen-manifest.json", output / "manifest.json"],
+        strict=True,
+    ):
+        if (
+            len(ledger["reserved"]) != len(manifest["rows"])
+            or sum(len(row["candidates"]) for row in manifest["rows"]) != manifest["planned_calls"]
+        ):
+            raise ValueError("component paper reservations or planned calls are inconsistent")
+        component_trials.append(
+            {
+                "trial_id": manifest["trial_id"],
+                "manifest_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "planned_calls": manifest["planned_calls"],
+                "conservative_input_tokens": manifest["conservative_input_tokens"],
+                "approved_additional_calls": manifest["approved_additional_calls"],
+                "approved_additional_usd": manifest["approved_additional_usd"],
+            }
+        )
     combined: dict[str, Any] = {
-        **manifests[0],
         "trial_id": "zenith-qasper-test-416-combined-descriptive-v1",
+        **{key: manifests[0][key] for key in shared_fields},
         "selection": "historical 240 plus separately frozen remaining 176; descriptive reuse",
+        "component_trials": component_trials,
+        "planned_calls": sum(int(item["planned_calls"]) for item in component_trials),
+        "conservative_input_tokens": sum(
+            int(item["conservative_input_tokens"]) for item in component_trials
+        ),
         "rows": rows,
     }
     manifest_path = output / "combined-manifest.json"

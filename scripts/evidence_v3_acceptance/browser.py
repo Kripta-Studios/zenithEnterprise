@@ -70,6 +70,15 @@ def main():
             checks.append("unauthenticated search refused")
             login(page, "alpha-member")
             checks.append("normal member login via actual UI and auth server")
+            alpha_token = page.evaluate("sessionStorage.getItem('zenith.token')")
+            alpha_labels = context.request.get(
+                fixture["base_url"] + "/labels",
+                headers={"Authorization": f"Bearer {alpha_token}"},
+            )
+            assert alpha_labels.status == 200
+            assert fixture["labels"]["alpha"]["private"] not in alpha_labels.text()
+            assert "alpha private" not in alpha_labels.text().lower()
+            checks.append("normal member cannot enumerate private label metadata")
             assert page.locator("#search-mode option").evaluate_all(
                 "xs => xs.map(x => x.value)"
             ) == ["legacy", "hybrid"]
@@ -190,6 +199,17 @@ def main():
             page.get_by_role("button", name="Sign out", exact=True).click()
             expect(page.locator("#email")).to_be_visible()
             login(page, "beta-member")
+            beta_token = page.evaluate("sessionStorage.getItem('zenith.token')")
+            beta_labels = context.request.get(
+                fixture["base_url"] + "/labels",
+                headers={"Authorization": f"Bearer {beta_token}"},
+            )
+            assert beta_labels.status == 200
+            assert all(
+                label_id not in beta_labels.text()
+                for label_id in fixture["labels"]["alpha"].values()
+            )
+            assert "alpha " not in beta_labels.text().lower()
             expect(page.get_by_test_id("citation-highlight")).to_have_count(0)
             assert "cobalt" not in page.locator("body").inner_text().lower()
             assert "saffron" not in page.locator("body").inner_text().lower()

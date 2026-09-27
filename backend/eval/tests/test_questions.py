@@ -18,9 +18,10 @@ from eval.questions import HEADLINE_TYPES, load_questions
 # than a handful of pages is a theme, not a passage.
 MAX_ANCHOR_PAGES = 5
 
+anchor_documents = {source.document for question in load_questions() for source in question.sources}
 needs_corpus = pytest.mark.skipif(
-    not (DOCUMENTS / "gdpr.pdf").exists(),
-    reason="corpus not downloaded; run `python -m eval fetch`",
+    any(not (DOCUMENTS / f"{document}.pdf").exists() for document in anchor_documents),
+    reason="answer-anchor corpus incomplete; run `python -m eval fetch`",
 )
 
 
