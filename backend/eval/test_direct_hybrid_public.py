@@ -142,5 +142,6 @@ async def test_public_direct_vs_hybrid_same_tei_and_scope(
         "rows": rows,
         "missing_vector_probe": missing_vector_probe,
     }
-    output = Path(os.environ.get("ZENITH_PUBLIC_DIRECT_REPORT", str(tmp_path / "direct-hybrid.json")))
+    default_report = tmp_path / "direct-hybrid.json"
+    output = Path(os.environ.get("ZENITH_PUBLIC_DIRECT_REPORT", str(default_report)))
     output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
