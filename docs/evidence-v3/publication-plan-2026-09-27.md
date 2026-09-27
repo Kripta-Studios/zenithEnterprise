@@ -1,5 +1,9 @@
 # Local publication preparation for evidence v3
 
+Historical plan from 2026-09-27. The current local review graph, exact refs,
+and gate states are in [the v10 maintainer series](../evidence-v3-hardening/maintainer-series.md)
+and [publication manifest](../evidence-v3-hardening/publication-manifest.json).
+
 No branch has been pushed, no remote PR opened, and no merge or deployment
 performed in this validation session. Read-only `gh auth status` identifies
 `Kripta-Studios`; `origin` is its fork and `upstream` is

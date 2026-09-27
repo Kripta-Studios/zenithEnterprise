@@ -41,8 +41,8 @@ $env:ZENITH_JWT_SECRET = (& python -c 'import secrets; print(secrets.token_urlsa
 make check
 ```
 
-PR 08 replaced the baseline's Windows-only `os.uname` typing error with
-`platform.machine()`. On Windows, `make check` uses the tracked
+The v10 foundation replaced the baseline's Windows-only `os.uname` typing
+error with `platform.machine()`. On Windows, `make check` uses the tracked
 `scripts/check-licences.ps1` and `scripts/run-frontend.ps1`; Linux keeps the
 shell/npm targets. To run the licence gate directly from `backend/` in
 PowerShell, use the equivalent command:

@@ -117,6 +117,13 @@
       "validation": "pending"
     }
   ],
+  "series_integrity": {
+    "proposed_slices": 13,
+    "all_base_head_ancestry_verified": true,
+    "all_tree_hashes_verified": true,
+    "final_tree_identical_to_v9": true,
+    "pr06_import_order_correction_in_pr06": true
+  },
   "optional_research": {
     "r1_branch": "fix/evidence-v3-series-r1",
     "r1_head": "0d0844ba236a08d4983bfc93cb98b76ab0497406",
