@@ -83,6 +83,9 @@ stacked security against PR 08; release validation against stacked security.
 Review the incremental diffs and CI merge refs. The backport is not an
 ancestor of the historical PR 05 branch, so the PR 05 merge result with that
 base needs an explicit guard test. Retarget dependent PRs as bases merge.
+Follow the repository's `CONTRIBUTING.md` policy: keep `main` green, require
+the checks on each proposed merge result, and use **Rebase and merge** without
+squashing the commits. Local final-head success does not replace those gates.
 
 For upstream contribution, submit sequentially against **upstream `main`**
 as it exists after each prior merge: PR 01–04, the proxy guard backport,

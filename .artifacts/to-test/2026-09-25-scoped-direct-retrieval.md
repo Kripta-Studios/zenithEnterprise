@@ -1,5 +1,12 @@
 # Bounded scoped direct retrieval and coverage receipts (PR 04)
 
+This note records the PR 04 plan and its dated slice checks. The later
+integrated `make check` passed at `1862072`, including the no-truncation and
+coverage regressions; the Windows typing blocker below was repaired in PR 08.
+Direct remains opt-in and its public pilot does not qualify a default quality
+gain. Current status is in
+`backend/eval/reports/evidence-v3-final-qualification-2026-09-27.md`.
+
 Base: PR 03 `bab1578782aa26dad858ef7d258407f749e85d08`. Existing `legacy` search stays the default. Add explicit `auto`, `direct`, and `hybrid` modes. For direct/auto, resolve access and a `cap + 1` ready-chunk manifest under application-role RLS before query embedding, with source/version identities and no embedding-row dependency. Reject or fall back honestly on unit, window, byte, and deadline limits; do not truncate a huge source. Split all eligible parsed text into source-mapped overlapping windows, assess every window for complete coverage, and reauthorize the full manifest before disclosure. A complete receipt refers only to the declared eligible parsed representation, not original-document extraction quality or answer correctness.
 
 Use local TEI or the optional authorized Jev reranking formulation. Keep one provider scale per comparable window set; on partial Jev work, use a full permitted local ordering or mark the direct execution partial. Hybrid receipts report candidate completion without pretending archive exhaustiveness. Fix the scoped BM25 cutoff by applying document scope before ranking through the existing RLS-protected tsvector query for scoped searches, without changing the security-definer function.

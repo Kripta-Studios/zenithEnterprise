@@ -144,6 +144,28 @@ exact-head gates and screenshots. It found no remaining material code or
 reporting defect. This is not maintainer approval; maintainer review remains
 outstanding.
 
+## Documentation and project-convention audit
+
+A documentation-only follow-up checked the v3 records against
+`CONTRIBUTING.md` and `CLAUDE.md`: repository prose and commits remain in
+English, the feature plans retain their `.artifacts/` workflow, integration
+tests use real PostgreSQL/application-role RLS, and the v3 stack adds no
+migration or active-index cutover. `docs/evidence-v3/README.md` now maps each
+implemented or experimental capability to its operator instructions and
+measurement report. Dated PR notes explicitly label older Windows and browser
+blockers as historical. The qualification report leads with the exact current
+gate and browser results; the provider guide states the single-worker
+credential-rotation restriction. The runbook distinguishes an ignored local
+research secret from a versioned file or production secret mechanism.
+
+At unchanged executable/test/configuration SHA `1862072`, Ruff lint and
+format, strict Pyright, frontend TypeScript lint, and `git diff --check` all
+passed again. Local Markdown links were checked, and the saved browser
+evidence hashes, exit files, full-gate counts, and 176/416 case-row counts
+matched the tracked summaries. This follow-up changes documentation only;
+the complete `make check` and authenticated browser suite remain the recorded
+runs at `1862072`, not fresh runs on a different executable tree.
+
 ## Model qualification and publication boundary
 
 The new 176-paper Jev Noul cohort had 147 evidence-addressable cases: TEI

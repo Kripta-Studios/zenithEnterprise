@@ -1,5 +1,26 @@
 # Evidence v3 final qualification
 
+## Current local status
+
+The protocol below is the historical PR 08 plan for the first 240 QASPER
+papers. The preserved integrated head `0a24cc3` passed its final local gate.
+The additive release-validation branch subsequently passed a full local
+`make check` at code/test/configuration SHA `1862072` (1,013 backend passed,
+nine skipped; 450 frontend passed). A fresh real-auth Chrome fixture passed
+11 default and 10 experimental browser checks, including original text/PDF
+highlights, plus 12 isolation searches. The separately frozen remaining
+176-paper Jev Noul study used 1,396 new authorized calls and found 93/147
+complete-evidence cases versus 75/147 for TEI; the combined 416-paper view
+reuses the original 240 predictions. Methods, denominators and limitations
+are in `backend/eval/reports/evidence-v3-qasper-extension-2026-09-27.md` and
+`docs/evidence-v3/release-validation-2026-09-27.md`. The earlier instruction
+below to record the browser gate as unavailable is historical: local
+authenticated browser acceptance is now complete. Remote CI, maintainer
+review, staging/production, provider throughput and broad answer quality
+remain untested, so this note remains in `to-test` rather than `shipped`.
+
+## Historical PR 08 plan
+
 PR 08 validates the stacked PR 01–07 implementation without changing the
 legacy default. The public QASPER test split is a locked ranking comparison:
 select 240 source-bearing papers by SHA-256 paper ID and one question per paper
