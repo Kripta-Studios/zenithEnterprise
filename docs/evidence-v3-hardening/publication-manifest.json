@@ -4,7 +4,7 @@
   "remote_action": "none",
   "upstream_baseline_read_only": "33b48812c95150348c52d2519159780252c92db2",
   "origin_main_read_only": "33b48812c95150348c52d2519159780252c92db2",
-  "remote_heads_checked_utc": "2026-09-28T09:09:17Z",
+  "remote_heads_checked_utc": "2026-09-28T13:34:36Z",
   "upstream_head_count": 1,
   "origin_head_count": 1,
   "remote_release_heads_found": false,
@@ -47,7 +47,7 @@
       "head": "f408e26e903a4c8aaf92c6c9b26c82bd6d5453ee",
       "tree": "1855b457c083458f1c34aa64fb9af03a15100c66",
       "branch": "fix/evidence-v3-series-pr03-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "pr04-direct",
@@ -55,7 +55,7 @@
       "head": "e1feb7b758fffca07d71975d75f7cc9822e04de3",
       "tree": "eee3f7d6cac723540ced392604eac1fa03e213f7",
       "branch": "fix/evidence-v3-series-pr04-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "proxy-prerequisite",
@@ -63,7 +63,7 @@
       "head": "520d8e7c77b9408621c0d0db2c0d162ed17e1263",
       "tree": "4e0dd7202f4684d597e5ee9d64a527422f15569e",
       "branch": "fix/evidence-v3-series-prerequisite-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "pr05-coverage-ui",
@@ -71,7 +71,7 @@
       "head": "146bbf48f9e0bc9eaa4759fd23a56e30dfbf348f",
       "tree": "a6649a9e14c22d83f13f6f4c38b19baa2fa7a5eb",
       "branch": "fix/evidence-v3-series-pr05-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "neutral-evaluation-prerequisite",
@@ -79,7 +79,7 @@
       "head": "45d2b75e68c423fec8b5886add59b4c69c533b95",
       "tree": "419ca603b0e88a69a408cd0e1f67ba4fca537f3e",
       "branch": "fix/evidence-v3-series-neutral-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "pr06-packets",
@@ -111,7 +111,7 @@
       "head": "1ba0239337bf762330ae48656cb1745af4085684",
       "tree": "dd85a940276d8cd00cf90a88861acb43f352217f",
       "branch": "fix/evidence-v3-series-release-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "hardening-core",
@@ -119,7 +119,7 @@
       "head": "910bc125bb6f731ca681f20ac8ae19d97a5e0874",
       "tree": "93a088dbf604811b938e5e73b18566937d200626",
       "branch": "fix/evidence-v3-series-hardening-v10",
-      "validation": "pending"
+      "validation": "passed"
     }
   ],
   "series_integrity": {
@@ -156,8 +156,8 @@
   },
   "validation": {
     "real_inference": "one approved narrow pass: application-role/RLS, real Jev Noul, local Ollama, cited answer, Jev support; synthetic embedder and no browser",
-    "v10_intermediate_gates": "6/13 passed, 0 failed, 7 pending at exact local heads; see per-pr-gate-evidence.json",
-    "v10_final_windows_make_check": "pending",
+    "v10_intermediate_gates": "13/13 passed, 0 failed, 0 pending at exact local heads; see per-pr-gate-evidence.json",
+    "v10_final_windows_make_check": "passed exact final head: 1004 backend, 15 conditional skips, 450 frontend",
     "v10_linux_static": "passed exact final tree: Ruff, format, Pyright",
     "v10_linux_backend": "passed exact final tree: make check, 1004 backend passed, 15 conditional skips, application-role PostgreSQL",
     "v10_linux_frontend": "passed exact final tree: 450 Vitest passed in 43 files, lint, build and production audit 0 advisories",
@@ -167,6 +167,11 @@
   },
   "exact_v10_local_evidence": {
     "linux_make_check_log_sha256": "7bd2539a8dd18849843190cd6f66e5bee18692b43dc7a43e1ced911b7fd788f9",
+    "windows_final_passing_make_check_log_sha256": "17160a19cfdf410d8ec32938def94c2cbad37355968aa1e5b30dfd227b4b02cd",
+    "windows_final_first_worker_timeout_log_sha256": "016ac484ccc5af962908ba8b0a094d2b6a246736a024d2bfc92fed45b0e878e3",
+    "windows_final_isolated_vitest_pass_log_sha256": "9d3b1c2876164d9847bb98229ccdd31a480597f1c3263e072026b2bf2b48a5bd",
+    "windows_pr05_first_analytics_timeout_log_sha256": "3a11e93325e369a40e7b763c93958a1ec36b15e60b60ec703b8c256052f959e8",
+    "windows_pr05_passing_make_check_log_sha256": "174423cc383fea14824dd5d3487a1950ec69b5b9cc154555b542b9e6b0139002",
     "browser_default_log_sha256": "3ae3d7794fcbbda6ea992f079fb6a8c2066f79ff4abe737090887cdcd14aab79",
     "browser_experimental_log_sha256": "322059cd06ef72850c08f5ac6ba84758dc830b0161c7c39c46dfc99ab9cdbffd",
     "browser_load_log_sha256": "4e8aab7da660610337d4f6f673c24606e0f2407e5787c0c2bc8c6677f1cc292d",
@@ -227,11 +232,12 @@
     "Zenith_v3_Remediation_and_Publication.zip"
   ],
   "remaining_gates": [
-    "Complete exact v10 per-slice Windows gates and final Windows/Linux/browser checks",
     "Clarify Score HTTP contract with provider or retain typed failure",
     "Independently label generated answers for strict whole-claim support calibration",
+    "Run an approved combined authenticated browser lane with real generation, Jev, support, and real embeddings before claiming full live E2E qualification",
     "Obtain non-ceiling representative R1/packet evidence before activation",
     "Sustained provider-capacity and shared admission/accounting design before any multiworker claim",
-    "Refresh remote and validate actual merge refs; audit history and obtain maintainer authorization before any remote publication"
+    "Reconcile actual Jev billing and missing usage fields before additional paid calls",
+    "Before remote publication, refresh remote again, validate actual merge refs, audit history, and obtain maintainer authorization"
   ]
 }
