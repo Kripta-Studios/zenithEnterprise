@@ -146,7 +146,8 @@
     "eligible_for_remote_main": false
   },
   "report_branch": "fix/evidence-v3-series-report-v10",
-  "report_head": "resolve branch ref after final docs commit",
+  "report_head": null,
+  "report_head_resolution": "git rev-parse refs/heads/fix/evidence-v3-series-report-v10; a commit cannot contain its own SHA",
   "defaults": {
     "judge": "tei",
     "jev_enabled": false,
