@@ -1,7 +1,8 @@
 {
   "schema": "zenith-evidence-v3-local-publication-candidate-v2",
   "date": "2026-09-28",
-  "remote_action": "none",
+  "remote_action": "none at this pre-push qualification snapshot",
+  "remote_publication_authorization": "User authorized push to Kripta-Studios fork, PR to fork main, CI validation, and merge with gh",
   "upstream_baseline_read_only": "33b48812c95150348c52d2519159780252c92db2",
   "origin_main_read_only": "33b48812c95150348c52d2519159780252c92db2",
   "remote_heads_checked_utc": "2026-09-28T13:34:36Z",
@@ -208,8 +209,10 @@
     }
   },
   "safe_publication_paths": [
+    ".env.example",
     ".gitattributes",
     "Makefile",
+    "README.md",
     "backend/app/",
     "backend/eval/",
     "backend/tests/",
@@ -219,13 +222,13 @@
     "docs/evidence-v3-hardening/",
     ".artifacts/"
   ],
-  "safe_publication_paths_status": "Tracked public/synthetic candidate files only; provenance and manual history review remain required before remote publication",
+  "safe_publication_paths_status": "Tracked public/synthetic files only; changed path inventory, example configuration, report and fixture provenance reviewed before fork push",
   "history_screen": {
-    "scope": "all 40 local commits from upstream baseline to v10 code head",
-    "unique_text_blobs": 226,
+    "scope": "46 prepublication commits from upstream baseline through report head 118c1e8b2068c925da32b1bcb1765dacf9ad4344; this later manifest-only update is reviewed in the diff",
+    "unique_text_blobs": 275,
     "binary_or_large_blobs_skipped": 0,
     "credential_or_sensitive_path_pattern_flags": 0,
-    "limitation": "Automated path and credential-pattern screening is not a complete human provenance audit"
+    "limitation": "Pattern screening plus targeted human provenance review does not prove that every narrative statement is correct"
   },
   "excluded_local_paths": [
     ".scratch/",
@@ -239,6 +242,6 @@
     "Obtain non-ceiling representative R1/packet evidence before activation",
     "Sustained provider-capacity and shared admission/accounting design before any multiworker claim",
     "Reconcile actual Jev billing and missing usage fields before additional paid calls",
-    "Before remote publication, refresh remote again, validate actual merge refs, audit history, and obtain maintainer authorization"
+    "Before merging, verify CI and the actual PR merge ref, and recheck fork main for drift"
   ]
 }

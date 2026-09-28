@@ -1,7 +1,7 @@
 {
   "schema": "zenith-evidence-v3-local-slice-map-v1",
   "date": "2026-09-28",
-  "scope": "Read-only exact git diff paths for the 13 local review slices; no remote PR exists.",
+  "scope": "Read-only exact git diff paths for the 13 local review slices; no remote PR existed when generated.",
   "slices": [
     {
       "slice": "foundation-prerequisite",
