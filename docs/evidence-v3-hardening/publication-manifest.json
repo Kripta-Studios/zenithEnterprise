@@ -3,6 +3,11 @@
   "date": "2026-09-28",
   "remote_action": "none",
   "upstream_baseline_read_only": "33b48812c95150348c52d2519159780252c92db2",
+  "origin_main_read_only": "33b48812c95150348c52d2519159780252c92db2",
+  "remote_heads_checked_utc": "2026-09-28T09:09:17Z",
+  "upstream_head_count": 1,
+  "origin_head_count": 1,
+  "remote_release_heads_found": false,
   "historical_integration": "0a24cc34b05a1b055452069849ebea61a4d9aba6",
   "historical_release_code": "1862072e55f3d79877334964b0e1b3a8f473a39f",
   "historical_release_report": "5cd3f9ca917a5e14a2db8d448e712c9d45d69606",
@@ -18,7 +23,7 @@
       "head": "5592601d1f1cb44333685c898e065d17dd9d99a5",
       "tree": "822420f2d4c58178f2fbcfbf221dea97555681de",
       "branch": "fix/evidence-v3-series-foundation-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "pr01-judge",
@@ -26,7 +31,7 @@
       "head": "98f7935c3beedb0d9aea0e128ee6bc5adc86a2bf",
       "tree": "714fe8491afdf4101f617b31ca56da99f21e4f56",
       "branch": "fix/evidence-v3-series-pr01-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "pr02-jev",
@@ -34,7 +39,7 @@
       "head": "9fa658f681ebde099cb0f641b432c1d5e620431d",
       "tree": "a8bf28135d08f64c04acbedc7f0a769ca5c38559",
       "branch": "fix/evidence-v3-series-pr02-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "pr03-hybrid",
@@ -82,7 +87,7 @@
       "head": "76f2ba442aecdd92b4b21474c6ae0aab092c406e",
       "tree": "ece779fc904abecaae1f1af839921e606656bb05",
       "branch": "fix/evidence-v3-series-pr06-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "pr07-strict-support",
@@ -90,7 +95,7 @@
       "head": "c17d1090d17940965b3bdbc763c55f29d9e03f35",
       "tree": "0925a01ff41fe735aaf980abeda89918f6cb2d0f",
       "branch": "fix/evidence-v3-series-pr07-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "pr08-qualification-ui",
@@ -98,7 +103,7 @@
       "head": "9a2f69ffa56d9190c362cb9d0a14cd6e4ce85cf7",
       "tree": "b06532618c8bc7f1ac6a91fac714b4c61f251d4d",
       "branch": "fix/evidence-v3-series-pr08-v10",
-      "validation": "pending"
+      "validation": "passed"
     },
     {
       "slice": "release-validation-report",
@@ -124,6 +129,8 @@
     "final_tree_identical_to_v9": true,
     "pr06_import_order_correction_in_pr06": true
   },
+  "slice_change_map": "slice-change-map.json",
+  "per_pr_gate_evidence": "per-pr-gate-evidence.json",
   "optional_research": {
     "r1_branch": "fix/evidence-v3-series-r1",
     "r1_head": "0d0844ba236a08d4983bfc93cb98b76ab0497406",
@@ -149,13 +156,22 @@
   },
   "validation": {
     "real_inference": "one approved narrow pass: application-role/RLS, real Jev Noul, local Ollama, cited answer, Jev support; synthetic embedder and no browser",
-    "v10_intermediate_gates": "running; see per-pr-validation.md for completed exact heads",
+    "v10_intermediate_gates": "6/13 passed, 0 failed, 7 pending at exact local heads; see per-pr-gate-evidence.json",
     "v10_final_windows_make_check": "pending",
     "v10_linux_static": "passed exact final tree: Ruff, format, Pyright",
-    "v10_linux_backend": "pending",
-    "v10_linux_frontend": "pending; earlier code tree passed",
-    "v10_authenticated_browser": "pending exact head; earlier runtime-identical core passed 11 default, 10 experimental and 12 local concurrent searches",
-    "foundation_clean_install_and_production_audit": "passed; 0 advisories; full gate pending"
+    "v10_linux_backend": "passed exact final tree: make check, 1004 backend passed, 15 conditional skips, application-role PostgreSQL",
+    "v10_linux_frontend": "passed exact final tree: 450 Vitest passed in 43 files, lint, build and production audit 0 advisories",
+    "v10_full_npm_audit": "passed exact final lockfile: 0 advisories including development dependencies",
+    "v10_authenticated_browser": "passed exact final head: 11 default, 10 experimental with scripted generator, 12 local concurrent searches all 200 with no degradation; real auth/RLS/TEI",
+    "foundation_clean_install_and_production_audit": "passed; 0 advisories; full exact-tip Windows gate passed"
+  },
+  "exact_v10_local_evidence": {
+    "linux_make_check_log_sha256": "7bd2539a8dd18849843190cd6f66e5bee18692b43dc7a43e1ced911b7fd788f9",
+    "browser_default_log_sha256": "3ae3d7794fcbbda6ea992f079fb6a8c2066f79ff4abe737090887cdcd14aab79",
+    "browser_experimental_log_sha256": "322059cd06ef72850c08f5ac6ba84758dc830b0161c7c39c46dfc99ab9cdbffd",
+    "browser_load_log_sha256": "4e8aab7da660610337d4f6f673c24606e0f2407e5787c0c2bc8c6677f1cc292d",
+    "full_npm_audit_log_sha256": "b3684c80cda6148ce13f29a0f90eddfa354f216343e563c659e640995b6df704",
+    "storage": "ignored .scratch/evidence-v3-hardening; browser fixture, screenshots and credentials remain private"
   },
   "live_pilots": {
     "first": {
