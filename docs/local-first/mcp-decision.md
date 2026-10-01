@@ -1,22 +1,32 @@
 # First MCP client, transport and identity decision
 
-Status: local-first direction accepted by the user on 2026-10-01; network implementation
-is a later stage. No MCP endpoint or authorization service has been installed.
+Status: local-first direction accepted on 2026-10-01. After “continue, do it all,” an
+optional same-machine stdio server/reference host was implemented and tested on independent
+branch `feat/local-mcp-stdio` at `5f590bb3f1ca24e4e20dafb2ee995636ab25f7eb`.
+Network implementation remains a later stage; no HTTP endpoint or IdP was installed.
+The final focused Linux checks passed 29 with one opt-in model skip in 203.96 seconds;
+actual stdio and owner-role rejection are included. Complete-suite scope and retained
+failures are explicit in the continuation report.
 
-Zenith will be an MCP server exposing its existing retrieval, sources and document status.
+Zenith's optional MCP server exposes its existing retrieval, sources and document status.
 It will not become a general agent host or client of arbitrary servers. The first consumer
-must run locally with a local model, as selected by the user. Propose a scripted official SDK
-reference client first, using the already cached Ollama qwen3:4b Q4_K_M model. Its manifest
-SHA-256 is 359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7;
-all declared local blobs exist (2,497,293,931 bytes). This is a small local candidate for
-the first protocol proof, not a claim of best answer quality. Ollama's localhost service
-was not running during inspection. No generation model was started and simultaneous GPU
-residency remains unqualified. The interactive host, binary transfer and tool invocation
-compatibility still need a concrete integration test. No new model or cloud call is needed.
+must run locally with a local model, as selected by the user. The implemented consumer is
+a fixed official SDK reference client, using already cached Ollama llama3.2:3b Q4_K_M.
+Manifest/tag SHA-256 is a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72;
+all six declared blobs were hash/size verified (2,019,393,189 bytes). One public ready-source
+proof answered “Treinta días. [1]” and finished normally in 3.203 s (test 18.57 s including
+setup). The previously proposed cached Qwen forced a thinking template and exceeded the
+output budget; the completion gate correctly withholds that result. These observations
+select a working local reference, not the best Spanish model. No weights were downloaded.
+The owned Ollama proof server was stopped. Simultaneous model residency and a full
+interactive desktop host/network binary-transfer path remain unqualified.
+The final guarded commit repeated that answer with valid citations: one test passed in
+141.75 s including infrastructure; generation/reauthorization took 18.469 s under concurrent
+checks. Both raw results are retained, with no latency-distribution claim.
 
-For the same-machine proof, prefer stdio with explicit per-user application credentials
-and current AccessProfile resolution, without a network auth service. This is a proposed
-transport choice, not tested interoperability. The local host must not send tool results,
+The tested same-machine transport is stdio with explicit per-user application credentials
+and current AccessProfile resolution, without a network auth service. Actual SDK calls,
+cancellation and a subprocess handshake were tested. The local host must not send tool results,
 telemetry or traces containing sources to a cloud model. A local server alone cannot enforce
 the consumer's downstream processing destination.
 
@@ -30,15 +40,16 @@ principal mapping, deployment ownership and token/revocation policy before imple
 Zenith's current HS256 web tokens contain sub, tid, ver, typ, iat and exp. They do not declare
 MCP resource audience or OAuth scopes, and web login/refresh is not a complete MCP OAuth
 authorization server. Refresh checks token_version; existing access sessions can survive until
-expiry. Keep these facts explicit rather than claiming instantaneous token revocation.
+expiry. The new stdio adapter additionally checks the current user's token version on each
+operation. Its stronger local revocation check does not change the existing REST window.
 
 For HTTP MCP, use protected Streamable HTTP with TLS at the deployment boundary, Origin
 checks, protected resource metadata and audience-validated expiring tokens. Pin an SDK version
-that actually supports the selected client protocol. Propose official Python SDK mcp==2.2.0
-for the reference client/server, with protocol revision 2026-07-28. Its published release notes
-describe that revision's connections, but this checkout has no interoperability result yet.
-No SDK has been added to the application lockfile. Test the pinned client's initialize handshake,
-negotiated revision, cancellation, audience rejection and expired-session recovery before release.
+that actually supports the selected client protocol. Official Python SDK mcp==2.2.0 is
+pinned in an optional extra and the dev group; the actual initialize handshake negotiated
+2026-07-28. Current local tests cover expiry/type/version rejection, isolation and cancellation.
+Web JWTs have no MCP resource audience, so audience rejection/network OAuth recovery still
+require tests for the eventual HTTP design; stdio does not claim those unimplemented gates.
 
 Direct MCP service calls must explicitly check operation permissions and refresh AccessProfile.
 REST dependency checks do not run automatically outside the router. Use zenith_app for customer
@@ -47,10 +58,18 @@ source access after search and after label revocation. Return bounded source IDs
 avoid raw filesystem paths, arbitrary URLs, SQL, commands or corpus-export tools.
 
 Binary uploads remain authenticated multipart POST /documents. The trusted host streams a
-user-selected file with explicit labels, then polls permitted document status. MCP is the
-control plane, not a base64 PDF channel. No interactive client's binary-transfer capability has
-been verified yet; use the existing web uploader until it is. New uploads return 201, duplicates
-200; both precede readiness and duplicates can change labels.
+user-selected file with explicit labels; its helper polls permitted document status. MCP is the
+control plane, not a base64 PDF channel. The reference uploader was tested against real
+authorized REST handlers and disposable DB: new uploads return 201, duplicates 200, and
+revoked upload permission returns 403. These ASGI tests exclude network transfer. Both
+acknowledgments precede readiness and duplicates can change labels. Interactive desktop
+binary-upload compatibility remains untested; the existing web uploader remains available.
+
+The tested model host uses loopback only, disables cloud, does not follow redirects or use
+environment proxies, never pulls weights, and bounds sources/context/output. It binds current
+source IDs/coordinates and rechecks cited text/access after generation. This validates reference
+identity, not semantic entailment. No general agent, filesystem/URL tool or corpus export exists.
+Exact final checks and failed attempts are in [continuation.md](continuation.md) and its JSON.
 
 Sources checked on 2026-10-01:
 - https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization

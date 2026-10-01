@@ -1,5 +1,9 @@
 # Local-first implementation and measured results, 2026-10-01
 
+The subsequent local MCP implementation, cache-inventory correction, executed ingestion
+phases and resource-aborted workload are recorded in [continuation.md](continuation.md).
+The results below describe the original extraction/baseline snapshot and remain retained.
+
 The two accepted changes are implemented and committed locally, independently from
 freshly fetched Martinhdeez main. Focused checks pass. Full suites were executed and
 are **not green**: their remaining failures are in unchanged tests. Nothing was pushed,
