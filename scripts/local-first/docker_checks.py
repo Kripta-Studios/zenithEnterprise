@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import shlex
 import subprocess
 import time
 from pathlib import Path
@@ -18,6 +19,9 @@ def main() -> None:
     parser.add_argument("--only", choices=["lint", "types", "tests", "licenses"])
     parser.add_argument("--baseline-fixture", type=Path)
     parser.add_argument("--timeout-seconds", type=float)
+    parser.add_argument("--env-volume", default="zenith-lf-check-env-lean")
+    parser.add_argument("--test-path", action="append")
+    parser.add_argument("--diagnose", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.source).decode().strip()
@@ -59,6 +63,7 @@ def main() -> None:
         "runner_image": image,
         "archive_sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
         "excluded_offline_wheels": ["torch", "nvidia", "triton"],
+        "dependency_volume": args.env_volume,
         "commands": [],
     }
     commands = [
@@ -76,6 +81,15 @@ def main() -> None:
         ]
     if args.only:
         commands = [(label, command) for label, command in commands if label == args.only]
+    if args.test_path:
+        commands = [
+            ("tests", "uv run python -m pytest -q --tb=short " + shlex.join(args.test_path))
+        ]
+    if args.diagnose:
+        commands = [
+            (label, command + " -vv -o faulthandler_timeout=60" if label == "tests" else command)
+            for label, command in commands
+        ]
     if args.baseline_fixture:
         commands = [
             (
@@ -102,7 +116,7 @@ def main() -> None:
             "-v",
             f"{archive}:/source.tar:ro",
             "-v",
-            "zenith-lf-check-env-lean:/opt/zenith-env:ro",
+            f"{args.env_volume}:/opt/zenith-env:ro",
             "-v",
             "/var/run/docker.sock:/var/run/docker.sock",
             "-e",
