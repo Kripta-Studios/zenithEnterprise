@@ -13,6 +13,7 @@ import sys
 import time
 from collections import Counter
 from pathlib import Path
+
 import httpx
 
 MODEL = "jev-1.13.0"
@@ -109,7 +110,9 @@ def prepare(source, destination, qrels):
             "parquet_sha256": digest(source),
             "qrels_sha256": digest(qrels),
             "protocol": {
-                "candidates": "up to eight; BM25 k1=1.2,b=0.75 over human-judged pool; no gold injection",
+                "candidates": (
+                    "up to eight; BM25 k1=1.2,b=0.75 over human-judged pool; no gold injection"
+                ),
                 "query_characters": 512,
                 "passage_characters": 1000,
                 "jev_model": MODEL,
@@ -117,8 +120,12 @@ def prepare(source, destination, qrels):
                 "minimum_ndcg_improvement": 0.02,
                 "cost_ceiling_usd": MAX_DOLLARS,
                 "call_ceiling": MAX_CALLS,
-                "scope": "conditional judged-pool reranking; not whole-corpus retrieval or legal QA",
-                "no_tuning": "all development queries held out; no prompt selection on their outcomes",
+                "scope": (
+                    "conditional judged-pool reranking; not whole-corpus retrieval or legal QA"
+                ),
+                "no_tuning": (
+                    "all development queries held out; no prompt selection on their outcomes"
+                ),
                 "local_truncate": True,
             },
             "panels": panels,

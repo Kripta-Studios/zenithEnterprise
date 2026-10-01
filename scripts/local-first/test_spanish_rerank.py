@@ -3,7 +3,8 @@
 import tempfile
 import unittest
 from pathlib import Path
-from spanish_rerank import Ledger, MAX_CALLS, MAX_DOLLARS, RESERVATION, metrics
+
+from spanish_rerank import MAX_CALLS, MAX_DOLLARS, RESERVATION, Ledger, metrics
 
 
 class EvaluationTests(unittest.TestCase):
