@@ -7,7 +7,7 @@ a tool argument, URL, output field or global admin key. No HTTP transport is mou
 import asyncio
 import os
 import sys
-from collections.abc import AsyncIterator, Awaitable, Callable
+from collections.abc import AsyncGenerator, Awaitable, Callable
 from contextlib import asynccontextmanager
 from typing import Annotated
 from uuid import UUID
@@ -25,7 +25,7 @@ from app.features.mcp.service import MAX_HITS, MAX_SOURCE, LocalReads
 
 
 @asynccontextmanager
-async def local_lifespan(_: MCPServer[None]) -> AsyncIterator[None]:
+async def local_lifespan(_: MCPServer[None]) -> AsyncGenerator[None]:
     # Reject a misconfigured owner/platform URL before any customer-content query,
     # including on an empty database where the existing row-count guard alone passes.
     async with unscoped_session() as session:
