@@ -82,7 +82,10 @@ async def test_public_upload_baseline(
     from app.features.ingestion.parsers.pdfplumber_parser import PdfPlumberParser
     from app.features.ingestion.parsers.text_parser import TextParser
     from app.features.ingestion.pipeline import IngestionPipeline
-    from eval.local_first_instrumentation import async_stage, document, sync_stage
+    from eval.local_first_instrumentation import async_stage, checkpoint, document, sync_stage
+
+    def save() -> None:
+        checkpoint(record, output)
 
     stages: list[dict[str, object]] = []
     record["stage_durations"] = stages
@@ -97,17 +100,21 @@ async def test_public_upload_baseline(
 
     monkeypatch.setattr(IngestionPipeline, "_ingest", ingest)
     for name in ("page_count", "chunk_page", "chunk_stream"):
-        monkeypatch.setattr(pipeline, name, sync_stage(name, getattr(pipeline, name), stages))
+        monkeypatch.setattr(pipeline, name, sync_stage(name, getattr(pipeline, name), stages, save))
     monkeypatch.setattr(
-        PdfPlumberParser, "parse", sync_stage("parse", PdfPlumberParser.parse, stages)
+        PdfPlumberParser, "parse", sync_stage("parse", PdfPlumberParser.parse, stages, save)
     )
-    monkeypatch.setattr(TextParser, "parse", sync_stage("parse", TextParser.parse, stages))
+    monkeypatch.setattr(TextParser, "parse", sync_stage("parse", TextParser.parse, stages, save))
     for name in ("_persist", "_file"):
         monkeypatch.setattr(
-            IngestionPipeline, name, async_stage(name, getattr(IngestionPipeline, name), stages)
+            IngestionPipeline,
+            name,
+            async_stage(name, getattr(IngestionPipeline, name), stages, save),
         )
     for name in ("embed", "send_batch"):
-        monkeypatch.setattr(TeiClient, name, async_stage(name, getattr(TeiClient, name), stages))
+        monkeypatch.setattr(
+            TeiClient, name, async_stage(name, getattr(TeiClient, name), stages, save)
+        )
 
     # External benchmark instrumentation; product code is unchanged.
     original_status = IngestionPipeline._set_status  # pyright: ignore[reportPrivateUsage]
@@ -121,6 +128,7 @@ async def test_public_upload_baseline(
                 "seconds": round(time.monotonic() - beginning, 6),
             }
         )
+        save()
 
     monkeypatch.setattr(IngestionPipeline, "_set_status", status)
     monkeypatch.setattr(
@@ -195,6 +203,7 @@ async def test_public_upload_baseline(
                     item["duplicate_ack_seconds"] = round(time.monotonic() - started, 6)
                     item["duplicate_http_status"] = duplicate.status_code
                     record["uploads"].append(item)
+                    save()
                 # Owner credentials inspect queue infrastructure only.
                 # Customer content uses authenticated REST and the application role with RLS.
                 async with owner_session() as session:
@@ -243,6 +252,7 @@ async def test_public_upload_baseline(
                                 "source_ids": [hit["chunk_id"] for hit in body.get("hits", [])],
                             }
                         )
+                        save()
 
                     heartbeat_task = asyncio.create_task(heartbeat())
                     worker = asyncio.create_task(
@@ -312,6 +322,12 @@ async def test_public_upload_baseline(
                     finally:
                         heartbeat_task.cancel()
                         await asyncio.gather(heartbeat_task, return_exceptions=True)
+                        record["event_loop_lag_seconds"] = {
+                            "samples": len(lag),
+                            "maximum": max(lag, default=0),
+                            "method": "10ms heartbeat in combined ASGI/worker benchmark",
+                        }
+                        save()
                 else:
                     record["blocked"] = (
                         "model readiness: worker and query timings were not executed"

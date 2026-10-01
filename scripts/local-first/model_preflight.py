@@ -10,7 +10,9 @@ from pathlib import Path
 
 
 def command(*args: str) -> str:
-    return subprocess.check_output(args, text=True, encoding="utf-8", errors="replace").strip()
+    return subprocess.check_output(
+        args, text=True, encoding="utf-8", errors="replace", timeout=10
+    ).strip()
 
 
 def main() -> None:
@@ -51,6 +53,10 @@ def main() -> None:
             "--format=csv,noheader,nounits",
         )
         record["samples"].append(sample)
+        state = json.loads(command("docker", "inspect", args.container))[0]["State"]
+        if not state["Running"]:
+            record["blocked"] = f"service exited with {state['ExitCode']}"
+            break
         print(json.dumps(sample), flush=True)
         if record["ready"]:
             with urllib.request.urlopen(
@@ -58,7 +64,7 @@ def main() -> None:
             ) as response:
                 record["info"] = json.load(response)
             break
-        time.sleep(10)
+        time.sleep(min(10, max(0, args.seconds - (time.monotonic() - started))))
     record["elapsed_seconds"] = round(time.monotonic() - started, 3)
     record["state"] = json.loads(command("docker", "inspect", args.container))[0]["State"]
     logs = subprocess.run(
@@ -68,6 +74,7 @@ def main() -> None:
         text=True,
         encoding="utf-8",
         errors="replace",
+        timeout=10,
     )
     (args.output / f"{args.container}.log").write_text(logs.stdout + logs.stderr, encoding="utf-8")
     (args.output / f"{args.container}.json").write_text(
@@ -78,7 +85,14 @@ def main() -> None:
         flush=True,
     )
     if not record["ready"]:
-        command("docker", "stop", args.container)
+        try:
+            command("docker", "stop", "-t", "1", args.container)
+            record["cleanup_stop_requested"] = True
+        except (subprocess.SubprocessError, OSError) as exc:
+            record["cleanup_error"] = type(exc).__name__
+        (args.output / f"{args.container}.json").write_text(
+            json.dumps(record, indent=2), encoding="utf-8"
+        )
         raise SystemExit(1)
 
 

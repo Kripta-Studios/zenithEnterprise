@@ -6,6 +6,7 @@ import json
 import subprocess
 import time
 from pathlib import Path
+from uuid import uuid4
 
 
 def main() -> None:
@@ -16,6 +17,7 @@ def main() -> None:
     parser.add_argument("--focused", action="store_true")
     parser.add_argument("--only", choices=["lint", "types", "tests", "licenses"])
     parser.add_argument("--baseline-fixture", type=Path)
+    parser.add_argument("--timeout-seconds", type=float)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.source).decode().strip()
@@ -75,13 +77,20 @@ def main() -> None:
     if args.only:
         commands = [(label, command) for label, command in commands if label == args.only]
     if args.baseline_fixture:
-        commands = [("upload-ready", "uv run python -m pytest "
-                     "eval/tests/test_local_first_baseline.py -q --tb=short -s")]
+        commands = [
+            (
+                "upload-ready",
+                "uv run python -m pytest eval/tests/test_local_first_baseline.py -q --tb=short -s",
+            )
+        ]
     for label, command in commands:
+        container = f"zenith-lf-check-{uuid4().hex[:12]}"
         invocation = [
             "docker",
             "run",
             "--rm",
+            "--name",
+            container,
             "--user",
             "0",
             "--cpus",
@@ -116,24 +125,57 @@ def main() -> None:
             invocation[2:2] = ["-v", f"{cached_node}:/usr/local/bin/node:ro"]
         if args.baseline_fixture:
             invocation[2:2] = [
-                "--network", "zenith-lf-benchmark",
-                "-v", f"{args.baseline_fixture.resolve()}:/public/dev.json:ro",
-                "-v", f"{args.output.resolve()}:/results",
-                "-e", "ZENITH_RUN_LOCAL_BASELINE=1",
-                "-e", "ZENITH_BASELINE_SQAC=/public/dev.json",
-                "-e", "ZENITH_BASELINE_OUTPUT=/results/upload-ready.json",
-                "-e", "ZENITH_BASELINE_EMBED=http://embed:80",
-                "-e", "ZENITH_BASELINE_RERANK=http://rerank:80",
+                "--network",
+                "zenith-lf-benchmark",
+                "-v",
+                f"{args.baseline_fixture.resolve()}:/public/dev.json:ro",
+                "-v",
+                f"{args.output.resolve()}:/results",
+                "-e",
+                "ZENITH_RUN_LOCAL_BASELINE=1",
+                "-e",
+                "ZENITH_BASELINE_SQAC=/public/dev.json",
+                "-e",
+                "ZENITH_BASELINE_OUTPUT=/results/upload-ready.json",
+                "-e",
+                "ZENITH_BASELINE_EMBED=http://embed:80",
+                "-e",
+                "ZENITH_BASELINE_RERANK=http://rerank:80",
             ]
         started = time.monotonic()
         log = args.output / f"{args.label}-docker-{label}.log"
         with log.open("w", encoding="utf-8") as stream:
-            result = subprocess.run(
-                invocation, stdout=stream, stderr=subprocess.STDOUT, check=False
-            )
+            timeout = args.timeout_seconds or (420 if args.baseline_fixture else 900)
+            try:
+                result = subprocess.run(
+                    invocation,
+                    stdout=stream,
+                    stderr=subprocess.STDOUT,
+                    check=False,
+                    timeout=timeout,
+                )
+                exit_code = result.returncode
+                cleanup = None
+            except subprocess.TimeoutExpired:
+                exit_code = 124
+                # Killing the attached CLI alone leaves the worker container alive.
+                # This name belongs solely to the runner created above.
+                try:
+                    stopped = subprocess.run(
+                        ["docker", "rm", "-f", container],
+                        stdout=stream,
+                        stderr=subprocess.STDOUT,
+                        timeout=10,
+                        check=False,
+                    )
+                    cleanup = {"container": container, "exit": stopped.returncode}
+                except subprocess.TimeoutExpired:
+                    cleanup = {"container": container, "error": "cleanup_timeout"}
         record = {
             "command": command,
-            "exit": result.returncode,
+            "exit": exit_code,
+            "timeout_seconds": timeout,
+            "cleanup": cleanup,
             "seconds": round(time.monotonic() - started, 3),
             "log": log.name,
             "log_sha256": hashlib.sha256(log.read_bytes()).hexdigest(),
