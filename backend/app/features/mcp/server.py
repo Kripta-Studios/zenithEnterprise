@@ -28,10 +28,11 @@ from app.features.mcp.service import MAX_HITS, MAX_SOURCE, LocalReads
 async def local_lifespan(_: MCPServer[None]) -> AsyncGenerator[None]:
     # Reject a misconfigured owner/platform URL before any customer-content query,
     # including on an empty database where the existing row-count guard alone passes.
-    async with unscoped_session() as session:
-        if await session.scalar(text("SELECT current_user")) != "zenith_app":
-            raise RuntimeError("local MCP requires the application database role")
-    await verify_rls_active()
+    async with asyncio.timeout(30):
+        async with unscoped_session() as session:
+            if await session.scalar(text("SELECT current_user")) != "zenith_app":
+                raise RuntimeError("local MCP requires the application database role")
+        await verify_rls_active()
     yield None
 
 

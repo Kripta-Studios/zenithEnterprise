@@ -14,7 +14,7 @@ from mcp.types import TextContent
 from sqlalchemy import text
 
 from app.core.config import settings
-from app.core.database import configure_engine, owner_session
+from app.core.database import configure_engine, dispose_engines, owner_session
 from app.core.hardware import PROFILES
 from app.features.auth.service import AuthService
 from app.features.mcp.server import create_server, local_lifespan
@@ -52,12 +52,14 @@ def client(token: str) -> Client:
 
 
 async def test_startup_refuses_owner_role(token: str, owner_url: str, migrated: str) -> None:
+    await dispose_engines()
     configure_engine(owner_url)
     try:
         with pytest.raises(RuntimeError, match="application database role"):
             async with local_lifespan(create_server(token)):
                 pytest.fail("the owner role was permitted to serve")
     finally:
+        await dispose_engines()
         configure_engine(migrated)
 
 
@@ -262,7 +264,8 @@ async def test_actual_stdio_subprocess(
             "ZENITH_STORAGE_DIR": str(tmp_path),
         },
     )
-    async with Client(parameters, read_timeout_seconds=10) as connected:
+    # Match the reference host's 35-second budget, including the 30-second startup guard.
+    async with Client(parameters, read_timeout_seconds=35) as connected:
         assert connected.protocol_version == "2026-07-28"
         result = await connected.call_tool(
             "zenith_read_source", {"source_id": str(public_source[1])}
