@@ -77,7 +77,37 @@ async def test_public_upload_baseline(
     }
     events = record["phase_events"]
     beginning = time.monotonic()
+    from app.features.embeddings.client import TeiClient
+    from app.features.ingestion import pipeline
+    from app.features.ingestion.parsers.pdfplumber_parser import PdfPlumberParser
+    from app.features.ingestion.parsers.text_parser import TextParser
     from app.features.ingestion.pipeline import IngestionPipeline
+    from eval.local_first_instrumentation import async_stage, document, sync_stage
+
+    stages: list[dict[str, object]] = []
+    record["stage_durations"] = stages
+    original_ingest = IngestionPipeline._ingest  # pyright: ignore[reportPrivateUsage]
+
+    async def ingest(self: IngestionPipeline, identifier: UUID, path: Path, media: str):
+        measured = document.set(str(identifier))
+        try:
+            return await original_ingest(self, identifier, path, media)
+        finally:
+            document.reset(measured)
+
+    monkeypatch.setattr(IngestionPipeline, "_ingest", ingest)
+    for name in ("page_count", "chunk_page", "chunk_stream"):
+        monkeypatch.setattr(pipeline, name, sync_stage(name, getattr(pipeline, name), stages))
+    monkeypatch.setattr(
+        PdfPlumberParser, "parse", sync_stage("parse", PdfPlumberParser.parse, stages)
+    )
+    monkeypatch.setattr(TextParser, "parse", sync_stage("parse", TextParser.parse, stages))
+    for name in ("_persist", "_file"):
+        monkeypatch.setattr(
+            IngestionPipeline, name, async_stage(name, getattr(IngestionPipeline, name), stages)
+        )
+    for name in ("embed", "send_batch"):
+        monkeypatch.setattr(TeiClient, name, async_stage(name, getattr(TeiClient, name), stages))
 
     # External benchmark instrumentation; product code is unchanged.
     original_status = IngestionPipeline._set_status  # pyright: ignore[reportPrivateUsage]
@@ -178,17 +208,78 @@ async def test_public_upload_baseline(
                 assert jobs == len(fixtures), "duplicates must not enqueue more ingestion work"
                 if all(value is True for value in model_health.values()):
                     started = time.monotonic()
+                    query = payload["data"][0]["paragraphs"][0]["qas"][0]["question"]
+                    record["query_scope"] = {
+                        "question": query,
+                        "document_id": ids[0],
+                        "limit": 8,
+                        "concurrency": 1,
+                    }
+                    lag: list[float] = []
+
+                    async def heartbeat() -> None:
+                        previous = time.monotonic()
+                        while True:
+                            await asyncio.sleep(0.01)
+                            now = time.monotonic()
+                            lag.append(max(0.0, now - previous - 0.01))
+                            previous = now
+
+                    async def search_sample(target: list[dict[str, Any]]) -> None:
+                        before = time.monotonic()
+                        response = await client.get(
+                            "/search",
+                            headers=auth,
+                            params={"q": query, "limit": 8, "documents": ids[0]},
+                        )
+                        body = response.json()
+                        target.append(
+                            {
+                                "wall_ms": (time.monotonic() - before) * 1000,
+                                "http_status": response.status_code,
+                                "took_ms": body.get("took_ms"),
+                                "degraded": body.get("degraded"),
+                                "reason": body.get("reason"),
+                                "source_ids": [hit["chunk_id"] for hit in body.get("hits", [])],
+                            }
+                        )
+
+                    heartbeat_task = asyncio.create_task(heartbeat())
+                    worker = asyncio.create_task(
+                        tasks.app.run_worker_async(
+                            queues=["ingestion"],
+                            concurrency=1,
+                            wait=False,
+                            install_signal_handlers=False,
+                        )
+                    )
+
+                    async def search_during() -> None:
+                        # Freeze the visible corpus for the comparison: query the first
+                        # ready file while the remaining two are being ingested.
+                        while not worker.done():
+                            state = await client.get(f"/documents/{ids[0]}", headers=auth)
+                            if state.json()["status"] == "ready":
+                                break
+                            await asyncio.sleep(0.1)
+                        while not worker.done() and len(record["queries_ingesting"]) < 20:
+                            await search_sample(record["queries_ingesting"])
+
                     try:
                         await asyncio.wait_for(
-                            tasks.app.run_worker_async(
-                                queues=["ingestion"],
-                                concurrency=1,
-                                wait=False,
-                                install_signal_handlers=False,
-                            ),
+                            asyncio.gather(worker, search_during()),
                             timeout=300,
                         )
                         record["queue_drain_seconds"] = round(time.monotonic() - started, 6)
+                        heartbeat_task.cancel()
+                        await asyncio.gather(heartbeat_task, return_exceptions=True)
+                        record["event_loop_lag_seconds"] = {
+                            "samples": len(lag),
+                            "maximum": max(lag, default=0),
+                            "method": "10ms heartbeat in combined ASGI/worker benchmark",
+                        }
+                        for _ in range(20):
+                            await search_sample(record["queries_idle"])
                         statuses = [
                             (await client.get(f"/documents/{identifier}", headers=auth)).json()[
                                 "status"
@@ -218,6 +309,9 @@ async def test_public_upload_baseline(
                         )
                     except TimeoutError:
                         record["blocked"] = "worker did not drain within 300 seconds"
+                    finally:
+                        heartbeat_task.cancel()
+                        await asyncio.gather(heartbeat_task, return_exceptions=True)
                 else:
                     record["blocked"] = (
                         "model readiness: worker and query timings were not executed"

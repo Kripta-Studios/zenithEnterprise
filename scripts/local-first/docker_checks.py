@@ -15,6 +15,7 @@ def main() -> None:
     parser.add_argument("output", type=Path)
     parser.add_argument("--focused", action="store_true")
     parser.add_argument("--only", choices=["lint", "types", "tests", "licenses"])
+    parser.add_argument("--baseline-fixture", type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.source).decode().strip()
@@ -73,6 +74,9 @@ def main() -> None:
         ]
     if args.only:
         commands = [(label, command) for label, command in commands if label == args.only]
+    if args.baseline_fixture:
+        commands = [("upload-ready", "uv run python -m pytest "
+                     "eval/tests/test_local_first_baseline.py -q --tb=short -s")]
     for label, command in commands:
         invocation = [
             "docker",
@@ -110,6 +114,17 @@ def main() -> None:
         cached_node = Path(".local-evidence/runner-node/node").resolve()
         if cached_node.exists():
             invocation[2:2] = ["-v", f"{cached_node}:/usr/local/bin/node:ro"]
+        if args.baseline_fixture:
+            invocation[2:2] = [
+                "--network", "zenith-lf-benchmark",
+                "-v", f"{args.baseline_fixture.resolve()}:/public/dev.json:ro",
+                "-v", f"{args.output.resolve()}:/results",
+                "-e", "ZENITH_RUN_LOCAL_BASELINE=1",
+                "-e", "ZENITH_BASELINE_SQAC=/public/dev.json",
+                "-e", "ZENITH_BASELINE_OUTPUT=/results/upload-ready.json",
+                "-e", "ZENITH_BASELINE_EMBED=http://embed:80",
+                "-e", "ZENITH_BASELINE_RERANK=http://rerank:80",
+            ]
         started = time.monotonic()
         log = args.output / f"{args.label}-docker-{label}.log"
         with log.open("w", encoding="utf-8") as stream:
