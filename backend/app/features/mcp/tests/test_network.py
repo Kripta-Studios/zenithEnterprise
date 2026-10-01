@@ -145,7 +145,7 @@ async def test_metadata_http_tool_current_authority_and_revocation(
                 },
             },
         )
-        assert initialized.status_code == 200
+        assert initialized.status_code == 200, initialized.text
         assert initialized.json()["result"]["protocolVersion"] == "2026-07-28"
         request = {
             "jsonrpc": "2.0",

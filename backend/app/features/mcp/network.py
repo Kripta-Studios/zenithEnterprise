@@ -5,6 +5,7 @@ import json
 import os
 import time
 from dataclasses import dataclass, field
+from typing import cast
 from urllib.parse import urlsplit
 from uuid import UUID
 
@@ -133,13 +134,13 @@ class KeycloakVerifier(TokenVerifier):
             expiry = body.get("exp")
             subject = body.get("sub")
             audience = body.get("aud")
-            audience = audience if isinstance(audience, list) else [audience]
+            audiences = cast(list[object], audience) if isinstance(audience, list) else [audience]
             scope = body.get("scope")
             client_id = body.get("client_id") or body.get("azp")
             if (
                 body.get("active") is not True
                 or body.get("iss") != cfg.issuer
-                or cfg.resource not in audience
+                or cfg.resource not in audiences
                 or not isinstance(expiry, int)
                 or isinstance(expiry, bool)
                 or expiry <= time.time()
