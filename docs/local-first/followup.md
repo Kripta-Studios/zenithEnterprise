@@ -167,3 +167,6 @@ Existing upstream PRs and fork branches are preserved. The accepted extraction b
 remain unchanged. Follow-up commits are published to the authorized fork branches only,
 without rewriting history or merging main. Remote Actions require a PR/main event under
 the existing workflow; branch pushes alone do not establish remote CI success.
+The post-push [publication audit](publication.json) records the exact published code/results
+heads, preservation of the other 20 existing fork heads, upstream main and all 15 open
+upstream PR heads/states. Its subsequent documentation-only commit is pushed normally.

@@ -1,0 +1,123 @@
+{
+  "checked_utc": "2026-10-01T20:46:31.940357+00:00",
+  "note": "Audit after the atomic publication of code/results. The subsequent publication-audit commit adds only this record and its report link; it is pushed normally to the same performance branch.",
+  "remote": "https://github.com/Kripta-Studios/zenithEnterprise",
+  "published_heads": {
+    "perf/local-first-baseline": "87682e3855b0276e80cf246ef47c80c4a9817938",
+    "feat/mcp-intranet-auth": "f344b008fa9543ba8b132de21bcd8515603b8930",
+    "fix/deterministic-test-timing": "9b5a84fee44ba64b1ab77a8807ec56dc5d544a2e",
+    "fix/embedding-final-backoff": "595bbe2e31756b15430a54d225280a596145ac19"
+  },
+  "before_existing_head_count": 21,
+  "unchanged_existing_heads": {
+    "refs/heads/experiment/evidence-v3-hardening-archive": "33950a3e8df7b012efe2c193c3fee0b2ec7672f2",
+    "refs/heads/experiment/evidence-v3-r1-research": "0d0844ba236a08d4983bfc93cb98b76ab0497406",
+    "refs/heads/feat/local-judge-contract-standalone": "36f4f7d7155dee047d9eb8f9528de312ba3b59d7",
+    "refs/heads/feat/local-mcp-stdio": "5f590bb3f1ca24e4e20dafb2ee995636ab25f7eb",
+    "refs/heads/fix/evidence-v3-series-foundation-v10": "5592601d1f1cb44333685c898e065d17dd9d99a5",
+    "refs/heads/fix/evidence-v3-series-hardening-v10": "910bc125bb6f731ca681f20ac8ae19d97a5e0874",
+    "refs/heads/fix/evidence-v3-series-neutral-v10": "45d2b75e68c423fec8b5886add59b4c69c533b95",
+    "refs/heads/fix/evidence-v3-series-pr01-v10": "98f7935c3beedb0d9aea0e128ee6bc5adc86a2bf",
+    "refs/heads/fix/evidence-v3-series-pr02-v10": "9fa658f681ebde099cb0f641b432c1d5e620431d",
+    "refs/heads/fix/evidence-v3-series-pr03-v10": "f408e26e903a4c8aaf92c6c9b26c82bd6d5453ee",
+    "refs/heads/fix/evidence-v3-series-pr04-v10": "e1feb7b758fffca07d71975d75f7cc9822e04de3",
+    "refs/heads/fix/evidence-v3-series-pr05-v10": "146bbf48f9e0bc9eaa4759fd23a56e30dfbf348f",
+    "refs/heads/fix/evidence-v3-series-pr06-v10": "76f2ba442aecdd92b4b21474c6ae0aab092c406e",
+    "refs/heads/fix/evidence-v3-series-pr07-v10": "c17d1090d17940965b3bdbc763c55f29d9e03f35",
+    "refs/heads/fix/evidence-v3-series-pr08-v10": "9a2f69ffa56d9190c362cb9d0a14cd6e4ce85cf7",
+    "refs/heads/fix/evidence-v3-series-prerequisite-v10": "520d8e7c77b9408621c0d0db2c0d162ed17e1263",
+    "refs/heads/fix/evidence-v3-series-release-v10": "1ba0239337bf762330ae48656cb1745af4085684",
+    "refs/heads/fix/evidence-v3-series-report-v10": "7c4af947617d08eecf0f4b9798b033910512d770",
+    "refs/heads/fix/vite-proxy-prefix-guard-standalone": "9e9bd377dbdad1b3912c4b8aa147c2f8009e7cd2",
+    "refs/heads/main": "f6dd7aee70611aeb6d08658b2c4164f9fd8effbf"
+  },
+  "advanced_existing_head": {
+    "ref": "refs/heads/perf/local-first-baseline",
+    "before": "9073e481037448aa41e10a622e194025bb1bda07",
+    "after": "87682e3855b0276e80cf246ef47c80c4a9817938",
+    "fast_forward": true
+  },
+  "upstream_main": {
+    "refs/heads/main": "33b48812c95150348c52d2519159780252c92db2"
+  },
+  "unchanged_upstream_open_prs": [
+    {
+      "headRefOid": "5592601d1f1cb44333685c898e065d17dd9d99a5",
+      "number": 1,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "98f7935c3beedb0d9aea0e128ee6bc5adc86a2bf",
+      "number": 2,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "9fa658f681ebde099cb0f641b432c1d5e620431d",
+      "number": 3,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "f408e26e903a4c8aaf92c6c9b26c82bd6d5453ee",
+      "number": 4,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "e1feb7b758fffca07d71975d75f7cc9822e04de3",
+      "number": 5,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "520d8e7c77b9408621c0d0db2c0d162ed17e1263",
+      "number": 6,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "146bbf48f9e0bc9eaa4759fd23a56e30dfbf348f",
+      "number": 7,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "45d2b75e68c423fec8b5886add59b4c69c533b95",
+      "number": 8,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "76f2ba442aecdd92b4b21474c6ae0aab092c406e",
+      "number": 9,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "c17d1090d17940965b3bdbc763c55f29d9e03f35",
+      "number": 10,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "9a2f69ffa56d9190c362cb9d0a14cd6e4ce85cf7",
+      "number": 11,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "1ba0239337bf762330ae48656cb1745af4085684",
+      "number": 12,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "910bc125bb6f731ca681f20ac8ae19d97a5e0874",
+      "number": 13,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "0d0844ba236a08d4983bfc93cb98b76ab0497406",
+      "number": 14,
+      "state": "OPEN"
+    },
+    {
+      "headRefOid": "7c4af947617d08eecf0f4b9798b033910512d770",
+      "number": 15,
+      "state": "OPEN"
+    }
+  ],
+  "force_pushes": false,
+  "merges_or_pr_mutations": false,
+  "remote_ci_note": "Branch pushes do not trigger this repository workflow; local checks are recorded separately."
+}
