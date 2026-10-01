@@ -22,6 +22,8 @@ def main() -> None:
     parser.add_argument("--env-volume", default="zenith-lf-check-env-lean")
     parser.add_argument("--test-path", action="append")
     parser.add_argument("--diagnose", action="store_true")
+    parser.add_argument("--network")
+    parser.add_argument("--public-keycloak-loopback", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.source).decode().strip()
@@ -134,6 +136,10 @@ def main() -> None:
             setup + command,
         ]
         # An existing cached official Node binary avoids pyright's automatic Node download.
+        if args.network:
+            invocation[2:2] = ["--network", args.network]
+        if args.public_keycloak_loopback:
+            invocation[2:2] = ["-e", "ZENITH_TEST_PUBLIC_KEYCLOAK=1"]
         cached_node = Path(".local-evidence/runner-node/node").resolve()
         if cached_node.exists():
             invocation[2:2] = ["-v", f"{cached_node}:/usr/local/bin/node:ro"]

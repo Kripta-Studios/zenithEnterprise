@@ -256,7 +256,11 @@ async def jev_run(panel, output, key):
 
 
 async def local_run(panel, output, endpoint):
-    if endpoint not in {"http://127.0.0.1:18082", "http://127.0.0.1:18092"}:
+    if endpoint not in {
+        "http://127.0.0.1:18082",
+        "http://127.0.0.1:18092",
+        "http://127.0.0.1:18094",
+    }:
         raise ValueError("explicit approved local rerank endpoint required")
     frozen = json.loads(panel.read_text(encoding="utf-8"))
     result = {"panel_sha256": digest(panel), "queries": []}
