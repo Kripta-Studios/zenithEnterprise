@@ -75,8 +75,17 @@ async def grant(client: httpx.AsyncClient, *, wrong_verifier: bool = False) -> h
     form.feed(response.text)
     assert form.action is not None
     assert urlsplit(form.action).netloc == "127.0.0.1:8080"
+    # HTTPX lacks browsers' Secure-cookie loopback exception. Forward only the disposable
+    # realm's synthetic cookies to its asserted loopback origin. Production requires TLS.
+    cookies = "; ".join(
+        cookie.name + "=" + cookie.value
+        for cookie in client.cookies.jar
+        if cookie.domain == "127.0.0.1" and cookie.path == "/realms/zenith-lf-public/"
+    )
     login = await client.post(
-        form.action, data={"username": "public-fixture", "password": "public-fixture-password"}
+        form.action,
+        headers={"Cookie": cookies},
+        data={"username": "public-fixture", "password": "public-fixture-password"},
     )
     assert login.status_code == 302, "public fixture login must redirect, without printing tokens"
     callback = urlsplit(login.headers["location"])

@@ -36,11 +36,20 @@ from app.features.mcp.service import LocalReads
 SCOPE = "zenith:read"
 
 
+def token_version(value: object) -> int:
+    if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+        raise ValueError("identity version must be a nonnegative integer")
+    return value
+
+
 @dataclass(frozen=True)
 class Binding:
     user_id: UUID
     tenant_id: UUID
     token_version: int
+
+    def __post_init__(self) -> None:
+        token_version(self.token_version)
 
 
 def destination(value: str) -> str:
@@ -74,13 +83,7 @@ class KeycloakConfiguration:
             raise ValueError("this standalone server's canonical resource must end with /mcp")
         if not self.client_id or not self.client_secret or not self.bindings:
             raise ValueError("explicit introspection credentials and subject bindings are required")
-        if any(
-            not subject
-            or not isinstance(binding.token_version, int)
-            or isinstance(binding.token_version, bool)
-            or binding.token_version < 0
-            for subject, binding in self.bindings.items()
-        ):
+        if any(not subject for subject in self.bindings):
             raise ValueError("invalid identity binding")
         for origin in self.allowed_origins:
             if destination(origin) != origin or urlsplit(origin).path:
@@ -90,7 +93,9 @@ class KeycloakConfiguration:
     def environment(cls) -> "KeycloakConfiguration":
         raw = json.loads(os.environ["ZENITH_MCP_SUBJECT_BINDINGS"])
         bindings = {
-            subject: Binding(UUID(row["user_id"]), UUID(row["tenant_id"]), row["token_version"])
+            subject: Binding(
+                UUID(row["user_id"]), UUID(row["tenant_id"]), token_version(row["token_version"])
+            )
             for subject, row in raw.items()
         }
         return cls(
