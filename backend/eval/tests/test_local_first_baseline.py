@@ -8,7 +8,9 @@ import asyncio
 import hashlib
 import json
 import os
+import socket
 import time
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 from uuid import UUID
@@ -16,6 +18,7 @@ from uuid import UUID
 import httpx
 import procrastinate
 import pytest
+import uvicorn
 from fastapi import FastAPI
 from sqlalchemy import text
 
@@ -35,6 +38,40 @@ pytestmark = [
         not os.environ.get("ZENITH_RUN_LOCAL_BASELINE"), reason="opt-in real-model local baseline"
     ),
 ]
+
+
+@asynccontextmanager
+async def baseline_client(api: FastAPI):
+    if os.environ.get("ZENITH_BASELINE_TRANSPORT") != "tcp":
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=api), base_url="http://fixture"
+        ) as client:
+            yield client
+        return
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    listener.listen(128)
+    listener.setblocking(False)
+    server = uvicorn.Server(uvicorn.Config(api, log_level="error", access_log=False))
+    worker = asyncio.create_task(server.serve(sockets=[listener]))
+    try:
+        async with asyncio.timeout(15):
+            while not server.started:
+                if worker.done():
+                    await worker
+                    raise RuntimeError("baseline REST listener failed")
+                await asyncio.sleep(0.01)
+        async with httpx.AsyncClient(
+            base_url=f"http://127.0.0.1:{listener.getsockname()[1]}",
+            trust_env=False,
+            timeout=30,
+        ) as client:
+            yield client
+    finally:
+        server.should_exit = True
+        async with asyncio.timeout(10):
+            await worker
+        listener.close()
 
 
 async def test_public_upload_baseline(
@@ -67,7 +104,11 @@ async def test_public_upload_baseline(
         api.include_router(router)
     record: dict[str, Any] = {
         "fixture_source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
-        "transport": "in-process ASGI multipart; excludes network transfer",
+        "transport": (
+            "actual loopback TCP multipart; excludes intranet/WAN latency"
+            if os.environ.get("ZENITH_BASELINE_TRANSPORT") == "tcp"
+            else "in-process ASGI multipart; excludes network transfer"
+        ),
         "worker_concurrency": 1,
         "uploads": [],
         "phase_events": [],
@@ -147,9 +188,7 @@ async def test_public_upload_baseline(
     with tasks.app.replace_connector(connector):
         async with tasks.app.open_async():
             await tasks.app.schema_manager.apply_schema_async()
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=api), base_url="http://fixture"
-            ) as client:
+            async with baseline_client(api) as client:
                 login = await client.post(
                     "/auth/login", json={"email": account.admin_email, "password": PASSWORD}
                 )

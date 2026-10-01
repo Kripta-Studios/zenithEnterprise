@@ -24,6 +24,7 @@ def main() -> None:
     parser.add_argument("--diagnose", action="store_true")
     parser.add_argument("--network")
     parser.add_argument("--public-keycloak-loopback", action="store_true")
+    parser.add_argument("--baseline-tcp", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.source).decode().strip()
@@ -144,6 +145,8 @@ def main() -> None:
         if cached_node.exists():
             invocation[2:2] = ["-v", f"{cached_node}:/usr/local/bin/node:ro"]
         if args.baseline_fixture:
+            if args.baseline_tcp:
+                invocation[2:2] = ["-e", "ZENITH_BASELINE_TRANSPORT=tcp"]
             invocation[2:2] = [
                 "--network",
                 "zenith-lf-benchmark",
