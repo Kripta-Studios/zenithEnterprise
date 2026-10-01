@@ -38,8 +38,29 @@
             "included.custom.audience": "http://127.0.0.1:19080/mcp",
             "access.token.claim": "true",
             "id.token.claim": "false",
-            "introspection.token.claim": "true",
-            "included.client.audience": "zenith-introspection-fixture"
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "name": "zenith-introspection-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "zenith-introspection-fixture",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "name": "zenith-subject",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-sub-mapper",
+          "consentRequired": false,
+          "config": {
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
           }
         }
       ]

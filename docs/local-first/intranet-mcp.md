@@ -30,11 +30,12 @@ user; Zenith sign-out invalidates reads until an operator intentionally updates 
 
 Configure Keycloak authorization code with PKCE S256, a pre-registered public local client,
 an exact loopback callback, and minimal scope zenith:read. Disable implicit/password grants
-and Full Scope Allowed. The scope's audience mapper must include BOTH the canonical MCP
+and Full Scope Allowed. Separate audience mappers must include BOTH the canonical MCP
 resource URL and the confidential introspection client ID. Keycloak 26.6.2+ requires the
 authenticated introspection client in aud. Keep that check enabled. The resource server
 also independently checks the canonical resource, issuer, active bearer type, expiry,
-linked subject and scope. Discovery advertises the configured issuer only.
+linked subject and scope. Include an explicit subject mapper in access and introspection tokens;
+missing subjects are rejected. Discovery advertises the configured issuer only.
 
 Introspection occurs on every HTTP request and again before a content read. A fixed issuer
 endpoint, no environment proxies/redirects, a five-second timeout and a 64 KiB streaming
