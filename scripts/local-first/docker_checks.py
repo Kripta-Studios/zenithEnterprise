@@ -25,6 +25,11 @@ def main() -> None:
     parser.add_argument("--network")
     parser.add_argument("--public-keycloak-loopback", action="store_true")
     parser.add_argument("--baseline-tcp", action="store_true")
+    parser.add_argument(
+        "--baseline-embed",
+        choices=["http://embed:80", "http://embed-gpu:80"],
+        default="http://embed:80",
+    )
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.source).decode().strip()
@@ -161,7 +166,7 @@ def main() -> None:
                 "-e",
                 "ZENITH_BASELINE_OUTPUT=/results/upload-ready.json",
                 "-e",
-                "ZENITH_BASELINE_EMBED=http://embed:80",
+                f"ZENITH_BASELINE_EMBED={args.baseline_embed}",
                 "-e",
                 "ZENITH_BASELINE_RERANK=http://rerank:80",
             ]
