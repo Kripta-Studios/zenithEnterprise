@@ -119,26 +119,28 @@ class KeycloakVerifier(TokenVerifier):
         try:
             # The destination never comes from a JWT, source passage, tool or client argument.
             # Introspection on every request/read honors Keycloak session revocation.
-            async with httpx.AsyncClient(
-                timeout=5,
-                trust_env=False,
-                follow_redirects=False,
-                transport=self.transport,
-            ) as client:
-                async with client.stream(
+            async with (
+                httpx.AsyncClient(
+                    timeout=5,
+                    trust_env=False,
+                    follow_redirects=False,
+                    transport=self.transport,
+                ) as client,
+                client.stream(
                     "POST",
                     cfg.issuer + "/protocol/openid-connect/token/introspect",
                     auth=httpx.BasicAuth(cfg.client_id, cfg.client_secret),
                     data={"token": token, "token_type_hint": "access_token"},
-                ) as response:
-                    if response.status_code != 200:
+                ) as response,
+            ):
+                if response.status_code != 200:
+                    return None
+                content = bytearray()
+                async for chunk in response.aiter_bytes(chunk_size=8192):
+                    content.extend(chunk)
+                    if len(content) > 65536:
                         return None
-                    content = bytearray()
-                    async for chunk in response.aiter_bytes(chunk_size=8192):
-                        content.extend(chunk)
-                        if len(content) > 65536:
-                            return None
-                    body = json.loads(content)
+                body = json.loads(content)
             expiry = body.get("exp")
             subject = body.get("sub")
             audience = body.get("aud")
