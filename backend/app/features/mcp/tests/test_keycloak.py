@@ -46,7 +46,7 @@ class LoginForm(HTMLParser):
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         fields = dict(attrs)
-        if tag == "form" and fields.get("id") == "kc-form-login":
+        if tag == "form" and fields.get("id") in {"kc-form-login", "kc-update-profile-form"}:
             self.action = fields.get("action")
 
 
@@ -80,7 +80,9 @@ async def grant(client: httpx.AsyncClient, *, wrong_verifier: bool = False) -> h
     cookies = "; ".join(
         cookie.name + "=" + cookie.value
         for cookie in client.cookies.jar
-        if cookie.domain == "127.0.0.1" and cookie.path == "/realms/zenith-lf-public/"
+        if cookie.domain == "127.0.0.1"
+        and cookie.path == "/realms/zenith-lf-public/"
+        and cookie.value is not None
     )
     login = await client.post(
         form.action,
@@ -88,6 +90,21 @@ async def grant(client: httpx.AsyncClient, *, wrong_verifier: bool = False) -> h
         data={"username": "public-fixture", "password": "public-fixture-password"},
     )
     assert login.status_code == 302, "public fixture login must redirect, without printing tokens"
+    if urlsplit(login.headers["location"]).path.endswith("/required-action"):
+        # Seeded fixtures from before Keycloak's required profile fields need one local
+        # completion. This synthetic user's profile is never used for Zenith linking.
+        profile_url = login.headers["location"]
+        assert urlsplit(profile_url).netloc == "127.0.0.1:8080"
+        profile = await client.get(profile_url, headers={"Cookie": cookies})
+        form = LoginForm()
+        form.feed(profile.text)
+        assert form.action is not None and urlsplit(form.action).netloc == "127.0.0.1:8080"
+        login = await client.post(
+            form.action,
+            headers={"Cookie": cookies},
+            data={"firstName": "Public", "lastName": "Fixture", "email": "public@example.invalid"},
+        )
+        assert login.status_code == 302
     callback = urlsplit(login.headers["location"])
     assert callback.scheme + "://" + callback.netloc + callback.path == REDIRECT
     parameters = parse_qs(callback.query)
