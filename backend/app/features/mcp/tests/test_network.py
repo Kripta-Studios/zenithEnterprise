@@ -1,10 +1,16 @@
 """Keycloak boundary failures and real SDK HTTP handlers under application-role RLS."""
 
+import asyncio
+import socket
 import time
 from uuid import UUID, uuid4
 
 import httpx
+import httpx2
 import pytest
+import uvicorn
+from mcp import Client
+from mcp.client.streamable_http import streamable_http_client
 from sqlalchemy import text
 
 from app.core.database import owner_session
@@ -104,71 +110,77 @@ async def test_metadata_http_tool_current_authority_and_revocation(
     labelled_document: UUID,
 ) -> None:
     revoked = False
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    listener.listen(128)
+    listener.setblocking(False)
+    base = f"http://127.0.0.1:{listener.getsockname()[1]}"
+    cfg = KeycloakConfiguration(
+        ISSUER,
+        base + "/mcp",
+        "introspection",
+        "fixture-secret",
+        {"subject": Binding(account.admin_id, account.tenant_id, 0)},
+    )
 
     def introspect(_: httpx.Request) -> httpx.Response:
         body = active()
         body["active"] = not revoked
+        body["aud"] = [cfg.resource]
         return httpx.Response(200, json=body)
 
-    cfg = configuration(account.admin_id, account.tenant_id)
     app = create_application(cfg, httpx.MockTransport(introspect))
-    headers = {
-        "Authorization": "Bearer opaque-token",
-        "Accept": "application/json, text/event-stream",
-        "MCP-Protocol-Version": "2026-07-28",
-    }
-    async with (
-        app.router.lifespan_context(app),
-        httpx.AsyncClient(
-            transport=httpx.ASGITransport(app=app),
-            base_url="https://zenith.example",
-        ) as client,
-    ):
-        challenge = await client.post("/mcp", json={})
-        assert challenge.status_code == 401
-        assert "resource_metadata=" in challenge.headers["WWW-Authenticate"]
-        metadata = await client.get("/.well-known/oauth-protected-resource/mcp")
-        assert metadata.status_code == 200
-        assert metadata.json()["resource"] == RESOURCE
-        assert metadata.json()["authorization_servers"] == [ISSUER]
-        initialized = await client.post(
-            "/mcp",
-            headers=headers,
-            json={
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "initialize",
-                "params": {
-                    "protocolVersion": "2026-07-28",
-                    "capabilities": {},
-                    "clientInfo": {"name": "local-proof", "version": "1"},
-                },
-            },
-        )
-        assert initialized.status_code == 200, initialized.text
-        assert initialized.json()["result"]["protocolVersion"] == "2026-07-28"
-        request = {
-            "jsonrpc": "2.0",
-            "id": 2,
-            "method": "tools/call",
-            "params": {
-                "name": "zenith_get_document",
-                "arguments": {"document_id": str(labelled_document)},
-            },
-        }
-        disclosed = await client.post("/mcp", headers=headers, json=request)
-        assert disclosed.status_code == 200
-        assert disclosed.json()["result"]["structuredContent"]["id"] == str(labelled_document)
-        async with owner_session() as session:
-            await session.execute(
-                text("UPDATE users SET token_version=token_version+1 WHERE id=:u"),
-                {"u": account.admin_id},
-            )
-        invalidated = await client.post("/mcp", headers=headers, json=request)
-        assert invalidated.json()["result"]["isError"]
-        assert "structuredContent" not in invalidated.json()["result"]
-        revoked = True
-        assert (await client.post("/mcp", headers=headers, json=request)).status_code == 401
+    server = uvicorn.Server(uvicorn.Config(app, log_level="error", access_log=False))
+    worker = asyncio.create_task(server.serve(sockets=[listener]))
+    try:
+        async with asyncio.timeout(60):
+            while not server.started:
+                if worker.done():
+                    await worker
+                    pytest.fail("MCP listener exited before startup")
+                await asyncio.sleep(0.01)
+            async with httpx.AsyncClient(base_url=base, trust_env=False, timeout=15) as client:
+                challenge = await client.post("/mcp", json={})
+                assert challenge.status_code == 401
+                assert "resource_metadata=" in challenge.headers["WWW-Authenticate"]
+                metadata = await client.get("/.well-known/oauth-protected-resource/mcp")
+                assert metadata.status_code == 200
+                assert metadata.json()["resource"] == cfg.resource
+                assert metadata.json()["authorization_servers"] == [ISSUER]
+            async with (
+                httpx2.AsyncClient(
+                    headers={"Authorization": "Bearer opaque-token"}
+                ) as transport_client,
+                Client(
+                    streamable_http_client(cfg.resource, http_client=transport_client)
+                ) as connected,
+            ):
+                disclosed = await connected.call_tool(
+                    "zenith_get_document", {"document_id": str(labelled_document)}
+                )
+                assert not disclosed.is_error and disclosed.structured_content is not None
+                assert disclosed.structured_content["id"] == str(labelled_document)
+                async with owner_session() as session:
+                    await session.execute(
+                        text("UPDATE users SET token_version=token_version+1 WHERE id=:u"),
+                        {"u": account.admin_id},
+                    )
+                invalidated = await connected.call_tool(
+                    "zenith_get_document", {"document_id": str(labelled_document)}
+                )
+                assert invalidated.is_error and invalidated.structured_content is None
+            revoked = True
+            async with httpx.AsyncClient(base_url=base, trust_env=False) as client:
+                assert (
+                    await client.post(
+                        "/mcp", headers={"Authorization": "Bearer opaque-token"}, json={}
+                    )
+                ).status_code == 401
+    finally:
+        server.should_exit = True
+        async with asyncio.timeout(10):
+            await worker
+        listener.close()
 
 
 async def test_host_origin_and_size_do_not_reach_the_provider() -> None:
