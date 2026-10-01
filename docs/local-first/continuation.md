@@ -1,5 +1,8 @@
 # Continuation: local MCP and measured ingestion
 
+Historical snapshot before the later publication and paid-call authorization. Its outstanding
+items are superseded by [followup.md](followup.md); the original observations remain below.
+
 This supplements the original report; its failures remain part of the evidence.
 No branch was pushed, remote PR changed, main moved, model weights downloaded or paid
 Jev inference started. Both accepted extractions still start independently at freshly

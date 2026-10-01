@@ -1,5 +1,9 @@
 # Local-first implementation and measured results, 2026-10-01
 
+Current results and publication are in [followup.md](followup.md), including completed
+full MCP checks, authorized Jev evaluation, working GPU models and TCP upload readiness.
+This file retains the earlier extraction snapshot and its failed attempts.
+
 The subsequent local MCP implementation, cache-inventory correction, executed ingestion
 phases and resource-aborted workload are recorded in [continuation.md](continuation.md).
 The results below describe the original extraction/baseline snapshot and remain retained.

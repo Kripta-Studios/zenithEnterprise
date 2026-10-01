@@ -1,0 +1,786 @@
+{
+  "base": "33b48812c95150348c52d2519159780252c92db2",
+  "snapshot_note": "Code/source snapshots precede the documentation-only results commit. Publication audit is separate; no combined merge was tested.",
+  "local_check_attempts": [
+    {
+      "head": "b7615dd7d5eef5f373f18fbe0c7279553269c52b",
+      "tree": "61ba6cc360f592c0da1b887c49f9efff76e195b3",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "f6232370f3e583f1d97361f1424ef1394030dedc93b1cc4cee546d51a4b44154",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-check-env-lean",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short tests/integration/test_read_only_checkout.py",
+          "exit": 0,
+          "timeout_seconds": 600.0,
+          "cleanup": null,
+          "seconds": 54.819,
+          "log": "checkout-guard-docker-tests.log",
+          "log_sha256": "12c75965cd09d0f82932e41a9582ef39bd43ff7284a32238d38666a9ed8bd124",
+          "pytest_summary": "6 passed in 11.77s"
+        }
+      ],
+      "manifest": ".local-evidence/followup/checkout-guard/checkout-guard-docker-checks.json",
+      "manifest_sha256": "7c161b77364edf4b0585dc1e61b1deaa03c23c5789839c4f277489866cc38b7e"
+    },
+    {
+      "head": "d2599154b28cc33be131f90a86f73dafb8e23289",
+      "tree": "5d88dd05baa7e1083da4da198dfdbcc1a3290939",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "8fef7d3fc7923060ce91c570a86d82ccadf82f7fb685f8f2705ebc8b6f9e41a8",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-check-env-lean",
+      "commands": [
+        {
+          "command": "uv run python -m pytest eval/tests/test_local_first_baseline.py -q --tb=short -s",
+          "exit": 0,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 250.065,
+          "log": "cpu-tcp-ready-docker-upload-ready.log",
+          "log_sha256": "031c1ced51c359459b87cb9986ce4bc815e614abd5b1058c24df7743912ef056",
+          "pytest_summary": "1 passed in 246.42s (0:04:06)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/cpu-tcp-ready/cpu-tcp-ready-docker-checks.json",
+      "manifest_sha256": "78e1d1c350b74340750f706d2810c6ba7b9c55b43bc699a7bc625f36ad55b5c8"
+    },
+    {
+      "head": "595bbe2e31756b15430a54d225280a596145ac19",
+      "tree": "faf3ec007af501ab550fc74f54e33be6e7b62d7d",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "55642a669f9cb54b998636d4bd7f35dc418ac4b25fcf1305175f5567b4efe719",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-check-env-lean",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/embeddings/tests app/features/retrieval/tests",
+          "exit": 0,
+          "timeout_seconds": 600.0,
+          "cleanup": null,
+          "seconds": 262.66,
+          "log": "embedding-final-backoff-docker-tests.log",
+          "log_sha256": "5bd643d21428adbd5488de0c3c5b4677f3a624cf59419be89bb3c3338c25a144",
+          "pytest_summary": "122 passed in 238.35s (0:03:58)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/embedding-final-backoff/embedding-final-backoff-docker-checks.json",
+      "manifest_sha256": "81a59f3b991917f2e2118a4a2ace90ce50cd2a80e4a0f6520c50088d856d5669"
+    },
+    {
+      "head": "d2599154b28cc33be131f90a86f73dafb8e23289",
+      "tree": "5d88dd05baa7e1083da4da198dfdbcc1a3290939",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "8fef7d3fc7923060ce91c570a86d82ccadf82f7fb685f8f2705ebc8b6f9e41a8",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-check-env-lean",
+      "commands": [
+        {
+          "command": "uv run python -m pytest eval/tests/test_local_first_baseline.py -q --tb=short -s",
+          "exit": 0,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 216.138,
+          "log": "gpu-tcp-ready-docker-upload-ready.log",
+          "log_sha256": "924310f0d731fd50d6675a55ef78aa185fe061ac67704def3a76b74bbc96602f",
+          "pytest_summary": "1 passed in 195.13s (0:03:15)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/gpu-tcp-ready/gpu-tcp-ready-docker-checks.json",
+      "manifest_sha256": "83ae2c1d50bd16df6a3a65d40e968d7232c3a862a62333b6a80619d36e3d7509"
+    },
+    {
+      "head": "49557923bc8a2c051a4ef599aecfdb183c576c60",
+      "tree": "3e499484446b6a034fdd84cca895c8d4218cf0fe",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "c58cdc8399684f488acd61cf460ed568afdbbcc39b31443284d686756f28b8c3",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short -vv -o faulthandler_timeout=60",
+          "exit": 137,
+          "timeout_seconds": 3600.0,
+          "cleanup": null,
+          "seconds": 973.796,
+          "log": "intranet-complete-docker-tests.log",
+          "log_sha256": "300ed6c3748edcee3409566b042d022ee0e5edc1b04db6c07518cb3e9e7f6b47"
+        }
+      ],
+      "manifest": ".local-evidence/followup/intranet-complete/intranet-complete-docker-checks.json",
+      "manifest_sha256": "0d061e3a77e7bf7034344cd8c2a406bd2a3da7f11044e47f42b9337ec25a858d"
+    },
+    {
+      "head": "f344b008fa9543ba8b132de21bcd8515603b8930",
+      "tree": "96a3f4b21bd951f5db982346bd5acb5bd262695d",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "e9f745196ca04291925cf102bb702d0e21d72fc54b65eeb99cbd2739732e695e",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "cd /workspace && bash scripts/check-licences.sh",
+          "exit": 0,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 29.27,
+          "log": "intranet-license-final-docker-licenses.log",
+          "log_sha256": "6fe233c819c60e5a1896aecc71cd5223a597bc3852e97e6b6a9a585753e44e86"
+        }
+      ],
+      "manifest": ".local-evidence/followup/intranet-license-final/intranet-license-final-docker-checks.json",
+      "manifest_sha256": "3a28c6c706fc7f9600aa5b90e1c9c1c1b90a6770da1c884e25b1540548230e1b"
+    },
+    {
+      "head": "f344b008fa9543ba8b132de21bcd8515603b8930",
+      "tree": "96a3f4b21bd951f5db982346bd5acb5bd262695d",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "e9f745196ca04291925cf102bb702d0e21d72fc54b65eeb99cbd2739732e695e",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short -vv -o faulthandler_timeout=60",
+          "exit": 0,
+          "timeout_seconds": 3600.0,
+          "cleanup": null,
+          "seconds": 2010.781,
+          "log": "intranet-serial-final-docker-tests.log",
+          "log_sha256": "d1ff43d6bbacb56297618666dd714b1d87e7eba6f97e5a549749e4eddefbedfa",
+          "pytest_summary": "927 passed, 13 skipped in 1982.03s (0:33:02)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/intranet-serial-final/intranet-serial-final-docker-checks.json",
+      "manifest_sha256": "13898690be33efeaee860fb18a47889a2fe32f0a685687f5d76db7b4f67ccfb3"
+    },
+    {
+      "head": "e4089cb974be37a51804a59acd0506ec14fe5c4f",
+      "tree": "40a6bea2d9e87978cae4f8ab1495b0bae0e3018c",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "f01b08220ee31dd1683ffd9633ad175b74760e74b8d1644d7be036a7fa81a470",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp/tests/test_keycloak.py",
+          "exit": 1,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 153.267,
+          "log": "keycloak-audience-final-docker-tests.log",
+          "log_sha256": "165a6264bf8ca83d44d15149e13bd8a7e7421e9e8195452d94c188dab4748f06"
+        }
+      ],
+      "manifest": ".local-evidence/followup/keycloak-audience-final/keycloak-audience-final-docker-checks.json",
+      "manifest_sha256": "e1a324b0bf12c9b989613264021b833a28e4a72d3586ef0caac11d427db9b6f6"
+    },
+    {
+      "head": "49557923bc8a2c051a4ef599aecfdb183c576c60",
+      "tree": "3e499484446b6a034fdd84cca895c8d4218cf0fe",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "c58cdc8399684f488acd61cf460ed568afdbbcc39b31443284d686756f28b8c3",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp/tests/test_keycloak.py",
+          "exit": 1,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 230.845,
+          "log": "keycloak-cookies-docker-tests.log",
+          "log_sha256": "7850f9af5c2820c5e867fad5c353bd768e06fac7774f8d14c6ef5d75ecd73a7b"
+        }
+      ],
+      "manifest": ".local-evidence/followup/keycloak-cookies/keycloak-cookies-docker-checks.json",
+      "manifest_sha256": "b0a8483e23912c3c5ca7ce75c2d481307989071d2f1b5db4bf50d9f4c401cfb2"
+    },
+    {
+      "head": "566c6a044c416f87014162983cca88d569b25dba",
+      "tree": "1e5c829608ccb410857fd7d902593bf0ff22d09e",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "0df874a63efa046c80ad065c6605d1554879dc2d61555a556ba8e35cf94f5e51",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp/tests/test_keycloak.py",
+          "exit": 1,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 187.651,
+          "log": "keycloak-pkce-final-docker-tests.log",
+          "log_sha256": "d3f322eb75045e95e8c23549c0d9b0c154696dff5941f4851b23b2d1811d8b4f"
+        }
+      ],
+      "manifest": ".local-evidence/followup/keycloak-pkce-final/keycloak-pkce-final-docker-checks.json",
+      "manifest_sha256": "ed358a1c0b6eb823dc20328fa7c114c2fba5ee3e5ce583a587e9ce22979fcab7"
+    },
+    {
+      "head": "a32a51d856688da84d7cdd291036285dd6d5d20a",
+      "tree": "524eb6b821635f0741a52e5cd906aea5c5cf14ae",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "0cd12dcb443c7308f51c8abd724b87ca62832b540728b5566759eb3ddc96ea64",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp/tests/test_keycloak.py",
+          "exit": 1,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 258.03,
+          "log": "keycloak-public-docker-tests.log",
+          "log_sha256": "075aa694d1fe110a1ef4d62049c9314a615bd7862e2db5ffa5223c6ee1655b80"
+        }
+      ],
+      "manifest": ".local-evidence/followup/keycloak-public/keycloak-public-docker-checks.json",
+      "manifest_sha256": "b068b2d39367cbf12655df51f69969a03182de6950f50f0b2d753310b7f52f5a"
+    },
+    {
+      "head": "f344b008fa9543ba8b132de21bcd8515603b8930",
+      "tree": "96a3f4b21bd951f5db982346bd5acb5bd262695d",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "e9f745196ca04291925cf102bb702d0e21d72fc54b65eeb99cbd2739732e695e",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp/tests/test_keycloak.py",
+          "exit": 0,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 23.252,
+          "log": "keycloak-subject-final-docker-tests.log",
+          "log_sha256": "e3ec488369d27b4230d265f60558c33c9e09f5fe13ec0dbd7ae9291f74a8f324",
+          "pytest_summary": "1 passed in 20.10s"
+        }
+      ],
+      "manifest": ".local-evidence/followup/keycloak-subject-final/keycloak-subject-final-docker-checks.json",
+      "manifest_sha256": "d5c9f845f3d4f4b5da6d676f129678c188605ee93e1f5925bc112696bdf8fa77"
+    },
+    {
+      "head": "5f590bb3f1ca24e4e20dafb2ee995636ab25f7eb",
+      "tree": "75a4d412ce78a591866242f429796898aebda6f8",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "be14bf3793d872f66483ed293650b51cf840455f029ba7cab61ccdbcbff026fa",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short -vv -o faulthandler_timeout=60",
+          "exit": 0,
+          "timeout_seconds": 3600.0,
+          "cleanup": null,
+          "seconds": 2171.277,
+          "log": "mcp-complete-20261001-docker-tests.log",
+          "log_sha256": "78b44a53cd2c8450d14429c9e2ea111aaf953869aba18840c196c973f6912e3a",
+          "pytest_summary": "911 passed, 12 skipped in 2143.39s (0:35:43)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/mcp-complete/mcp-complete-20261001-docker-checks.json",
+      "manifest_sha256": "7bd162658096ed48b2dde5b1ece40768b1d6399fadd646d78abfe91d33f3418b"
+    },
+    {
+      "head": "49557923bc8a2c051a4ef599aecfdb183c576c60",
+      "tree": "3e499484446b6a034fdd84cca895c8d4218cf0fe",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "c58cdc8399684f488acd61cf460ed568afdbbcc39b31443284d686756f28b8c3",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp/tests/test_network.py",
+          "exit": 0,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 234.772,
+          "log": "network-bounded-final-docker-tests.log",
+          "log_sha256": "3d683cc453e515776df2a9d61c662a26c283a751f6241347f349d03c493cd57d",
+          "pytest_summary": "15 passed in 200.71s (0:03:20)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/network-bounded-final/network-bounded-final-docker-checks.json",
+      "manifest_sha256": "66496fa018ccf89974bc2acdda1e512e9ddf5c271a5d610350ff42cd00c37905"
+    },
+    {
+      "head": "8ef4d307feec7aae2512bb43cbd2aec74d896de9",
+      "tree": "43b9f23ae5e1f9b75d438d28b2d9ac85e8cd15d0",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "61e94053aa6e87f623fc08931f1ce9e2b9c906c0ad1abeabd12e31550d7aee32",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp",
+          "exit": 1,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 297.672,
+          "log": "network-focused-docker-tests.log",
+          "log_sha256": "1526a84b04ec76b0fbae6b9f20a87cad4d46c2fc6b0590577c18c4d6adbc2caa",
+          "pytest_summary": "1 failed, 44 passed, 1 skipped in 261.90s (0:04:21)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/network-focused/network-focused-docker-checks.json",
+      "manifest_sha256": "3add1eea72700ffed09671e69d0dfec45dcab0da7c85ce3a9d6472f9b69c366f"
+    },
+    {
+      "head": "7876964eb7e76a80a737c2e5c498067cf4f089ba",
+      "tree": "860e5c6c1e4ac28a42ff1bae5b0dcfea728c7877",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "d23a57815b0621ba4353913260af21f5afa577aefdc8406e37e676759913cd1d",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp/tests/test_network.py::test_metadata_http_tool_current_authority_and_revocation",
+          "exit": 124,
+          "timeout_seconds": 300.0,
+          "cleanup": {
+            "container": "zenith-lf-check-5ec190167e7f",
+            "exit": 0
+          },
+          "seconds": 302.683,
+          "log": "network-initialize-diagnostic-docker-tests.log",
+          "log_sha256": "98db25e4b5f6491bb58e6632f9858e8178d15e65e77b3d9fad85ee192f67973f"
+        }
+      ],
+      "manifest": ".local-evidence/followup/network-initialize/network-initialize-diagnostic-docker-checks.json",
+      "manifest_sha256": "e88868a105bbb59af9b8bbd93393f80975431903737180194d11edc3e7cb360d"
+    },
+    {
+      "head": "7d7e073c328569b2dd1382a1697ce35dd856b1c3",
+      "tree": "6c336ff820d7edd113a094f29924a04bc8383d8d",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "7f82f6a62fe894af1c652b2a9cfbde7cac5d26d6e50ca340223c884819f4b4af",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short app/features/mcp",
+          "exit": 0,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 420.805,
+          "log": "network-modern-docker-tests.log",
+          "log_sha256": "465012dae0006f112857a15709d4a6b53f51f86c5cb18820e2153ff39ab9c3e1",
+          "pytest_summary": "45 passed, 1 skipped in 392.47s (0:06:32)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/network-modern/network-modern-docker-checks.json",
+      "manifest_sha256": "843ee29f6d804171655ce635661bf6e0c2c98137906fc95f7600d4a1663533ea"
+    },
+    {
+      "head": "8ef4d307feec7aae2512bb43cbd2aec74d896de9",
+      "tree": "43b9f23ae5e1f9b75d438d28b2d9ac85e8cd15d0",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "61e94053aa6e87f623fc08931f1ce9e2b9c906c0ad1abeabd12e31550d7aee32",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run pyright",
+          "exit": 1,
+          "timeout_seconds": 180.0,
+          "cleanup": null,
+          "seconds": 156.723,
+          "log": "network-strict-docker-types.log",
+          "log_sha256": "ade864c4dbee89fbed32cbdeaa9f96f1b382d9f61199f2fa822cd8c1a98bb654"
+        }
+      ],
+      "manifest": ".local-evidence/followup/network-strict/network-strict-docker-checks.json",
+      "manifest_sha256": "b961acb659ccddf8ed21ce1e24f55c7921f67e1c7a604fe9b31ed891b0fbc3bc"
+    },
+    {
+      "head": "8ef4d307feec7aae2512bb43cbd2aec74d896de9",
+      "tree": "43b9f23ae5e1f9b75d438d28b2d9ac85e8cd15d0",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "61e94053aa6e87f623fc08931f1ce9e2b9c906c0ad1abeabd12e31550d7aee32",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-mcp-check-env",
+      "commands": [
+        {
+          "command": "uv run pyright",
+          "exit": 1,
+          "timeout_seconds": 180.0,
+          "cleanup": null,
+          "seconds": 147.06,
+          "log": "network-types-docker-types.log",
+          "log_sha256": "ade864c4dbee89fbed32cbdeaa9f96f1b382d9f61199f2fa822cd8c1a98bb654"
+        }
+      ],
+      "manifest": ".local-evidence/followup/network-types/network-types-docker-checks.json",
+      "manifest_sha256": "feb62e786a19990ef288aa72e3497c2239381e415db70c7c43d32936b77d3f7c"
+    },
+    {
+      "head": "9b5a84fee44ba64b1ab77a8807ec56dc5d544a2e",
+      "tree": "044f90fe71ddc4f00f4b444cf4e239ede80fdc59",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "77c0a0819961e6730e19c98288367e33b6691447e2a04537ea9af86e3e3a0f75",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-check-env-lean",
+      "commands": [
+        {
+          "command": "uv run python -m pytest -q --tb=short -vv -o faulthandler_timeout=60",
+          "exit": 0,
+          "timeout_seconds": 3600.0,
+          "cleanup": null,
+          "seconds": 1932.945,
+          "log": "timing-complete-final-docker-tests.log",
+          "log_sha256": "b68b555bc127ed23e9c4ec4ec3666997765d83be4de067ac30ebb91542c564dc",
+          "pytest_summary": "882 passed, 11 skipped in 1904.77s (0:31:44)"
+        }
+      ],
+      "manifest": ".local-evidence/followup/timing-complete-final/timing-complete-final-docker-checks.json",
+      "manifest_sha256": "53c4b7947939f56404499033bec587c6a72237506c0f5a9a6dce568b054890c1"
+    }
+  ],
+  "branches": [
+    {
+      "worktree": "local-judge-contract-standalone",
+      "branch": "feat/local-judge-contract-standalone",
+      "head": "36f4f7d7155dee047d9eb8f9528de312ba3b59d7",
+      "tree": "839b36ca7075969e9e108d2feaebf611d850bfec",
+      "working_status": ""
+    },
+    {
+      "worktree": "vite-proxy-prefix-guard-standalone",
+      "branch": "fix/vite-proxy-prefix-guard-standalone",
+      "head": "9e9bd377dbdad1b3912c4b8aa147c2f8009e7cd2",
+      "tree": "e488ce8393928392c8442b540fd79c77e9f646bd",
+      "working_status": ""
+    },
+    {
+      "worktree": "local-mcp-stdio",
+      "branch": "feat/local-mcp-stdio",
+      "head": "5f590bb3f1ca24e4e20dafb2ee995636ab25f7eb",
+      "tree": "75a4d412ce78a591866242f429796898aebda6f8",
+      "working_status": ""
+    },
+    {
+      "worktree": "deterministic-test-timing",
+      "branch": "fix/deterministic-test-timing",
+      "head": "9b5a84fee44ba64b1ab77a8807ec56dc5d544a2e",
+      "tree": "044f90fe71ddc4f00f4b444cf4e239ede80fdc59",
+      "working_status": ""
+    },
+    {
+      "worktree": "mcp-intranet-auth",
+      "branch": "feat/mcp-intranet-auth",
+      "head": "f344b008fa9543ba8b132de21bcd8515603b8930",
+      "tree": "96a3f4b21bd951f5db982346bd5acb5bd262695d",
+      "working_status": ""
+    },
+    {
+      "worktree": "embedding-final-backoff",
+      "branch": "fix/embedding-final-backoff",
+      "head": "595bbe2e31756b15430a54d225280a596145ac19",
+      "tree": "faf3ec007af501ab550fc74f54e33be6e7b62d7d",
+      "working_status": ""
+    },
+    {
+      "worktree": "local-first-baseline",
+      "branch": "perf/local-first-baseline",
+      "head": "d2599154b28cc33be131f90a86f73dafb8e23289",
+      "tree": "5d88dd05baa7e1083da4da198dfdbcc1a3290939",
+      "working_status": "M .artifacts/to-test/2026-10-01-local-first-baseline.md\n M docs/local-first/continuation.md\n M docs/local-first/mcp-decision.md\n M docs/local-first/report.md\n M docs/local-first/spanish-data-manifest.json\n M docs/local-first/spanish-evaluation.md\n?? docker/docker-compose.blackwell.yml\n?? docs/local-first/followup.md\n?? docs/local-first/spanish-rerank-results.json\n?? docs/local-first/upload-ready-results.json"
+    }
+  ],
+  "direct_checks": [
+    {
+      "command": "npm run test; Node 22.23.3: 43 files / 437 passed",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/frontend-node22-tests.log",
+      "sha256": "eb7f3401172d8c422e6fa7087116123309dca3a50acd3110581b8c1222163820"
+    },
+    {
+      "command": "npm run lint; Node 22.23.3: tsc --noEmit",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/frontend-node22-verified-lint.log",
+      "sha256": "21d0830ab249ada6ac09f67f0ed632ac35c7ad32b78171be6df245e71e99a7f6"
+    },
+    {
+      "command": "npm run build; Node 22.23.3: 2247 modules, 79 seconds",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/frontend-node22-verified-build.log",
+      "sha256": "2f11090bf3c02a5dc9dcefe7a5aaf5c34ad938d16962a8ac96a4285bb3bed410"
+    },
+    {
+      "command": "strict backend pyright, Linux target",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/timing-backend-types.log",
+      "sha256": "48b2ece9985aa0d5ce31fcc374bdc5f0d2a61aa71c76b3d9423d63911eeedcad"
+    },
+    {
+      "command": "backend Ruff lint",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/timing-backend-lint.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "command": "backend Ruff format check",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/timing-backend-format.log",
+      "sha256": "abdbf744194174bbdad39e46a4f590d8909a9bc259ed16279d43f8f4f94c9b23"
+    },
+    {
+      "command": "strict backend pyright, Linux target, complete dependency environment",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/network-types-final-profile.log",
+      "sha256": "48b2ece9985aa0d5ce31fcc374bdc5f0d2a61aa71c76b3d9423d63911eeedcad"
+    },
+    {
+      "command": "backend Ruff lint",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/network-final-lint.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "command": "backend Ruff format check",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/network-final-format.log",
+      "sha256": "20b00e38608e20ddc7929c0267c32bb4755492aa202503022dabff0aec9f2313"
+    },
+    {
+      "command": "strict backend pyright, Linux target",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/baseline-types-tcp.log",
+      "sha256": "48b2ece9985aa0d5ce31fcc374bdc5f0d2a61aa71c76b3d9423d63911eeedcad"
+    },
+    {
+      "command": "backend and scripts Ruff lint",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/baseline-final-lint.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "command": "backend and scripts Ruff format check",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/baseline-final-format.log",
+      "sha256": "a7ff6f909201b62af6542385502979858bc19e71fb3382492cdb154cf205b75f"
+    },
+    {
+      "command": "four accounting and metric tests",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/spanish-accounting-tests.log",
+      "sha256": "427a52ef6ddc3f1646d889ff1aac856d1812fdcfb0c4b10ab09ebe95bb564d68"
+    },
+    {
+      "command": "strict backend pyright, Linux target",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/embedding-backoff-types.log",
+      "sha256": "48b2ece9985aa0d5ce31fcc374bdc5f0d2a61aa71c76b3d9423d63911eeedcad"
+    },
+    {
+      "command": "backend Ruff lint",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/embedding-backoff-lint.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "command": "backend Ruff format check",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/embedding-backoff-format.log",
+      "sha256": "98a3fb273e488ebbb04616c2ae68363c217d28db4cbc59577ad08fd3d89448a2"
+    },
+    {
+      "command": "merged base/GPU/Blackwell Compose selected configuration and inherited reservations",
+      "exit": 0,
+      "artifact": ".local-evidence/followup/blackwell-compose.json",
+      "sha256": "6b7b8ca4815bf070e61e8d30838875f283cc1db83affc7d676135803d8677e49"
+    }
+  ],
+  "publication_before": {
+    "origin_heads": {
+      "refs/heads/experiment/evidence-v3-hardening-archive": "33950a3e8df7b012efe2c193c3fee0b2ec7672f2",
+      "refs/heads/experiment/evidence-v3-r1-research": "0d0844ba236a08d4983bfc93cb98b76ab0497406",
+      "refs/heads/feat/local-judge-contract-standalone": "36f4f7d7155dee047d9eb8f9528de312ba3b59d7",
+      "refs/heads/feat/local-mcp-stdio": "5f590bb3f1ca24e4e20dafb2ee995636ab25f7eb",
+      "refs/heads/fix/evidence-v3-series-foundation-v10": "5592601d1f1cb44333685c898e065d17dd9d99a5",
+      "refs/heads/fix/evidence-v3-series-hardening-v10": "910bc125bb6f731ca681f20ac8ae19d97a5e0874",
+      "refs/heads/fix/evidence-v3-series-neutral-v10": "45d2b75e68c423fec8b5886add59b4c69c533b95",
+      "refs/heads/fix/evidence-v3-series-pr01-v10": "98f7935c3beedb0d9aea0e128ee6bc5adc86a2bf",
+      "refs/heads/fix/evidence-v3-series-pr02-v10": "9fa658f681ebde099cb0f641b432c1d5e620431d",
+      "refs/heads/fix/evidence-v3-series-pr03-v10": "f408e26e903a4c8aaf92c6c9b26c82bd6d5453ee",
+      "refs/heads/fix/evidence-v3-series-pr04-v10": "e1feb7b758fffca07d71975d75f7cc9822e04de3",
+      "refs/heads/fix/evidence-v3-series-pr05-v10": "146bbf48f9e0bc9eaa4759fd23a56e30dfbf348f",
+      "refs/heads/fix/evidence-v3-series-pr06-v10": "76f2ba442aecdd92b4b21474c6ae0aab092c406e",
+      "refs/heads/fix/evidence-v3-series-pr07-v10": "c17d1090d17940965b3bdbc763c55f29d9e03f35",
+      "refs/heads/fix/evidence-v3-series-pr08-v10": "9a2f69ffa56d9190c362cb9d0a14cd6e4ce85cf7",
+      "refs/heads/fix/evidence-v3-series-prerequisite-v10": "520d8e7c77b9408621c0d0db2c0d162ed17e1263",
+      "refs/heads/fix/evidence-v3-series-release-v10": "1ba0239337bf762330ae48656cb1745af4085684",
+      "refs/heads/fix/evidence-v3-series-report-v10": "7c4af947617d08eecf0f4b9798b033910512d770",
+      "refs/heads/fix/vite-proxy-prefix-guard-standalone": "9e9bd377dbdad1b3912c4b8aa147c2f8009e7cd2",
+      "refs/heads/main": "f6dd7aee70611aeb6d08658b2c4164f9fd8effbf",
+      "refs/heads/perf/local-first-baseline": "9073e481037448aa41e10a622e194025bb1bda07"
+    },
+    "upstream_main": {
+      "refs/heads/main": "33b48812c95150348c52d2519159780252c92db2"
+    },
+    "upstream_open_prs": [
+      {
+        "headRefOid": "7c4af947617d08eecf0f4b9798b033910512d770",
+        "number": 15,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "0d0844ba236a08d4983bfc93cb98b76ab0497406",
+        "number": 14,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "910bc125bb6f731ca681f20ac8ae19d97a5e0874",
+        "number": 13,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "1ba0239337bf762330ae48656cb1745af4085684",
+        "number": 12,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "9a2f69ffa56d9190c362cb9d0a14cd6e4ce85cf7",
+        "number": 11,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "c17d1090d17940965b3bdbc763c55f29d9e03f35",
+        "number": 10,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "76f2ba442aecdd92b4b21474c6ae0aab092c406e",
+        "number": 9,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "45d2b75e68c423fec8b5886add59b4c69c533b95",
+        "number": 8,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "146bbf48f9e0bc9eaa4759fd23a56e30dfbf348f",
+        "number": 7,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "520d8e7c77b9408621c0d0db2c0d162ed17e1263",
+        "number": 6,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "e1feb7b758fffca07d71975d75f7cc9822e04de3",
+        "number": 5,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "f408e26e903a4c8aaf92c6c9b26c82bd6d5453ee",
+        "number": 4,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "9fa658f681ebde099cb0f641b432c1d5e620431d",
+        "number": 3,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "98f7935c3beedb0d9aea0e128ee6bc5adc86a2bf",
+        "number": 2,
+        "state": "OPEN"
+      },
+      {
+        "headRefOid": "5592601d1f1cb44333685c898e065d17dd9d99a5",
+        "number": 1,
+        "state": "OPEN"
+      }
+    ],
+    "policy": "Only perf/local-first-baseline may advance among these existing fork heads. Add three new own branches. No upstream changes, force pushes, PR changes, or merges."
+  },
+  "secret_scan": {
+    "pattern": "Jev API key identifier pattern",
+    "matches": 0,
+    "raw_datasets_and_evidence_ignored": true
+  }
+}

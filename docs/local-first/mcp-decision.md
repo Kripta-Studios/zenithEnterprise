@@ -3,7 +3,11 @@
 Status: local-first direction accepted on 2026-10-01. After “continue, do it all,” an
 optional same-machine stdio server/reference host was implemented and tested on independent
 branch `feat/local-mcp-stdio` at `5f590bb3f1ca24e4e20dafb2ee995636ab25f7eb`.
-Network implementation remains a later stage; no HTTP endpoint or IdP was installed.
+Follow-up: the full local MCP backend suite completed with 911 passed / 12 skipped in
+2,143.39 seconds. A separately invoked Keycloak resource server is implemented on
+feat/mcp-intranet-auth. Exact checks are in followup.md. It binds loopback, requires
+explicit identity enrollment and preserves current Zenith authority. Production DNS,
+TLS, issuer and secret provisioning remain deployment inputs.
 The final focused Linux checks passed 29 with one opt-in model skip in 203.96 seconds;
 actual stdio and owner-role rejection are included. Complete-suite scope and retained
 failures are explicit in the continuation report.
@@ -35,7 +39,7 @@ inside Zenith. No existing organizational IdP was identified; the user delegated
 Keycloak's OIDC discovery, signing keys, authorization-code flow, introspection and revocation
 make it suitable for an on-premises identity boundary. Configure authorization code plus PKCE,
 pre-registered clients, resource audience and minimal scopes. An operator must confirm issuer,
-principal mapping, deployment ownership and token/revocation policy before implementation.
+principal mapping, deployment ownership and token/revocation policy before production use.
 
 Zenith's current HS256 web tokens contain sub, tid, ver, typ, iat and exp. They do not declare
 MCP resource audience or OAuth scopes, and web login/refresh is not a complete MCP OAuth
@@ -46,10 +50,10 @@ operation. Its stronger local revocation check does not change the existing REST
 For HTTP MCP, use protected Streamable HTTP with TLS at the deployment boundary, Origin
 checks, protected resource metadata and audience-validated expiring tokens. Pin an SDK version
 that actually supports the selected client protocol. Official Python SDK mcp==2.2.0 is
-pinned in an optional extra and the dev group; the actual initialize handshake negotiated
+pinned in an optional extra and the dev group; actual SDK discovery negotiated
 2026-07-28. Current local tests cover expiry/type/version rejection, isolation and cancellation.
-Web JWTs have no MCP resource audience, so audience rejection/network OAuth recovery still
-require tests for the eventual HTTP design; stdio does not claim those unimplemented gates.
+Web JWTs have no MCP resource audience. The optional HTTP branch uses Keycloak tokens and
+tests issuer, resource audience, scope, expiry, bearer type and revocation independently.
 
 Direct MCP service calls must explicitly check operation permissions and refresh AccessProfile.
 REST dependency checks do not run automatically outside the router. Use zenith_app for customer
@@ -61,7 +65,8 @@ Binary uploads remain authenticated multipart POST /documents. The trusted host 
 user-selected file with explicit labels; its helper polls permitted document status. MCP is the
 control plane, not a base64 PDF channel. The reference uploader was tested against real
 authorized REST handlers and disposable DB: new uploads return 201, duplicates 200, and
-revoked upload permission returns 403. These ASGI tests exclude network transfer. Both
+revoked upload permission returns 403. Follow-up TCP tests cover the selected-file CLI and
+original-file hash through a real loopback listener. Both
 acknowledgments precede readiness and duplicates can change labels. Interactive desktop
 binary-upload compatibility remains untested; the existing web uploader remains available.
 

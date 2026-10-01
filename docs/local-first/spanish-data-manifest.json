@@ -1,5 +1,5 @@
 {
-  "provider_calls": 0,
+  "provider_calls": 5173,
   "datasets": [
     {
       "repository": "PlanTL-GOB-ES/SQAC",
@@ -98,6 +98,20 @@
           "sha256": "218fdac67872c9732e8b35416c650582837c27923a7e579ab2d4f446a3199218"
         }
       ]
+    },
+    {
+      "repository": "miracl/miracl",
+      "revision": "ad2acf33f265b8fba92e5096c9d2cf569a82b067",
+      "requested_ref": "refs/convert/parquet",
+      "source": "https://huggingface.co/datasets/miracl/miracl/tree/ad2acf33f265b8fba92e5096c9d2cf569a82b067",
+      "files": [
+        {
+          "path": "miracl-human-dev/es/dev/0000.parquet",
+          "bytes": 2654970,
+          "sha256": "23b5bd51a3b4807aa627095b5021c1b36aa2e91d85f86df8f6e478b83dd4a0ca"
+        }
+      ],
+      "scope": "all 648 Spanish dev queries and their human-judged positive/negative passage texts; checked against pinned original qrels"
     }
   ],
   "sqac": {
