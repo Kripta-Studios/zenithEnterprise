@@ -75,7 +75,11 @@ class KeycloakConfiguration:
         if not self.client_id or not self.client_secret or not self.bindings:
             raise ValueError("explicit introspection credentials and subject bindings are required")
         if any(
-            not subject or binding.token_version < 0 for subject, binding in self.bindings.items()
+            not subject
+            or not isinstance(binding.token_version, int)
+            or isinstance(binding.token_version, bool)
+            or binding.token_version < 0
+            for subject, binding in self.bindings.items()
         ):
             raise ValueError("invalid identity binding")
         for origin in self.allowed_origins:
@@ -86,9 +90,7 @@ class KeycloakConfiguration:
     def environment(cls) -> "KeycloakConfiguration":
         raw = json.loads(os.environ["ZENITH_MCP_SUBJECT_BINDINGS"])
         bindings = {
-            subject: Binding(
-                UUID(row["user_id"]), UUID(row["tenant_id"]), int(row["token_version"])
-            )
+            subject: Binding(UUID(row["user_id"]), UUID(row["tenant_id"]), row["token_version"])
             for subject, row in raw.items()
         }
         return cls(
@@ -123,14 +125,20 @@ class KeycloakVerifier(TokenVerifier):
                 follow_redirects=False,
                 transport=self.transport,
             ) as client:
-                response = await client.post(
+                async with client.stream(
+                    "POST",
                     cfg.issuer + "/protocol/openid-connect/token/introspect",
                     auth=httpx.BasicAuth(cfg.client_id, cfg.client_secret),
                     data={"token": token, "token_type_hint": "access_token"},
-                )
-                if response.status_code != 200 or len(response.content) > 65536:
-                    return None
-                body = response.json()
+                ) as response:
+                    if response.status_code != 200:
+                        return None
+                    content = bytearray()
+                    async for chunk in response.aiter_bytes(chunk_size=8192):
+                        content.extend(chunk)
+                        if len(content) > 65536:
+                            return None
+                    body = json.loads(content)
             expiry = body.get("exp")
             subject = body.get("sub")
             audience = body.get("aud")
