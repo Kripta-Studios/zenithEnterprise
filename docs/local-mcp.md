@@ -45,7 +45,10 @@ the original document/page; boxes describe the whole chunk. Original extracted c
 is explicitly distinguished from generated answers. Diagnostics containing local paths
 are omitted. Scope arguments only narrow existing application-role RLS visibility.
 
-Every operation resolves the current user/profile. Search/source invoke the existing
+Every operation resolves the current user/profile. The SDK server lifespan requires
+`current_user=zenith_app` before any
+customer read and reuses the existing RLS startup check; an owner/platform URL is refused
+even when the database has no tenants. Search/source invoke the existing
 `retrieval.execute` guard explicitly. Metadata follows the existing document read policy,
 including the processing uploader exception. This stdio adapter also checks the existing
 user token-version column on every call; the REST access-token expiry behavior is unchanged.

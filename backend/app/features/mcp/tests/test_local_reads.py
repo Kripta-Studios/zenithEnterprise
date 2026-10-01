@@ -14,10 +14,10 @@ from mcp.types import TextContent
 from sqlalchemy import text
 
 from app.core.config import settings
-from app.core.database import owner_session
+from app.core.database import configure_engine, owner_session
 from app.core.hardware import PROFILES
 from app.features.auth.service import AuthService
-from app.features.mcp.server import create_server
+from app.features.mcp.server import create_server, local_lifespan
 from app.features.mcp.service import LocalReads
 from app.features.retrieval import service as retrieval
 from app.features.retrieval.service import SearchService
@@ -49,6 +49,16 @@ async def token(account: Account) -> str:
 @pytest.fixture
 def client(token: str) -> Client:
     return Client(create_server(token))
+
+
+async def test_startup_refuses_owner_role(token: str, owner_url: str, migrated: str) -> None:
+    configure_engine(owner_url)
+    try:
+        with pytest.raises(RuntimeError, match="application database role"):
+            async with local_lifespan(create_server(token)):
+                pytest.fail("the owner role was permitted to serve")
+    finally:
+        configure_engine(migrated)
 
 
 async def test_discovery_and_source_coordinates(
