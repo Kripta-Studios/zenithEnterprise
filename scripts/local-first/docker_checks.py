@@ -23,6 +23,7 @@ def main() -> None:
     parser.add_argument("--test-path", action="append")
     parser.add_argument("--diagnose", action="store_true")
     parser.add_argument("--network")
+    parser.add_argument("--spanish-e2e-panel", type=Path)
     parser.add_argument("--public-keycloak-loopback", action="store_true")
     parser.add_argument("--baseline-tcp", action="store_true")
     parser.add_argument(
@@ -169,6 +170,21 @@ def main() -> None:
                 f"ZENITH_BASELINE_EMBED={args.baseline_embed}",
                 "-e",
                 "ZENITH_BASELINE_RERANK=http://rerank:80",
+            ]
+        if args.spanish_e2e_panel:
+            invocation[2:2] = [
+                "--network",
+                "zenith-lf-benchmark",
+                "-v",
+                f"{args.spanish_e2e_panel.resolve()}:/public/panel.json:ro",
+                "-v",
+                f"{args.output.resolve()}:/results",
+                "-e",
+                "ZENITH_RUN_SPANISH_E2E=1",
+                "-e",
+                "ZENITH_E2E_PANEL=/public/panel.json",
+                "-e",
+                "ZENITH_E2E_OUTPUT=/results",
             ]
         started = time.monotonic()
         log = args.output / f"{args.label}-docker-{label}.log"
