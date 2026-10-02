@@ -73,6 +73,7 @@ async def test_public_spanish_answers(
     )
     monkeypatch.setattr(settings, "tei_embed_url", "http://embed-e2e:80")
     monkeypatch.setattr(settings, "hardware", "cpu")
+    monkeypatch.setitem(PROFILES, "cpu", profile)
     monkeypatch.setattr(retrieval, "active_profile", lambda: profile)
     monkeypatch.setattr("app.features.embeddings.client.active_profile", lambda: profile)
     monkeypatch.delenv("ZENITH_DISABLE_INGESTION_QUEUE", raising=False)
@@ -171,7 +172,7 @@ async def test_public_spanish_answers(
                 reader = await profile_for(account)
                 async with tenant_session(reader.context) as session:
                     chunks = [
-                        dict(row._mapping)
+                        dict(row)
                         for row in (
                             await session.execute(
                                 text(
@@ -180,7 +181,9 @@ async def test_public_spanish_answers(
                                 ),
                                 {"d": document_id},
                             )
-                        ).all()
+                        )
+                        .mappings()
+                        .all()
                     ]
                 record["upload"]["chunks"] = len(chunks)
                 for case in fixture["cases"]:

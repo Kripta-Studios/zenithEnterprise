@@ -41,6 +41,7 @@ class LocalEvaluationProvider(BaseLLMProvider):
         identity = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         before = time.perf_counter()
         reused = identity in self.cached
+        row: dict[str, Any]
         if reused:
             row = self.cached[identity]
         else:

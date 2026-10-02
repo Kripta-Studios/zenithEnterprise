@@ -1,14 +1,18 @@
 """A correct-looking answer cannot earn grounding credit for an unrelated citation."""
 
 from copy import deepcopy
+from pathlib import Path
+from typing import Any
 
 import pytest
 
 from eval.spanish_e2e import measure, normalized, paired_interval, prepare, save, token_f1
 
+Example = tuple[dict[str, Any], dict[str, Any], dict[str, Any]]
+
 
 @pytest.fixture
-def example():
+def example() -> Example:
     case = {"answers": [{"text": "Madrid", "start": 20, "end": 26}]}
     hit = {
         "chunk_id": "chunk",
@@ -21,7 +25,7 @@ def example():
     return case, hit, response
 
 
-def test_grounded_answer_requires_matching_actual_span(example):
+def test_grounded_answer_requires_matching_actual_span(example: Example) -> None:
     case, hit, response = example
     assert measure(case, response, [hit])["grounded_reference_match"] == 1
     wrong = deepcopy(response)
@@ -29,7 +33,7 @@ def test_grounded_answer_requires_matching_actual_span(example):
     assert measure(case, wrong, [hit])["grounded_reference_match"] == 0
 
 
-def test_valid_citation_to_wrong_source_does_not_support_correct_answer(example):
+def test_valid_citation_to_wrong_source_does_not_support_correct_answer(example: Example) -> None:
     case, _, response = example
     unrelated = {
         "chunk_id": "other",
@@ -45,7 +49,7 @@ def test_valid_citation_to_wrong_source_does_not_support_correct_answer(example)
     assert metric["grounded_reference_match"] == 0
 
 
-def test_uncited_or_abstained_answers_are_not_grounded(example):
+def test_uncited_or_abstained_answers_are_not_grounded(example: Example) -> None:
     case, hit, response = example
     response["citations"] = []
     assert measure(case, response, [hit])["grounded_reference_match"] == 0
@@ -53,14 +57,14 @@ def test_uncited_or_abstained_answers_are_not_grounded(example):
     assert measure(case, response, [hit])["answer_token_f1"] == 0
 
 
-def test_each_sentence_needs_a_marker(example):
+def test_each_sentence_needs_a_marker(example: Example) -> None:
     case, hit, response = example
     response["answer"] = "Madrid [1]. Tiene una población enorme."
     assert measure(case, response, [hit])["sentence_citation_coverage"] == 0.5
     assert measure(case, response, [hit])["grounded_reference_match"] == 0
 
 
-def test_span_supported_extra_claim_is_not_semantically_certified(example):
+def test_span_supported_extra_claim_is_not_semantically_certified(example: Example) -> None:
     case, hit, response = example
     response["answer"] = "Madrid es la capital de todos los países [1]."
     assert measure(case, response, [hit])["grounded_reference_match"] == 1
@@ -68,12 +72,12 @@ def test_span_supported_extra_claim_is_not_semantically_certified(example):
     assert measure(case, response, [hit])["answer_token_f1"] < 0.5
 
 
-def test_normalization_retains_spanish_accents_and_answer_token_accounting():
+def test_normalization_retains_spanish_accents_and_answer_token_accounting() -> None:
     assert normalized("¡Álvaro! [1, 2]") == "álvaro"
     assert token_f1("la ciudad de Madrid [1].", "Madrid") == 0.4
 
 
-def test_paired_interval_preserves_article_clusters():
+def test_paired_interval_preserves_article_clusters() -> None:
     rows = [
         {"article": "same", "jev": {"x": 1}, "bge": {"x": 0}},
         {"article": "same", "jev": {"x": 0}, "bge": {"x": 1}},
@@ -81,7 +85,7 @@ def test_paired_interval_preserves_article_clusters():
     assert paired_interval(rows, "x")["ci95"] == [0, 0]
 
 
-def test_dataset_overlap_is_rejected(tmp_path):
+def test_dataset_overlap_is_rejected(tmp_path: Path) -> None:
     data = {
         "data": [
             {

@@ -49,7 +49,7 @@ def contexts(path: Path) -> list[dict[str, Any]]:
                 key, {"key": key, "text": value, "title": article["title"], "questions": []}
             )
             for qa in paragraph["qas"]:
-                answers = []
+                answers: list[dict[str, Any]] = []
                 for gold in qa["answers"]:
                     start, text = gold["answer_start"], gold["text"]
                     if raw[start : start + len(text)] != text:
@@ -73,13 +73,15 @@ def prepare(dev: Path, test: Path, output: Path, test_count: int = 128) -> dict[
         raise ValueError("insufficient held-out contexts")
     selected = {"development": development[:16], "test": testing[:test_count]}
     corpus = sorted(testing + selected["development"], key=lambda r: r["key"])
-    ranges, pieces, offset = {}, [], 0
+    ranges: dict[str, int] = {}
+    pieces: list[str] = []
+    offset = 0
     for row in corpus:
         ranges[row["key"]] = offset
         pieces.append(row["text"])
         offset += len(row["text"]) + 2
     value = "\n\n".join(pieces)
-    cases = []
+    cases: list[dict[str, Any]] = []
     for split, rows in selected.items():
         for row in rows:
             qa = min(row["questions"], key=lambda q: sha(f"{SEED}|{q['id']}"))
@@ -145,7 +147,7 @@ def prepare(dev: Path, test: Path, output: Path, test_count: int = 128) -> dict[
             "experimental depth 32; production CPU depth is eight",
         ],
     }
-    payload = {"protocol": protocol, "corpus": value, "cases": cases}
+    payload: dict[str, Any] = {"protocol": protocol, "corpus": value, "cases": cases}
     save(output, payload)
     save(output.with_name("preregistered-protocol.json"), protocol)
     return protocol
@@ -160,10 +162,12 @@ def spans_supported(hit: dict[str, Any], case: dict[str, Any]) -> bool:
     )
 
 
+def sentences_of(answer: str) -> list[str]:
+    return [s for s in re.split(r"(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÜÑ¿¡])|\n+", answer) if normalized(s)]
+
+
 def sentence_coverage(answer: str) -> float:
-    sentences = [
-        s for s in re.split(r"(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÜÑ¿¡])|\n+", answer) if normalized(s)
-    ]
+    sentences = sentences_of(answer)
     return sum(bool(ARTICLES.search(s)) for s in sentences) / len(sentences) if sentences else 0.0
 
 
@@ -221,7 +225,8 @@ def paired_interval(rows: list[dict[str, Any]], metric: str) -> dict[str, Any]:
     for row in rows:
         delta = row["jev"][metric] - row["bge"][metric]
         groups.setdefault(row["article"], []).append(delta)
-    rng, values, draws = random.Random(SEED), list(groups.values()), []
+    rng, values = random.Random(SEED), list(groups.values())
+    draws: list[float] = []
     if not values:
         raise ValueError("empty paired evaluation")
     for _ in range(2000):
