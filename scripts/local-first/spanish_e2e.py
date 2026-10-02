@@ -369,7 +369,10 @@ def replay(panel, output, source_panel, source_scores):
             "verified_replay": {
                 "source_panel_sha256": digest(source_panel),
                 "source_scores_sha256": digest(source_scores),
-                "matching": "exact question, filename, character offsets and passage text; database UUIDs may differ",
+                "matching": (
+                    "exact question, filename, character offsets and passage text; "
+                    "database UUIDs may differ"
+                ),
                 "new_model_calls": 0,
             },
         },
