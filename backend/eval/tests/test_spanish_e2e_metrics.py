@@ -3,6 +3,7 @@
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 import pytest
 
@@ -10,6 +11,23 @@ from eval.spanish_e2e import measure, normalized, paired_interval, prepare, save
 from eval.spanish_e2e_nli import apply_entailment, claim_inputs
 
 Example = tuple[dict[str, Any], dict[str, Any], dict[str, Any]]
+
+
+def test_atomic_snapshot_survives_a_transient_host_read_lock(tmp_path: Path) -> None:
+    target = tmp_path / "progress.json"
+    original = Path.replace
+    calls = 0
+
+    def replace(source: Path, destination: Path) -> Path:
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            raise PermissionError("transient Docker Desktop host read lock")
+        return original(source, destination)
+
+    with patch.object(Path, "replace", replace), patch("eval.spanish_e2e.time.sleep"):
+        save(target, {"complete": True})
+    assert calls == 2 and '"complete": true' in target.read_text(encoding="utf-8")
 
 
 @pytest.fixture

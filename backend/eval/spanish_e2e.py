@@ -4,6 +4,7 @@ import hashlib
 import json
 import random
 import re
+import time
 import unicodedata
 from collections import Counter
 from pathlib import Path
@@ -21,7 +22,16 @@ def save(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".partial")
     temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    temporary.replace(path)
+    # A Docker Desktop host reader can briefly deny rename of the previous snapshot.
+    # Keep replacement atomic and propagate permanent failures after a bounded retry.
+    for attempt in range(21):
+        try:
+            temporary.replace(path)
+            break
+        except PermissionError:
+            if attempt == 20:
+                raise
+            time.sleep(0.25)
 
 
 def normalized(value: str) -> str:
