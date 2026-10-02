@@ -135,22 +135,32 @@ async def test_public_spanish_answers(
                 )
                 assert login.status_code == 200
                 auth = {"Authorization": f"Bearer {login.json()['access_token']}"}
-                corpus = fixture["corpus"].encode()
-                upload = await client.post(
-                    "/documents",
-                    headers=auth,
-                    files={"file": ("sqac-public-e2e.txt", corpus, "text/plain")},
-                    data={"labels": str(account.finance_label)},
-                )
-                assert upload.status_code == 201, upload.text
-                document_id = upload.json()["document"]["id"]
+                identifiers: list[str] = []
                 record["upload"] = {
-                    "document_id": document_id,
-                    "ack_seconds": time.monotonic() - started,
-                    "bytes": len(corpus),
-                    "http_status": 201,
-                    "pending": upload.json()["document"]["status"],
+                    "documents": [],
+                    "corpus_sha256": fixture["protocol"]["corpus_sha256"],
                 }
+                for document in fixture["documents"]:
+                    corpus = document["text"].encode()
+                    upload = await client.post(
+                        "/documents",
+                        headers=auth,
+                        files={"file": (document["filename"], corpus, "text/plain")},
+                        data={"labels": str(account.finance_label)},
+                    )
+                    assert upload.status_code == 201, upload.text
+                    document_id = upload.json()["document"]["id"]
+                    identifiers.append(document_id)
+                    record["upload"]["documents"].append(
+                        {
+                            "document_id": document_id,
+                            "filename": document["filename"],
+                            "ack_seconds": time.monotonic() - started,
+                            "bytes": len(corpus),
+                            "http_status": 201,
+                            "pending": upload.json()["document"]["status"],
+                        }
+                    )
                 save(output / "progress.json", record)
                 await asyncio.wait_for(
                     tasks.app.run_worker_async(
@@ -166,8 +176,11 @@ async def test_public_spanish_answers(
                 )
                 assert login.status_code == 200
                 auth = {"Authorization": f"Bearer {login.json()['access_token']}"}
-                status = await client.get(f"/documents/{document_id}", headers=auth)
-                assert status.status_code == 200 and status.json()["status"] == "ready", status.text
+                for document_id in identifiers:
+                    status = await client.get(f"/documents/{document_id}", headers=auth)
+                    assert status.status_code == 200 and status.json()["status"] == "ready", (
+                        status.text
+                    )
                 record["upload"]["ready_seconds"] = time.monotonic() - started
                 reader = await profile_for(account)
                 async with tenant_session(reader.context) as session:
@@ -176,10 +189,11 @@ async def test_public_spanish_answers(
                         for row in (
                             await session.execute(
                                 text(
-                                    "SELECT id AS chunk_id, char_start, char_end, text FROM chunks "
-                                    "WHERE document_id=:d"
+                                    "SELECT c.id AS chunk_id, c.char_start, c.char_end, c.text, d.filename "
+                                    "FROM chunks c JOIN documents d ON d.id=c.document_id "
+                                    "WHERE c.document_id=ANY(CAST(:ids AS uuid[]))"
                                 ),
-                                {"d": document_id},
+                                {"ids": identifiers},
                             )
                         )
                         .mappings()

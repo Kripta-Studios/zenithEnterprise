@@ -81,6 +81,19 @@ def prepare(dev: Path, test: Path, output: Path, test_count: int = 128) -> dict[
         pieces.append(row["text"])
         offset += len(row["text"]) + 2
     value = "\n\n".join(pieces)
+    # The monolithic initial upload hit the existing embedding INSERT timeout. Retain
+    # all corpus texts and selected questions, but bound files at context boundaries.
+    documents: list[dict[str, Any]] = []
+    filenames: dict[str, str] = {}
+    for row in corpus:
+        if not documents or len(documents[-1]["text"]) + 2 + len(row["text"]) > 64000:
+            documents.append({"filename": f"sqac-public-{len(documents):03d}.txt", "text": ""})
+        document = documents[-1]
+        separator = "\n\n" if document["text"] else ""
+        ranges[row["key"]] = len(document["text"]) + len(separator)
+        filenames[row["key"]] = document["filename"]
+        document["text"] += separator + row["text"]
+    assert "\n\n".join(d["text"] for d in documents) == value
     cases: list[dict[str, Any]] = []
     for split, rows in selected.items():
         for row in rows:
@@ -93,6 +106,7 @@ def prepare(dev: Path, test: Path, output: Path, test_count: int = 128) -> dict[
                     "question": qa["question"],
                     "split": split,
                     "context_key": row["key"],
+                    "filename": filenames[row["key"]],
                     "article": sha(row["title"]),
                     "answers": [
                         {
@@ -113,6 +127,8 @@ def prepare(dev: Path, test: Path, output: Path, test_count: int = 128) -> dict[
         "corpus_contexts": len(corpus),
         "corpus_sha256": sha(value),
         "corpus_bytes": len(value.encode()),
+        "document_count": len(documents),
+        "document_layout": "target 64000 characters, split only between published contexts",
         "retrieved_candidates": 32,
         "generated_passages": 8,
         "batch_tokens": 1024,
@@ -147,13 +163,20 @@ def prepare(dev: Path, test: Path, output: Path, test_count: int = 128) -> dict[
             "experimental depth 32; production CPU depth is eight",
         ],
     }
-    payload: dict[str, Any] = {"protocol": protocol, "corpus": value, "cases": cases}
+    payload: dict[str, Any] = {
+        "protocol": protocol,
+        "corpus": value,
+        "documents": documents,
+        "cases": cases,
+    }
     save(output, payload)
     save(output.with_name("preregistered-protocol.json"), protocol)
     return protocol
 
 
 def spans_supported(hit: dict[str, Any], case: dict[str, Any]) -> bool:
+    if case.get("filename") and hit.get("filename") != case["filename"]:
+        return False
     return any(
         hit["char_start"] <= a["start"]
         and hit["char_end"] >= a["end"]

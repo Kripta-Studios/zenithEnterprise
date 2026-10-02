@@ -75,6 +75,11 @@ class SessionLedger(Ledger):
             raise ValueError("cumulative budget/criteria contract changed")
         save(contract_path, contract)
         super().__init__(path, panel_hash)
+        if path.exists():
+            rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+            finished = {row["call"] for row in rows if row["event"] == "finish"}
+            if any(row["event"] == "start" and row["call"] not in finished for row in rows):
+                raise RuntimeError("unknown paid outcome retained; do not automatically retry")
 
     def reserve(self, identity):
         if self.calls + self.prior_calls >= MAX_CALLS:
@@ -195,6 +200,9 @@ async def paid(panel, output, ledger_path, parent, key):
                         record["error"] = "provider_or_schema_failure"
                         failures += 1
                     finally:
+                        if "score" not in record and "error" not in record:
+                            record["error"] = "interrupted_or_unknown_outcome"
+                            failures += 1
                         record["seconds"] = time.perf_counter() - before
                         ledger.finish(record)
                     await asyncio.sleep(0.1)

@@ -7,6 +7,7 @@ from typing import Any
 import pytest
 
 from eval.spanish_e2e import measure, normalized, paired_interval, prepare, save, token_f1
+from eval.spanish_e2e_nli import apply_entailment, claim_inputs
 
 Example = tuple[dict[str, Any], dict[str, Any], dict[str, Any]]
 
@@ -110,3 +111,22 @@ def test_dataset_overlap_is_rejected(tmp_path: Path) -> None:
     save(test, data)
     with pytest.raises(ValueError, match="overlap"):
         prepare(dev, test, tmp_path / "panel.json", test_count=1)
+
+
+def test_independent_entailment_rejects_unsupported_extra_claim(example: Example) -> None:
+    case, hit, response = example
+    response["answer"] = "Madrid es la capital de todos los países [1]."
+    span = measure(case, response, [hit])
+    assert span["grounded_reference_match"] == 1
+    assert apply_entailment(span, [0.1], 0.8)["entailed_grounded_reference_match"] == 0
+    assert apply_entailment(span, [], 0.8)["entailed_grounded_reference_match"] == 0
+    with pytest.raises(ValueError, match="probability"):
+        apply_entailment(span, [float("nan")], 0.8)
+
+
+def test_independent_judge_receives_only_the_cited_source(example: Example) -> None:
+    _, hit, response = example
+    claims = claim_inputs(response)
+    assert len(claims) == 1
+    assert claims[0]["premise"] == hit["text"]
+    assert claims[0]["claim"] == "Madrid ."
