@@ -16,8 +16,7 @@
     "test": "af84d20d4afeba9a6936c3c7d8b5f577a15af5461c8f0e29f94286bb2205b18d"
   },
   "generator": {
-    "model": "llama3.1:8b-instruct-q4_K_M",
-    "model_digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+    "model": "qwen3:4b",
     "thinking": false,
     "temperature": 0,
     "seed": 20261002,

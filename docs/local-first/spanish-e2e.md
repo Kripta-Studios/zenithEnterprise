@@ -15,14 +15,14 @@ and test context hashes are disjoint. There are no injected gold candidates or e
 based on model performance.
 
 Both arms retrieve 32 real hybrid candidates and send the eight reranked passages to the
-same local Qwen3:4b generator. They use the existing product prompt, HTTP query route,
+same local Llama 3.1 8B Instruct Q4_K_M generator. They use the existing product prompt, HTTP query route,
 permissions, citation binding and query audit writes. The common experimental client
 profile uses two items and 1,024 estimated tokens per batch; production defaults remain
 unchanged. The original BGE model, not a deliberately weakened local baseline, is compared.
 
-Qwen3:4b runs on the existing local Ollama installation with thinking disabled,
+Llama 3.1 runs on the existing local Ollama installation with thinking disabled,
 temperature zero, seed 20261002, context 8192 and output limit 256. Its manifest digest is
-359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7. Model and request options
+46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e. Model and request options
 are identical in both arms; identical full prompts can reuse their original completion.
 
 The primary metric requires the generated answer to contain a human reference answer,
@@ -61,6 +61,23 @@ original corpus checksum; all questions and references are unchanged. The bounde
 run uploaded 844,643 corpus bytes and persisted 939 chunks in 257.365 seconds to ready.
 The single-document bulk embedding INSERT is an observed ingestion bottleneck requiring
 separate product work; this benchmark changes only its input file layout.
+
+Before generating any test answer, the original cached `qwen3:4b` tag failed neutral
+Spanish readiness probes. Its GGUF metadata identifies Qwen3-4B-Thinking-2507, which
+cannot use the planned non-thinking mode. `think:false`, `/no_think`, and an explicit
+closed-thinking raw template still exhausted the 256-token budget on reasoning. Those
+failed probes are retained. The waiting first bounded pipeline was stopped before any
+test generation. Llama 3.1 Instruct was already cached and passed a neutral Spanish
+arithmetic readiness probe in six output tokens. The pipeline is restarted with this
+model for both arms; corpus, questions, retrieval policy, Jev criterion, output budget
+and evaluation thresholds are unchanged. The initial and effective protocols are both
+retained. No generator selection used answer quality from the test questions.
+
+On a technical restart, existing pair scores can be rebound to new disposable database
+UUIDs only after matching every question, filename, character range and full passage
+text. Any unscored passage stops replay. A fresh model run must retain the original
+development criterion freeze and the complete cumulative budget ancestry. This cache
+does not inject candidates or change the actual repeated retrieval in the query route.
 
 The authorized caps remain 100,000 calls and $5, including the earlier 5,173 calls and
 $0.113911056. Every paid request is durably reserved before dispatch; unknown outcomes
