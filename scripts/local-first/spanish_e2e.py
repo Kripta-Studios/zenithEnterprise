@@ -59,10 +59,15 @@ class SessionLedger(Ledger):
         parent_rows = [json.loads(line) for line in parent.read_text(encoding="utf-8").splitlines()]
         prior = Ledger(parent, parent_rows[0]["panel_sha256"])
         self.prior_calls, self.prior_cost = prior.calls, prior.cost
+        parent_contract = parent.with_suffix(".budget.json")
+        if parent_contract.exists():
+            ancestry = json.loads(parent_contract.read_text(encoding="utf-8"))
+            self.prior_calls += ancestry["prior_calls"]
+            self.prior_cost += ancestry["prior_cost"]
         contract = {
             "parent_sha256": digest(parent),
-            "prior_calls": prior.calls,
-            "prior_cost": prior.cost,
+            "prior_calls": self.prior_calls,
+            "prior_cost": self.prior_cost,
             "criteria_sha256": hashlib.sha256(
                 json.dumps(VARIANTS, sort_keys=True).encode()
             ).hexdigest(),
@@ -131,7 +136,7 @@ async def local(panel, output, endpoint):
         print(json.dumps({"local_queries": len(result["queries"])}), flush=True)
 
 
-async def paid(panel, output, ledger_path, parent, key):
+async def paid(panel, output, ledger_path, parent, key, frozen_criteria=None):
     frozen = json.loads(panel.read_text(encoding="utf-8"))
     ledger, gate = SessionLedger(ledger_path, digest(panel), parent), asyncio.Semaphore(4)
     failures = sum("error" in r for r in ledger.results.values())
@@ -217,6 +222,26 @@ async def paid(panel, output, ledger_path, parent, key):
 
         development = [c for c in frozen["cases"] if c["split"] == "development"]
         freeze_path = output.with_name("frozen-jev-criteria.json")
+        if frozen_criteria is not None and not freeze_path.exists():
+            previous = json.loads(frozen_criteria.read_text(encoding="utf-8"))
+            parent_hash = json.loads(parent.read_text(encoding="utf-8").splitlines()[0])[
+                "panel_sha256"
+            ]
+            if (
+                previous["panel_sha256"] != parent_hash
+                or previous["criterion"] != VARIANTS[previous["chosen"]]
+            ):
+                raise ValueError("previous development freeze does not match paid parent ledger")
+            save(
+                freeze_path,
+                {
+                    **previous,
+                    "panel_sha256": digest(panel),
+                    "inherited_development_panel_sha256": parent_hash,
+                    "inherited_freeze_sha256": digest(frozen_criteria),
+                    "reason": "generator preflight restart; no criterion retuning",
+                },
+            )
         if freeze_path.exists():
             freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
             if freeze["panel_sha256"] != digest(panel):
@@ -239,6 +264,7 @@ async def paid(panel, output, ledger_path, parent, key):
             save(freeze_path, freeze)
             print(json.dumps(freeze), flush=True)
         chosen = freeze["chosen"]
+        await asyncio.gather(*(score(c, chosen) for c in development))
         testing = [c for c in frozen["cases"] if c["split"] == "test"]
         for offset in range(0, len(testing), 4):
             await asyncio.gather(*(score(c, chosen) for c in testing[offset : offset + 4]))
@@ -295,17 +321,80 @@ def verify_public_inputs(panel, fixture):
                 raise ValueError("candidate is not an exact public source span")
 
 
+def replay(panel, output, source_panel, source_scores):
+    """Rebind cached pair scores only when every query and public source span matches."""
+    fresh = json.loads(panel.read_text(encoding="utf-8"))
+    old = json.loads(source_panel.read_text(encoding="utf-8"))
+    scored = json.loads(source_scores.read_text(encoding="utf-8"))
+    if scored["panel_sha256"] != digest(source_panel):
+        raise ValueError("source scores disagree with captured source panel")
+    if {k: v for k, v in fresh["protocol"].items() if k != "generator"} != {
+        k: v for k, v in old["protocol"].items() if k != "generator"
+    }:
+        raise ValueError("replay changed retrieval/evaluation protocol")
+    previous = {c["id"]: c for c in old["cases"]}
+    queries = {}
+    for case in fresh["cases"]:
+        before = previous[case["id"]]
+        if {
+            k: v for k, v in case.items() if k not in {"candidates", "embedding", "gold_chunk_ids"}
+        } != {
+            k: v
+            for k, v in before.items()
+            if k not in {"candidates", "embedding", "gold_chunk_ids"}
+        }:
+            raise ValueError("replay changed question/reference inputs")
+
+        def identity(hit):
+            return (hit["filename"], hit["char_start"], hit["char_end"], hit["text"])
+
+        values = dict(
+            zip(
+                map(identity, before["candidates"]),
+                scored["queries"][case["id"]]["scores"],
+                strict=True,
+            )
+        )
+        if any(identity(hit) not in values for hit in case["candidates"]):
+            raise ValueError("new retrieval contains an unscored source span; rerun model stage")
+        queries[case["id"]] = {"scores": [values[identity(hit)] for hit in case["candidates"]]}
+    if set(queries) != set(previous):
+        raise ValueError("replay omitted a question")
+    save(
+        output,
+        {
+            **scored,
+            "panel_sha256": digest(panel),
+            "queries": queries,
+            "verified_replay": {
+                "source_panel_sha256": digest(source_panel),
+                "source_scores_sha256": digest(source_scores),
+                "matching": "exact question, filename, character offsets and passage text; database UUIDs may differ",
+                "new_model_calls": 0,
+            },
+        },
+    )
+    print(json.dumps({"replayed_queries": len(queries), "new_calls": 0}))
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=["local", "jev"])
+    parser.add_argument("mode", choices=["local", "jev", "replay"])
     parser.add_argument("--panel", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--endpoint", default="http://127.0.0.1:18094")
     parser.add_argument("--ledger", type=Path)
     parser.add_argument("--prior-ledger", type=Path)
     parser.add_argument("--public-fixture", type=Path)
+    parser.add_argument("--frozen-criteria", type=Path)
+    parser.add_argument("--source-panel", type=Path)
+    parser.add_argument("--source-scores", type=Path)
     args = parser.parse_args()
-    if args.mode == "local":
+    if args.mode == "replay":
+        if args.source_panel is None or args.source_scores is None:
+            parser.error("replay requires the original captured panel and scored responses")
+        replay(args.panel, args.output, args.source_panel, args.source_scores)
+    elif args.mode == "local":
         asyncio.run(local(args.panel, args.output, args.endpoint))
     else:
         if args.ledger is None or args.prior_ledger is None:
@@ -314,7 +403,9 @@ def main():
             parser.error("paid mode requires an exact public-fixture provenance check")
         verify_public_inputs(args.panel, args.public_fixture)
         key = os.environ.get("TYPESAFE_API_KEY") or getpass.getpass("Jev key (not echoed): ")
-        asyncio.run(paid(args.panel, args.output, args.ledger, args.prior_ledger, key))
+        asyncio.run(
+            paid(args.panel, args.output, args.ledger, args.prior_ledger, key, args.frozen_criteria)
+        )
 
 
 if __name__ == "__main__":

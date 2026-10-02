@@ -138,8 +138,8 @@ def prepare(dev: Path, test: Path, output: Path, test_count: int = 128) -> dict[
             "test": hashlib.sha256(test.read_bytes()).hexdigest(),
         },
         "generator": {
-            "model": "qwen3:4b",
-            "model_digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+            "model": "llama3.1:8b-instruct-q4_K_M",
+            "model_digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
             "thinking": False,
             "temperature": 0,
             "seed": SEED,
