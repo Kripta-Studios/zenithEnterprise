@@ -86,7 +86,9 @@ def main() -> None:
                     sample[name] = {"timeout": True}
             if args.ollama_base:
                 try:
-                    with urllib.request.urlopen(f"{args.ollama_base}/api/ps", timeout=10) as response:
+                    with urllib.request.urlopen(
+                        f"{args.ollama_base}/api/ps", timeout=10
+                    ) as response:
                         sample["ollama"] = json.load(response)
                 except (OSError, HTTPException) as exc:
                     sample["ollama"] = {"error": type(exc).__name__}
