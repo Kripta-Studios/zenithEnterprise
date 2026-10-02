@@ -32,6 +32,7 @@ def main():
     parser.add_argument("--python", type=Path, required=True)
     parser.add_argument("--nli-model", type=Path, required=True)
     parser.add_argument("--resource-wait-seconds", type=int, default=14400)
+    parser.add_argument("--maximum-background-gpu-utilization", type=int, default=10)
     args = parser.parse_args()
     # Never overwrite a failed or completed run. Credentials remain in process memory.
     args.output.mkdir(parents=True, exist_ok=False)
@@ -98,7 +99,15 @@ def main():
                 .strip()
                 .split(","),
             )
-            stable = stable + 1 if ram >= 4500 and total - used >= 7600 and utilization <= 10 else 0
+            stable = (
+                stable + 1
+                if (
+                    ram >= 4500
+                    and total - used >= 6500
+                    and utilization <= args.maximum_background_gpu_utilization
+                )
+                else 0
+            )
             emit(
                 free_ram_mib=ram,
                 free_vram_mib=total - used,
