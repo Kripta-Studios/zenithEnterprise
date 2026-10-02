@@ -4,9 +4,15 @@ Date: 2026-10-02. Evidence inspected at commit `d1cb4d7` on
 `perf/spanish-e2e-citations`, based on `894d209`. This is a plan, not a completed
 end-to-end evaluation or authorization to merge existing branches.
 
-**Recommendation: keep BGE as the local default. Repair the evaluation runner, finish the
-frozen Spanish answer-and-citation comparison, then address the measured ingestion
-bottleneck. More Jev calls or more datasets are not the immediate constraint.**
+Priority update, 2026-10-03: [Martin's acceptance and model analysis](martin-acceptance-and-model-analysis-2026-10-03.md)
+supersedes this plan's delivery order. Complete the independent PR/CI handoff and local
+product work without making them depend on Jev research. The recovery checklist below
+remains applicable to the frozen evaluation.
+
+**Configuration correction: preserve the current configured local default. BGE is the
+stronger measured local research comparator; upstream Compose still defaults to mMiniLM.
+Repair the evaluation runner before resuming the frozen Spanish answer-and-citation
+comparison. More Jev calls or more datasets are not its immediate constraint.**
 
 ## 1. What the results establish
 
