@@ -102,7 +102,8 @@ resume watchdog. Other applications remain running and background GPU activity r
 observable. Thus even the resumed stage is a functional study on shared hardware, not an
 isolated latency benchmark. The resource gate requires six samples with at least 4,500 MiB
 host RAM and 6,500 MiB GPU memory free. The explicitly recorded shared-GPU gate allows up
-to 65% background utilization. These are execution readiness limits; the question set,
+to 85% background utilization after the authorized training pause. The waiting-only 65%
+gate attempt is retained and dispatched no uploads or paid calls. These are execution readiness limits; the question set,
 model options, scoring criteria and quality thresholds remain fixed.
 
 The authorized caps remain 100,000 calls and $5, including the earlier 5,173 calls and
