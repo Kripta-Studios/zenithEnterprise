@@ -302,7 +302,9 @@ async def test_public_spanish_answers(
                             if n not in range(1, len(shortlist) + 1)
                         ]
                         item[arm]["raw_fabricated_markers"] = len(invalid)
-                        async with tenant_session(reader.context) as session:
+                        async with tenant_session(
+                            replace(reader.context, user_id=reader.user_id)
+                        ) as session:
                             stored = await session.scalar(
                                 text("SELECT count(*) FROM query_citations WHERE query_id=:q"),
                                 {"q": body["query_id"]},
