@@ -58,6 +58,17 @@ def test_uncited_or_abstained_answers_are_not_grounded(example: Example) -> None
     assert measure(case, response, [hit])["answer_token_f1"] == 0
 
 
+def test_same_reference_text_and_offsets_in_another_file_are_not_grounded(example: Example) -> None:
+    case, hit, response = example
+    case["filename"] = "correct.txt"
+    hit["filename"] = "other.txt"
+    response["citations"][0]["filename"] = "other.txt"
+    metrics = measure(case, response, [hit])
+    assert metrics["reference_match"] == 1
+    assert metrics["invalid_citations"] == 0
+    assert metrics["grounded_reference_match"] == 0
+
+
 def test_each_sentence_needs_a_marker(example: Example) -> None:
     case, hit, response = example
     response["answer"] = "Madrid [1]. Tiene una población enorme."

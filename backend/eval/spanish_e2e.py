@@ -218,7 +218,8 @@ def measure(
     aligned = any(
         normalized(a["text"]) in normalized(answer)
         and any(
-            c["char_start"] <= a["start"]
+            (not case.get("filename") or c.get("filename") == case["filename"])
+            and c["char_start"] <= a["start"]
             and c["char_end"] >= a["end"]
             and normalized(a["text"]) in normalized(c["text"])
             for c in citations

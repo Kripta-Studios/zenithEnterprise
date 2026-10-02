@@ -10,6 +10,7 @@ from typing import Any, cast
 
 from eval.spanish_e2e import (
     ARTICLES,
+    measure,
     normalized,
     paired_interval,
     save,
@@ -207,6 +208,8 @@ def main() -> None:
     assert args.results is not None and args.output is not None
     source_hash = hashlib.sha256(args.results.read_bytes()).hexdigest()
     record = json.loads(args.results.read_text(encoding="utf-8"))
+    panels = json.loads((args.results.parent / "candidates.json").read_text(encoding="utf-8"))
+    cases = {case["id"]: case for case in panels["cases"]}
     record["independent_nli"] = {
         "input_sha256": source_hash,
         "positive_sanity": positive,
@@ -217,6 +220,7 @@ def main() -> None:
     for index, row in enumerate(record["cases"]):
         for arm in ("bge", "jev"):
             metrics = row[arm]
+            metrics.update(measure(cases[row["id"]], metrics["response"], metrics["shortlist"]))
             checked: list[dict[str, Any]] = []
             for claim in claim_inputs(metrics["response"]):
                 probability, windows = entail(claim["premise"], claim["claim"])
@@ -233,7 +237,6 @@ def main() -> None:
         save(args.output, record)
         print(json.dumps({"independently_checked_pairs": index + 1}), flush=True)
     parent = args.results.parent
-    panels = json.loads((parent / "candidates.json").read_text(encoding="utf-8"))
     scores = {
         arm: json.loads((parent / f"{arm}-scores.json").read_text(encoding="utf-8"))
         for arm in ("bge", "jev")
