@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from spanish_e2e import SessionLedger, replay
+from spanish_e2e_pairs import combine, prepare
 from spanish_rerank import RESERVATION, Ledger, save
 
 
@@ -65,6 +66,62 @@ class CumulativeBudgetTests(unittest.TestCase):
 
 
 class ReplayTests(unittest.TestCase):
+    def test_changed_source_is_scored_fresh_while_exact_pairs_keep_their_original_score(self):
+        import hashlib
+        import json
+        from copy import deepcopy
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            old = {
+                "protocol": {},
+                "cases": [
+                    {
+                        "id": "q",
+                        "question": "public",
+                        "candidates": [
+                            {"filename": "a.txt", "char_start": 0, "char_end": 3, "text": "abc"},
+                            {"filename": "b.txt", "char_start": 0, "char_end": 3, "text": "def"},
+                        ],
+                    }
+                ],
+            }
+            save(root / "old.json", old)
+            save(
+                root / "old-scores.json",
+                {
+                    "panel_sha256": hashlib.sha256((root / "old.json").read_bytes()).hexdigest(),
+                    "queries": {"q": {"scores": [0.7, 0.9]}},
+                },
+            )
+            changed = deepcopy(old)
+            changed["cases"][0]["candidates"][1]["text"] = "xyz"
+            save(root / "new.json", changed)
+            count = prepare(
+                root / "new.json",
+                root / "old.json",
+                root / "old-scores.json",
+                root / "plan.json",
+                root / "pending.json",
+            )
+            self.assertEqual(count, 1)
+            pending = json.loads((root / "pending.json").read_text(encoding="utf-8"))
+            self.assertEqual([h["text"] for h in pending["cases"][0]["candidates"]], ["xyz"])
+            save(
+                root / "fresh.json",
+                {
+                    "panel_sha256": hashlib.sha256(
+                        (root / "pending.json").read_bytes()
+                    ).hexdigest(),
+                    "queries": {"q": {"scores": [0.2]}},
+                },
+            )
+            combine(
+                root / "new.json", root / "plan.json", root / "fresh.json", root / "output.json"
+            )
+            result = json.loads((root / "output.json").read_text(encoding="utf-8"))
+            self.assertEqual(result["queries"]["q"]["scores"], [0.7, 0.2])
+
     def test_changed_passage_cannot_reuse_a_paid_score(self):
         import hashlib
         from copy import deepcopy
