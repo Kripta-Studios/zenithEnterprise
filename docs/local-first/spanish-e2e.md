@@ -58,7 +58,9 @@ statement timeout while inserting chunk embeddings. No database timeout was incr
 Before any scoring, the identical corpus was partitioned into 14 files of about 64,000
 characters, split only between published contexts. Joining those texts restores the exact
 original corpus checksum; all questions and references are unchanged. The bounded actual
-run uploaded 844,643 corpus bytes and persisted 939 chunks in 257.365 seconds to ready.
+run uploaded 844,617 text bytes and persisted 939 chunks in 257.365 seconds to ready.
+The reconstructed corpus is 844,643 bytes; the 26-byte difference is the two-newline
+separator between the 14 files, whose boundaries are restored for the corpus checksum.
 The single-document bulk embedding INSERT is an observed ingestion bottleneck requiring
 separate product work; this benchmark changes only its input file layout.
 
@@ -78,6 +80,12 @@ UUIDs only after matching every question, filename, character range and full pas
 text. Any unscored passage stops replay. A fresh model run must retain the original
 development criterion freeze and the complete cumulative budget ancestry. This cache
 does not inject candidates or change the actual repeated retrieval in the query route.
+In this run replay refused 259 previously unscored candidates after UUID tie ordering
+changed the pool. Both providers were therefore scored again against the final actual
+pool, with the original development criterion retained. A separate retry fixes transient
+Docker Desktop snapshot rename failures caused by host readers; permanent failures still
+propagate. The final 14-file upload-to-ready measurement is 234.100 seconds, with the same
+939 persisted chunks. These two timings are individual local observations, not an SLA.
 
 The authorized caps remain 100,000 calls and $5, including the earlier 5,173 calls and
 $0.113911056. Every paid request is durably reserved before dispatch; unknown outcomes
@@ -95,6 +103,11 @@ or Jev scoring, retaining cumulative ledgers and the development-only criterion 
 Use the pinned SQAC raw files from the existing Spanish dataset manifest. Preparation
 and model weights are ignored local artifacts; no dataset, completion, credential or
 model binary is committed.
+
+The effective generator is the already cached multilingual
+[Llama 3.1 Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct).
+The rejected Qwen tag's metadata and neutral probes agree with the
+[Thinking-2507 model's documented thinking-only mode](https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507).
 
 Run the opt-in pipeline with `scripts/local-first/docker_checks.py`,
 `--test-path eval/tests/test_spanish_e2e_pipeline.py` and `--spanish-e2e-panel` pointing
