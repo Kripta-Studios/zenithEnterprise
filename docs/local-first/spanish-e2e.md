@@ -51,7 +51,7 @@ database and verifies the full candidate identity and order, then uses the recor
 scores and calls the local generator. The result exercises the functional path, including
 database audit assertions, but is not a simultaneous online deployment latency measurement.
 
-Two failed attempts are retained. First, the experimental two-item embedding service
+The initial failed attempts are retained. First, the experimental two-item embedding service
 rejected a four-item client request; the benchmark profile was then applied consistently
 to the existing pipeline. Second, the entire corpus in one file reached the PostgreSQL
 statement timeout while inserting chunk embeddings. No database timeout was increased.
@@ -87,6 +87,24 @@ Docker Desktop snapshot rename failures caused by host readers; permanent failur
 propagate. The final 14-file upload-to-ready measurement is 234.100 seconds, with the same
 939 persisted chunks. These two timings are individual local observations, not an SLA.
 
+The first generated Spanish answer contained two bound citations. Its harness audit assertion
+then failed because the assertion's reader session omitted the author's user ID. RLS correctly
+hid the private log; the product writer already bound the authenticated author. The harness
+now uses that author through the existing tenant session. Actual Linux PostgreSQL tests for
+tenant-scoped logs and cited-passage logging pass. No product RLS policy or writer changed.
+Another restart was stopped after the resource monitor observed only 825.8 MiB host RAM
+free and stopped this experiment's embedder. This interrupted run remains failed, not omitted
+from the execution record or counted as a completed answer-quality comparison.
+
+The user authorized temporarily pausing the competing training task during evaluation.
+Its exact process identities are retained locally for restoration, with an independent
+resume watchdog. Other applications remain running and background GPU activity remains
+observable. Thus even the resumed stage is a functional study on shared hardware, not an
+isolated latency benchmark. The resource gate requires six samples with at least 4,500 MiB
+host RAM and 6,500 MiB GPU memory free. The explicitly recorded shared-GPU gate allows up
+to 65% background utilization. These are execution readiness limits; the question set,
+model options, scoring criteria and quality thresholds remain fixed.
+
 The authorized caps remain 100,000 calls and $5, including the earlier 5,173 calls and
 $0.113911056. Every paid request is durably reserved before dispatch; unknown outcomes
 are not retried. Paid inputs must exactly match question strings and source spans in the
@@ -119,6 +137,15 @@ Run `python -m eval.spanish_e2e_nli --results generated-results.json --model` po
 at the pinned local NLI snapshot `--output independently-graded.json` to produce the
 complete aggregate and bootstrap intervals. Full backend and measurement dependencies
 are needed on the host; the lean pipeline container does not load Torch or Transformers.
+
+`scripts/local-first/run_spanish_e2e.py` coordinates one attempt across these stages. It
+waits for resources, validates the complete retrieval cohort, uses
+`spanish_e2e_pairs.py` to reuse only exact successful question/passage scores, independently
+scores every missing pair with both real providers, runs neutral generator readiness and
+requires all 128 paired queries and audit assertions before independent entailment grading.
+Its durable paid ledger includes the previous attempts. It does not automatically retry
+failed paid calls or overwrite an existing run directory. Supply the Jev credential only
+through an ephemeral environment variable; it is removed from non-paid child environments.
 
 ## Interpretation limits
 
