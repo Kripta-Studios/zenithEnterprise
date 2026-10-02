@@ -38,7 +38,12 @@ class LocalEvaluationProvider(BaseLLMProvider):
                 for key in ("temperature", "seed", "num_ctx", "num_predict")
             },
         }
-        identity = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+        identity = hashlib.sha256(
+            json.dumps(
+                {"request": payload, "model_digest": self.configuration["model_digest"]},
+                sort_keys=True,
+            ).encode()
+        ).hexdigest()
         before = time.perf_counter()
         reused = identity in self.cached
         row: dict[str, Any]
@@ -48,6 +53,12 @@ class LocalEvaluationProvider(BaseLLMProvider):
             async with httpx.AsyncClient(
                 timeout=900, trust_env=False, follow_redirects=False
             ) as client:
+                tags = (await client.get("http://host.docker.internal:11436/api/tags")).json()
+                digest = next(
+                    (m["digest"] for m in tags["models"] if m["name"] == self.model), None
+                )
+                if digest != self.configuration["model_digest"]:
+                    raise ValueError("local generation model digest changed")
                 response = await client.post(
                     "http://host.docker.internal:11436/api/chat", json=payload
                 )

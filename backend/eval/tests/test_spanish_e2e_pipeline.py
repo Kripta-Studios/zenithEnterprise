@@ -136,8 +136,9 @@ async def test_public_spanish_answers(
                 assert login.status_code == 200
                 auth = {"Authorization": f"Bearer {login.json()['access_token']}"}
                 identifiers: list[str] = []
+                uploads: list[dict[str, Any]] = []
                 record["upload"] = {
-                    "documents": [],
+                    "documents": uploads,
                     "corpus_sha256": fixture["protocol"]["corpus_sha256"],
                 }
                 for document in fixture["documents"]:
@@ -151,7 +152,7 @@ async def test_public_spanish_answers(
                     assert upload.status_code == 201, upload.text
                     document_id = upload.json()["document"]["id"]
                     identifiers.append(document_id)
-                    record["upload"]["documents"].append(
+                    uploads.append(
                         {
                             "document_id": document_id,
                             "filename": document["filename"],
@@ -189,7 +190,8 @@ async def test_public_spanish_answers(
                         for row in (
                             await session.execute(
                                 text(
-                                    "SELECT c.id AS chunk_id, c.char_start, c.char_end, c.text, d.filename "
+                                    "SELECT c.id AS chunk_id, c.char_start, c.char_end, "
+                                    "c.text, d.filename "
                                     "FROM chunks c JOIN documents d ON d.id=c.document_id "
                                     "WHERE c.document_id=ANY(CAST(:ids AS uuid[]))"
                                 ),

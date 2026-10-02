@@ -266,6 +266,35 @@ async def paid(panel, output, ledger_path, parent, key):
         )
 
 
+def verify_public_inputs(panel, fixture):
+    """Permit external scoring only of passages from the frozen public SQAC fixture."""
+    captured = json.loads(panel.read_text(encoding="utf-8"))
+    published = json.loads(fixture.read_text(encoding="utf-8"))
+    if captured["protocol"] != published["protocol"]:
+        raise ValueError("public fixture protocol differs from captured retrieval")
+    if published["protocol"]["corpus_sha256"] != (
+        "b1b7d0a5fc83e081b5e7bf141af74d1e41e47c635807f68adcf5f4ca9715263d"
+    ):
+        raise ValueError("only the preregistered public SQAC corpus is permitted")
+    documents = {d["filename"]: d["text"] for d in published["documents"]}
+    if (
+        hashlib.sha256("\n\n".join(documents.values()).encode()).hexdigest()
+        != published["protocol"]["corpus_sha256"]
+    ):
+        raise ValueError("public corpus checksum mismatch")
+    questions = {c["id"]: c["question"] for c in published["cases"]}
+    if {c["id"] for c in captured["cases"]} != set(questions):
+        raise ValueError("captured query set differs from frozen public fixture")
+    for case in captured["cases"]:
+        if case["question"] != questions[case["id"]]:
+            raise ValueError("captured question differs from public SQAC")
+        for hit in case["candidates"]:
+            text = documents[hit["filename"]]
+            start, end = hit["char_start"], hit["char_end"]
+            if not 0 <= start < end <= len(text) or text[start:end].strip() != hit["text"].strip():
+                raise ValueError("candidate is not an exact public source span")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("mode", choices=["local", "jev"])
@@ -274,12 +303,16 @@ def main():
     parser.add_argument("--endpoint", default="http://127.0.0.1:18094")
     parser.add_argument("--ledger", type=Path)
     parser.add_argument("--prior-ledger", type=Path)
+    parser.add_argument("--public-fixture", type=Path)
     args = parser.parse_args()
     if args.mode == "local":
         asyncio.run(local(args.panel, args.output, args.endpoint))
     else:
         if args.ledger is None or args.prior_ledger is None:
             parser.error("paid mode requires durable current and prior budget ledgers")
+        if args.public_fixture is None:
+            parser.error("paid mode requires an exact public-fixture provenance check")
+        verify_public_inputs(args.panel, args.public_fixture)
         key = os.environ.get("TYPESAFE_API_KEY") or getpass.getpass("Jev key (not echoed): ")
         asyncio.run(paid(args.panel, args.output, args.ledger, args.prior_ledger, key))
 

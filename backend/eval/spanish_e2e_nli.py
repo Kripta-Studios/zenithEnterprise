@@ -140,10 +140,13 @@ def summarize(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results", type=Path, required=True)
+    parser.add_argument("--results", type=Path)
     parser.add_argument("--model", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--sanity-only", action="store_true")
     args = parser.parse_args()
+    if not args.sanity_only and (args.results is None or args.output is None):
+        parser.error("full evaluation requires --results and --output")
     import torch
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
@@ -198,6 +201,10 @@ def main() -> None:
     )[0]
     if not positive >= 0.8 or not negative < 0.8:
         raise ValueError("independent Spanish entailment sanity check failed")
+    if args.sanity_only:
+        print(json.dumps({"positive": positive, "negative": negative, "sanity_passed": True}))
+        return
+    assert args.results is not None and args.output is not None
     source_hash = hashlib.sha256(args.results.read_bytes()).hexdigest()
     record = json.loads(args.results.read_text(encoding="utf-8"))
     record["independent_nli"] = {

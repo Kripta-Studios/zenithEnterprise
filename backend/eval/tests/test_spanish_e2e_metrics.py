@@ -14,7 +14,7 @@ Example = tuple[dict[str, Any], dict[str, Any], dict[str, Any]]
 
 @pytest.fixture
 def example() -> Example:
-    case = {"answers": [{"text": "Madrid", "start": 20, "end": 26}]}
+    case = {"answers": [{"text": "Madrid", "start": 24, "end": 30}]}
     hit = {
         "chunk_id": "chunk",
         "document_id": "document",
@@ -22,7 +22,7 @@ def example() -> Example:
         "char_end": 40,
         "text": "La capital de España es Madrid.",
     }
-    response = {"answer": "Madrid [1].", "citations": [hit], "abstained": False}
+    response = {"answer": "Madrid [1].", "citations": [{**hit, "marker": 1}], "abstained": False}
     return case, hit, response
 
 

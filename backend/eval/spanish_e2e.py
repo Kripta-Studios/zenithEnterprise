@@ -139,6 +139,7 @@ def prepare(dev: Path, test: Path, output: Path, test_count: int = 128) -> dict[
         },
         "generator": {
             "model": "qwen3:4b",
+            "model_digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
             "thinking": False,
             "temperature": 0,
             "seed": SEED,
