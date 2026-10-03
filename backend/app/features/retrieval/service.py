@@ -160,6 +160,10 @@ class SearchService:
                 session, ranked, lexical_ids, dense_ids, dict(lexical_scored), dict(dense_scored)
             )
 
+        # Corpus-level lexical evidence belongs to the authorized candidate pool.
+        # A reranker choosing semantic passages must not erase it by reordering them.
+        lexical_matches = sum(hit.lexical_rank is not None for hit in hits)
+        lexical_candidates = len(hits)
         rerank_reason: str | None = None
         if reranking and hits:
             hits, rerank_reason = await self._rerank(question, hits, limit)
@@ -172,8 +176,8 @@ class SearchService:
         # is noise, and averaging would let seven weak passages outvote the one that is right.
         relevance = classify(
             best_rerank([hit.rerank_score for hit in hits]),
-            sum(1 for hit in hits if hit.lexical_rank is not None),
-            len(hits),
+            lexical_matches,
+            lexical_candidates,
         )
         if relevance is Relevance.NONE:
             # Withheld rather than ranked. Showing them under a notice saying they do not
