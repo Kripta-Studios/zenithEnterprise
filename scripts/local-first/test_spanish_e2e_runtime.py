@@ -11,7 +11,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import docker_checks
-from spanish_e2e_runtime import completed_scores, ready
+from spanish_e2e_runtime import completed_scores, load_json, ready
 
 
 class ReadinessTests(unittest.TestCase):
@@ -63,6 +63,13 @@ class ReadinessTests(unittest.TestCase):
 
 
 class ScoreResumeTests(unittest.TestCase):
+    def test_utf8_spanish_path_survives_the_default_windows_locale(self):
+        with tempfile.TemporaryDirectory(prefix="zenith-e2e-resume-") as directory:
+            path = Path(directory) / "Álvaro.json"
+            data = {"source_run": "C:/Users/Álvaro", "question": "¿Quién vive en España?"}
+            path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            self.assertEqual(load_json(path), data)
+
     def test_changed_order_is_rejected_before_reuse(self):
         with tempfile.TemporaryDirectory(prefix="zenith-e2e-resume-") as directory:
             root = Path(directory)

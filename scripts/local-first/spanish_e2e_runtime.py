@@ -6,6 +6,11 @@ import time
 import urllib.request
 
 
+def load_json(path):
+    """Spanish text and Windows user paths are UTF-8, independent of the host locale."""
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def completed_scores(panel_path, output):
     """A completed stage can resume only against its exact ordered capture."""
     import hashlib

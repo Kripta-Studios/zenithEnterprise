@@ -12,7 +12,7 @@ from pathlib import Path
 
 from spanish_e2e import digest, save
 from spanish_e2e_pairs import combine, prepare
-from spanish_e2e_runtime import completed_scores, ready
+from spanish_e2e_runtime import completed_scores, load_json, ready
 
 
 def request(path, payload=None):
@@ -51,7 +51,7 @@ def main():
     binding = {"fixture_sha256": digest(args.fixture), "source_run": str(args.previous.resolve())}
     identity_path = args.output / "run-identity.json"
     if identity_path.exists():
-        if json.loads(identity_path.read_text()) != binding:
+        if load_json(identity_path) != binding:
             raise ValueError("resume belongs to another fixture or source run")
     elif args.resume:
         raise ValueError("resume requires an existing bound run")
@@ -256,7 +256,7 @@ def main():
                     "Actual upload/retrieval did not complete; no scoring dispatched"
                 )
             time.sleep(5)
-        captured = json.loads(panel.read_text(encoding="utf-8"))
+        captured = load_json(panel)
         if len(captured["cases"]) != 144 or any(
             len(c["candidates"]) != 32 for c in captured["cases"]
         ):
@@ -284,7 +284,7 @@ def main():
             print(json.dumps({"arm": arm, "uncached_pairs": missing}), flush=True)
             missing_by_arm[arm] = missing
             if missing == 0:
-                original = json.loads((args.previous / f"{arm}-scores.json").read_text())
+                original = load_json(args.previous / f"{arm}-scores.json")
                 save(
                     target / f"{arm}-scores.json",
                     {
@@ -434,8 +434,8 @@ def main():
             time.sleep(5)
         if runner.returncode != 0:
             raise RuntimeError("Actual paired query/audit run failed")
-        checks = json.loads((args.output / "spanish-e2e-docker-checks.json").read_text())
-        results = json.loads((args.output / "generated-results.json").read_text())
+        checks = load_json(args.output / "spanish-e2e-docker-checks.json")
+        results = load_json(args.output / "generated-results.json")
         if any(c["exit"] for c in checks["commands"]):
             raise RuntimeError("Actual integration test failed despite helper process exit")
         if results["phase"] != "complete" or len(results["cases"]) != 128:
