@@ -19,6 +19,7 @@ they close it.
 import json
 import os
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -112,13 +113,25 @@ def test_the_compose_defaults_match_the_smallest_profile(service: str) -> None:
 def test_local_gpu_preset_reaches_both_processes_and_tei_services(tmp_path: Path) -> None:
     """Render the real overlays: interpolation files do not become service env_file."""
     root = COMPOSE.parent.parent
-    preset = root / "docker" / "ingestion-gpu-local.env"
+    # Resolve real service env_file values against a disposable installation. Older
+    # Compose loaders still validate their paths with --no-env-resolution; never read
+    # or create a developer's private .env to make this test pass.
+    compose_dir = tmp_path / "docker"
+    compose_dir.mkdir()
+    for name in (
+        "docker-compose.yml",
+        "docker-compose.gpu.yml",
+        "docker-compose.blackwell.yml",
+        "ingestion-gpu-local.env",
+    ):
+        shutil.copyfile(root / "docker" / name, compose_dir / name)
+    preset = compose_dir / "ingestion-gpu-local.env"
     values = dict(
         line.split("=", 1)
         for line in preset.read_text().splitlines()
         if line and not line.startswith("#")
     )
-    private = tmp_path / "installation.env"
+    private = tmp_path / ".env"
     private.write_text("POSTGRES_PASSWORD=configuration-test-only\n")
     environment = dict(os.environ)
     for key in values:
@@ -133,23 +146,23 @@ def test_local_gpu_preset_reaches_both_processes_and_tei_services(tmp_path: Path
             "--env-file",
             str(preset),
             "-f",
-            str(COMPOSE),
+            str(compose_dir / "docker-compose.yml"),
             "-f",
-            str(root / "docker/docker-compose.gpu.yml"),
+            str(compose_dir / "docker-compose.gpu.yml"),
             "-f",
-            str(root / "docker/docker-compose.blackwell.yml"),
+            str(compose_dir / "docker-compose.blackwell.yml"),
             "config",
-            "--no-env-resolution",
             "--format",
             "json",
         ],
         capture_output=True,
-        check=True,
+        check=False,
         text=True,
         encoding="utf-8",
         env=environment,
         timeout=30,
     )
+    assert rendered.returncode == 0, rendered.stderr
     services = json.loads(rendered.stdout)["services"]
     profile = PROFILES[values["ZENITH_HARDWARE"]]
     for name in ("api", "worker"):

@@ -149,6 +149,19 @@ publication. Full backend/frontend CI is the merge gate; a full local `make chec
 is not claimed because Docker was shut down as requested after GPU operations.
 No dependency lock changes, external processing or paid calls are involved.
 
+The first full Linux run, [37152257042](https://github.com/Kripta-Studios/zenithEnterprise/actions/runs/37152257042),
+reported 1085 passing, 29 skipped and two failing backend tests; frontend passed.
+The Compose guard now copies the unchanged overlays into a temporary installation
+with its own placeholder `.env`, resolves service environment files normally, and
+includes stderr on failure. This avoids depending on loader handling of absent
+private environment files. Its updated six tests pass locally with Docker off.
+An existing candidate-relevance test also assumed full ANN recall for tied synthetic
+vectors in a shared growing database. That test now calls the real dense SQL using
+an exact scan under the same application-role RLS, retaining every assertion and
+the real lexical/reranking path. Vector index planning and isolation acceptance
+tests remain unchanged. These test corrections do not change production retrieval
+or any measured ingestion operation; subsequent full CI must pass before integration.
+
 Read the generated [source-free JSON](ingestion-phase-results-2026-10-03.json) and
 [per-trial CSV](ingestion-phase-results-2026-10-03.csv). Raw public uploads, vectors,
 telemetry, resource samples and diagnostic/tuning runs are retained locally under

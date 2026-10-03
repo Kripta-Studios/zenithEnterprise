@@ -34,3 +34,9 @@ them for a duplicate full suite. Both are off after completing GPU operations.
 Report: docs/local-first/ingestion-phase-results-2026-10-03.md with JSON/CSV artifact
 bindings. Next measurement: vector serialization/index/commit versus the now-balanced
 embedding phase, preserving atomic replacement and RLS. No provider calls or downloads.
+
+First full Linux CI: 1085 passed, 29 skipped, two test-fixture failures. Resolve
+Compose against a complete temporary installation and make the existing lexical
+candidate-evidence guard use real exact dense SQL rather than depend on synthetic
+ANN recall in a shared database. No production retrieval changes or weakened
+assertions. The six updated Compose checks pass locally; full CI is repeated.
