@@ -15,3 +15,10 @@ isolation with real PostgreSQL. Validate 128 new published Spanish questions fro
 previously unused article families, plus independently labelled unanswerable controls.
 Report ranking/admission metrics separately from generated-answer accuracy. Do not
 retune the completed cohort or promise that removing a veto guarantees a supported answer.
+
+Independent application-role PostgreSQL regression run at
+7c7c02aeddebb6f620af62259407650c0c7f3658: 18 passed in 160.97 seconds.
+Ruff/format and strict Linux-target Pyright passed on the changed source and tests.
+The fresh-model study is a separate research branch; no benchmark or Jev import is
+needed by this change. Full CI and fresh-question results are tracked in the fork's
+local-first delivery report. These focused checks do not claim a full local make check.
