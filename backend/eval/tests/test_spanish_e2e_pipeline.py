@@ -174,6 +174,11 @@ async def test_public_spanish_answers(
         self: retrieval.SearchService, question: str, hits: list[Hit], limit: int
     ) -> tuple[list[Hit], str | None, AssessmentBatch | None]:
         serialized = json.loads(json.dumps([asdict(hit) for hit in hits], default=str))
+        # This internal version hash was added after the frozen public capture. It is
+        # neither a ranking input nor a source coordinate. Preserve exact comparison of
+        # every original field, including IDs, ranks, scores, order and source text.
+        for item in serialized:
+            item.pop("source_sha256", None)
         if question in captured and serialized != captured[question]:
             raise ValueError("persistent database retrieval no longer matches its capture")
         if current["capture"]:
