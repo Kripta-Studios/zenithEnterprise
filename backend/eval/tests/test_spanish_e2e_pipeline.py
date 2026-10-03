@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, cast
 from uuid import UUID
 
+import httpx
 import procrastinate
 import pytest
 from fastapi import FastAPI
@@ -136,7 +137,10 @@ async def test_public_spanish_answers(
         "cases": [],
     }
     profile = replace(
-        PROFILES["cpu"], rerank_candidates=32, max_batch_tokens=1024, max_client_batch_size=2
+        PROFILES["cpu"],
+        rerank_candidates=32,
+        max_batch_tokens=int(os.environ.get("ZENITH_E2E_BATCH_TOKENS", "1024")),
+        max_client_batch_size=int(os.environ.get("ZENITH_E2E_BATCH_ITEMS", "2")),
     )
     monkeypatch.setattr(settings, "tei_embed_url", "http://embed-e2e:80")
     monkeypatch.setattr(settings, "hardware", "cpu")
@@ -214,6 +218,73 @@ async def test_public_spanish_answers(
         telemetry: dict[str, dict[str, Any]] = {}
         actual_persist = IngestionPipeline._persist  # pyright: ignore[reportPrivateUsage]
         actual_ingest = IngestionPipeline._ingest  # pyright: ignore[reportPrivateUsage]
+        actual_status = IngestionPipeline._set_status  # pyright: ignore[reportPrivateUsage]
+        actual_file = IngestionPipeline._file  # pyright: ignore[reportPrivateUsage]
+        actual_embedding = TeiClient.embed
+        actual_post = httpx.AsyncClient.post
+        active_document: str | None = None
+        stage_started: dict[str, tuple[str, float]] = {}
+
+        async def timed_status(self: IngestionPipeline, document_id: UUID, status: str) -> None:
+            key = str(document_id)
+            item = telemetry.setdefault(key, {})
+            before = time.monotonic()
+            if key in stage_started:
+                previous, since = stage_started[key]
+                if previous in {"parsing", "chunking"}:
+                    item[f"{previous}_seconds"] = before - since
+            await actual_status(self, document_id, status)
+            item["status_write_seconds"] = (
+                item.get("status_write_seconds", 0) + time.monotonic() - before
+            )
+            item["status_writes"] = item.get("status_writes", 0) + 1
+            stage_started[key] = (status, time.monotonic())
+
+        async def timed_file(
+            self: IngestionPipeline, document_id: UUID, chunks: list[Chunk]
+        ) -> bool:
+            before = time.monotonic()
+            try:
+                return await actual_file(self, document_id, chunks)
+            finally:
+                telemetry.setdefault(str(document_id), {})["classification_seconds"] = (
+                    time.monotonic() - before
+                )
+
+        async def timed_embedding(self: TeiClient, texts: list[str]) -> list[list[float]]:
+            assert active_document is not None
+            item = telemetry.setdefault(active_document, {})
+            item["embedding_items"] = len(texts)
+            item["client_batch_tokens"] = self.profile.max_batch_tokens
+            item["client_batch_items"] = self.profile.max_client_batch_size
+            before = time.monotonic()
+            try:
+                result = await actual_embedding(self, texts)
+                assert len(result) == len(texts) and all(len(v) == 1024 for v in result)
+                return result
+            finally:
+                item["embedding_seconds"] = time.monotonic() - before
+
+        async def timed_post(self: httpx.AsyncClient, url: Any, **kwargs: Any) -> httpx.Response:
+            before = time.monotonic()
+            response = await actual_post(self, url, **kwargs)
+            if active_document is not None and str(url).endswith("/embed"):
+                item = telemetry.setdefault(active_document, {})
+                requests = item.setdefault("embedding_requests", [])
+                requests.append(
+                    {
+                        "seconds": time.monotonic() - before,
+                        "items": len(kwargs.get("json", {}).get("inputs", [])),
+                        "status": response.status_code,
+                        "timing_headers": {
+                            key: value
+                            for key, value in response.headers.items()
+                            if key.startswith("x-")
+                            and any(part in key for part in ("time", "tokens"))
+                        },
+                    }
+                )
+            return response
 
         async def timed_persist(
             self: IngestionPipeline,
@@ -236,6 +307,8 @@ async def test_public_spanish_answers(
         async def timed_ingest(
             self: IngestionPipeline, document_id: UUID, path: Path, media_type: str
         ) -> Result:
+            nonlocal active_document
+            active_document = str(document_id)
             before = time.monotonic()
             try:
                 result = await actual_ingest(self, document_id, path, media_type)
@@ -246,9 +319,14 @@ async def test_public_spanish_answers(
                 item["ingest_seconds"] = time.monotonic() - before
                 item["finished_after_upload_start_seconds"] = time.monotonic() - started
                 save(output / "ingestion-telemetry.json", telemetry)
+                active_document = None
 
         monkeypatch.setattr(IngestionPipeline, "_persist", timed_persist)
         monkeypatch.setattr(IngestionPipeline, "_ingest", timed_ingest)
+        monkeypatch.setattr(IngestionPipeline, "_set_status", timed_status)
+        monkeypatch.setattr(IngestionPipeline, "_file", timed_file)
+        monkeypatch.setattr(TeiClient, "embed", timed_embedding)
+        monkeypatch.setattr(httpx.AsyncClient, "post", timed_post)
     with tasks.app.replace_connector(connector):
         async with tasks.app.open_async():
             schema_exists = False
