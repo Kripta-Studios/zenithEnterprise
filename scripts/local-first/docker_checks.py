@@ -28,6 +28,7 @@ def main() -> None:
     parser.add_argument("--spanish-e2e-capture-only", action="store_true")
     parser.add_argument("--ingestion-batch-tokens", type=int)
     parser.add_argument("--ingestion-batch-items", type=int)
+    parser.add_argument("--ingestion-phase-series", action="store_true")
     parser.add_argument("--public-keycloak-loopback", action="store_true")
     parser.add_argument("--baseline-tcp", action="store_true")
     parser.add_argument("--persistence-fixture", type=Path)
@@ -228,6 +229,8 @@ def main() -> None:
                 invocation[2:2] = ["-e", "ZENITH_E2E_PERSISTENT_DB=1"]
             if args.spanish_e2e_capture_only:
                 invocation[2:2] = ["-e", "ZENITH_E2E_CAPTURE_ONLY=1"]
+            if args.ingestion_phase_series:
+                invocation[2:2] = ["-e", "ZENITH_RUN_INGESTION_PHASE_SERIES=1"]
             if args.ingestion_batch_tokens is not None:
                 if args.ingestion_batch_tokens < 1:
                     parser.error("embedding token budget must be positive")
