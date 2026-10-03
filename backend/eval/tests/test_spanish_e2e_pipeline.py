@@ -7,7 +7,7 @@ import os
 import time
 from dataclasses import asdict, replace
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 import procrastinate
@@ -105,7 +105,7 @@ async def account(configured_engines: None) -> Account:
             default_label=UUID(data["default_label"]),
             quarantine_label=UUID(data["quarantine_label"]),
         )
-    seeded: Account = await seed_account.__wrapped__(configured_engines)  # type: ignore[attr-defined]
+    seeded = cast(Account, await seed_account.__wrapped__(configured_engines))  # type: ignore[attr-defined]
     if os.environ.get("ZENITH_E2E_PERSISTENT_DB"):
         save(path, json.loads(json.dumps(asdict(seeded), default=str)))
     return seeded
