@@ -16,7 +16,10 @@ missing word, not a malformed grammar.
 """
 
 import re
+import sys
 from pathlib import Path
+
+import pytest
 
 from app.main import app
 
@@ -123,6 +126,25 @@ def test_vite_proxy_guard_rejects_missing_misdirected_and_malformed_routes() -> 
             pass
         else:
             raise AssertionError("malformed or misdirected proxy route passed guard")
+
+
+def test_unrelated_fetch_does_not_supply_a_missing_proxy_prefix(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = VITE.read_text()
+    without_search = re.sub(r'^\s*"/search":.*\n', "", source, flags=re.MULTILINE)
+    assert without_search != source
+    path = tmp_path / "vite.config.ts"
+    path.write_text(without_search + '\nfetch("/search", {method: "GET"});\n')
+    monkeypatch.setattr(sys.modules[__name__], "VITE", path)
+    with pytest.raises(AssertionError, match="search.*absent"):
+        test_the_dev_proxy_matches_the_production_one()
+    path.write_text(source)
+    test_the_dev_proxy_matches_the_production_one()
+
+
+def test_intentionally_unproxied_endpoints_are_not_required() -> None:
+    assert not served_prefixes() & NOT_PROXIED
 
 
 def test_no_route_repeats_its_router_prefix() -> None:
