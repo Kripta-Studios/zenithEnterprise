@@ -41,6 +41,8 @@ def main():
     parser.add_argument("--allow-partial-gpu-generator", action="store_true")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--credential-stdin", action="store_true")
+    parser.add_argument("--reuse-public-capture", action="store_true")
+    parser.add_argument("--cached-scores-only", action="store_true")
     args = parser.parse_args()
     if args.credential_stdin:
         os.environ["TYPESAFE_API_KEY"] = getpass.getpass(
@@ -73,7 +75,7 @@ def main():
             shutil.copyfile(source, attempt / name)
     for name in ("models-ready.json", "capture-ready.json", "embed.done", "generation.done"):
         (args.output / name).unlink(missing_ok=True)
-    clean_env = {k: v for k, v in os.environ.items() if k != "TYPESAFE_API_KEY"}
+    clean_env = {k: v for k, v in os.environ.items() if k not in {"TYPESAFE_API_KEY", "JEV_API_KEY"}}
     clean_env["PYTHONPATH"] = str(Path("backend").resolve())
     python = str(args.python.resolve())
     processes, handles = [], []
@@ -165,6 +167,22 @@ def main():
         database = "zenith-lf-e2e-db"
         probe = subprocess.run(["docker", "inspect", database], capture_output=True, env=clean_env)
         database_identity = digest(identity_path)
+        if args.reuse_public_capture:
+            source_identity = args.previous / "run-identity.json"
+            if load_json(source_identity)["fixture_sha256"] != digest(args.fixture):
+                raise ValueError("public capture belongs to another frozen fixture")
+            if probe.returncode:
+                raise ValueError("capture reuse requires its existing isolated database")
+            database_identity = digest(source_identity)
+            for name in ("account.json", "candidates.json", "upload-first.json"):
+                source = args.previous / name
+                target = args.output / name
+                if target.exists() and target.read_bytes() != source.read_bytes():
+                    raise ValueError("capture reuse target differs from its bound source")
+                shutil.copyfile(source, target)
+            shutil.copytree(
+                args.previous / "public-documents", args.output / "public-documents", dirs_exist_ok=True
+            )
         if probe.returncode:
             run(
                 [
@@ -297,6 +315,8 @@ def main():
                 )
         if missing_by_arm["jev"] and not os.environ.get("TYPESAFE_API_KEY"):
             raise ValueError("uncached paid pairs require the authorized ephemeral credential")
+        if args.cached_scores_only and any(missing_by_arm.values()):
+            raise ValueError("repeat requires exact cached scores; no new provider calls allowed")
         if missing_by_arm["bge"]:
             owned_container("zenith-lf-bge-gpu", "start")
             save(
