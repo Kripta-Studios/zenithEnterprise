@@ -137,15 +137,29 @@ async def test_public_spanish_answers(
         "phase": "upload",
         "cases": [],
     }
+    profile_name = os.environ.get("ZENITH_E2E_HARDWARE", "cpu")
+    defaults = PROFILES[profile_name]
     profile = replace(
-        PROFILES["cpu"],
+        defaults,
         rerank_candidates=32,
-        max_batch_tokens=int(os.environ.get("ZENITH_E2E_BATCH_TOKENS", "1024")),
-        max_client_batch_size=int(os.environ.get("ZENITH_E2E_BATCH_ITEMS", "2")),
+        max_batch_tokens=int(
+            os.environ.get(
+                "ZENITH_E2E_BATCH_TOKENS",
+                str(defaults.max_batch_tokens) if "ZENITH_E2E_HARDWARE" in os.environ else "1024",
+            )
+        ),
+        max_client_batch_size=int(
+            os.environ.get(
+                "ZENITH_E2E_BATCH_ITEMS",
+                str(defaults.max_client_batch_size) if "ZENITH_E2E_HARDWARE" in os.environ else "2",
+            )
+        ),
     )
-    monkeypatch.setattr(settings, "tei_embed_url", "http://embed-e2e:80")
-    monkeypatch.setattr(settings, "hardware", "cpu")
-    monkeypatch.setitem(PROFILES, "cpu", profile)
+    monkeypatch.setattr(
+        settings, "tei_embed_url", os.environ.get("ZENITH_E2E_EMBED_URL", "http://embed-e2e:80")
+    )
+    monkeypatch.setattr(settings, "hardware", profile_name)
+    monkeypatch.setitem(PROFILES, profile_name, profile)
     monkeypatch.setattr(retrieval, "active_profile", lambda: profile)
     monkeypatch.setattr("app.features.embeddings.client.active_profile", lambda: profile)
     monkeypatch.delenv("ZENITH_DISABLE_INGESTION_QUEUE", raising=False)
@@ -256,6 +270,7 @@ async def test_public_spanish_answers(
             assert active_document is not None
             item = telemetry.setdefault(active_document, {})
             item["embedding_items"] = len(texts)
+            item["hardware_profile"] = self.profile.name
             item["client_batch_tokens"] = self.profile.max_batch_tokens
             item["client_batch_items"] = self.profile.max_client_batch_size
             before = time.monotonic()
@@ -346,7 +361,9 @@ async def test_public_spanish_answers(
     with tasks.app.replace_connector(connector):
         async with tasks.app.open_async():
             schema_exists = False
-            if os.environ.get("ZENITH_E2E_PERSISTENT_DB"):
+            if os.environ.get("ZENITH_E2E_PERSISTENT_DB") or os.environ.get(
+                "ZENITH_RUN_INGESTION_PHASE_SERIES"
+            ):
                 engine = create_async_engine(owner_url)
                 async with engine.connect() as connection:
                     schema_exists = bool(
