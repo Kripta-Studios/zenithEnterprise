@@ -7,12 +7,13 @@ import statistics
 import sys
 import time
 import types
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Iterator
 from pathlib import Path
 from typing import Any
 
 import pytest
 from sqlalchemy import event, text
+from testcontainers.community.postgres import PostgresContainer
 
 from app.core.database import get_session_factory, tenant_session
 from app.features.documents.storage import DocumentStorage
@@ -21,11 +22,21 @@ from app.features.ingestion.chunking.chunker import Chunk
 from app.features.ingestion.parsers.base import Box, ParsedPage
 from app.features.ingestion.pipeline import IngestionPipeline
 from app.features.tenancy.context import TenantContext
-from conftest import Account
+from conftest import IMAGE, MAX_LOCKS_PER_TRANSACTION, Account
 
 pytestmark = pytest.mark.skipif(
     not os.environ.get("ZENITH_RUN_PERSISTENCE_BENCHMARK"), reason="opt-in persistence measurement"
 )
+
+
+@pytest.fixture(scope="session")
+def postgres() -> Iterator[PostgresContainer]:
+    with (
+        PostgresContainer(IMAGE, driver="psycopg")
+        .with_command(f"postgres -c max_locks_per_transaction={MAX_LOCKS_PER_TRANSACTION}")
+        .with_kwargs(mem_limit="768m", nano_cpus=2_000_000_000)
+    ) as container:
+        yield container
 
 
 async def test_public_persistence_profile(account: Account, tmp_path: Path) -> None:
@@ -162,6 +173,8 @@ async def test_public_persistence_profile(account: Account, tmp_path: Path) -> N
                 "baseline_source_sha256": hashlib.sha256(baseline_path.read_bytes()).hexdigest(),
                 "chunks": 938,
                 "dimensions": 1024,
+                "database_cpus": 2,
+                "database_memory_mib": 768,
                 "mode": mode,
                 "trials": trials,
                 "scope": "isolated application-role atomic replacement; first pair is warmup",
