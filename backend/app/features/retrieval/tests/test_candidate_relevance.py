@@ -4,14 +4,21 @@ import json
 from dataclasses import replace
 
 import httpx
+import pytest
 
 from app.core.hardware import PROFILES
 from app.features.retrieval.relevance import Relevance
 from app.features.retrieval.service import SearchService
 from conftest import Account, WorkingEmbedder
+from conftest import account as seed_account
 
 from .test_rerank import reranker
 from .test_search import profile_for, seed
+
+
+@pytest.fixture
+async def other_account(configured_engines: None) -> Account:
+    return await seed_account.__wrapped__(configured_engines)  # type: ignore[attr-defined]
 
 
 def prefer_semantic(request: httpx.Request) -> httpx.Response:
