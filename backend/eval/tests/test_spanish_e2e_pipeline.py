@@ -8,11 +8,16 @@ import time
 from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any
+from uuid import UUID
 
 import procrastinate
 import pytest
+from conftest import IMAGE, MAX_LOCKS_PER_TRANSACTION, PASSWORD, Account
+from conftest import account as seed_account
 from fastapi import FastAPI
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import create_async_engine
+from testcontainers.community.postgres import PostgresContainer
 
 from app.common.exceptions import ZenithError
 from app.core.config import settings
@@ -33,7 +38,6 @@ from app.features.retrieval.search import Hit
 from app.features.retrieval.tests.test_search import profile_for
 from app.features.tenancy.context import TenantContext
 from app.main import handle_domain_error
-from conftest import PASSWORD, Account
 from eval.e2e_generator import LocalEvaluationProvider
 from eval.spanish_e2e import measure, save, spans_supported
 from eval.tests.test_local_first_baseline import baseline_client
@@ -45,6 +49,63 @@ pytestmark = [
         reason="opt-in actual Spanish model evaluation",
     ),
 ]
+
+
+@pytest.fixture(scope="session")
+def postgres() -> Any:
+    """Reuse only the controller's isolated database in this opt-in module."""
+    if os.environ.get("ZENITH_E2E_PERSISTENT_DB"):
+
+        class ExistingDatabase:
+            username = "test"
+            password = "test"
+            dbname = "test"
+
+            def get_container_host_ip(self) -> str:
+                return "db-e2e"
+
+            def get_exposed_port(self, port: int) -> str:
+                assert port == 5432
+                return "5432"
+
+        yield ExistingDatabase()
+    else:
+        with PostgresContainer(IMAGE, driver="psycopg").with_command(
+            f"postgres -c max_locks_per_transaction={MAX_LOCKS_PER_TRANSACTION}"
+        ) as container:
+            yield container
+
+
+@pytest.fixture(autouse=True)
+def isolated_storage(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = (
+        Path(os.environ["ZENITH_E2E_OUTPUT"]) / "public-documents"
+        if os.environ.get("ZENITH_E2E_PERSISTENT_DB")
+        else tmp_path / "documents"
+    )
+    monkeypatch.setattr(settings, "storage_dir", root)
+
+
+@pytest.fixture
+async def account(configured_engines: None) -> Account:
+    path = Path(os.environ["ZENITH_E2E_OUTPUT"]) / "account.json"
+    if os.environ.get("ZENITH_E2E_PERSISTENT_DB") and path.exists():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return Account(
+            tenant_id=UUID(data["tenant_id"]),
+            admin_id=UUID(data["admin_id"]),
+            admin_email=str(data["admin_email"]),
+            member_id=UUID(data["member_id"]),
+            member_email=str(data["member_email"]),
+            finance_label=UUID(data["finance_label"]),
+            hr_label=UUID(data["hr_label"]),
+            default_label=UUID(data["default_label"]),
+            quarantine_label=UUID(data["quarantine_label"]),
+        )
+    seeded = await seed_account.__wrapped__(configured_engines)  # type: ignore[attr-defined]
+    if os.environ.get("ZENITH_E2E_PERSISTENT_DB"):
+        save(path, json.loads(json.dumps(asdict(seeded), default=str)))
+    return seeded
 
 
 async def await_file(path: Path, deadline: float) -> None:
@@ -84,12 +145,22 @@ async def test_public_spanish_answers(
         api.include_router(router)
     vectors: dict[str, list[float]] = {}
     captured: dict[str, list[dict[str, Any]]] = {}
+    prior_path = output / "candidates.json"
+    prior_cases = {}
+    if os.environ.get("ZENITH_E2E_PERSISTENT_DB") and prior_path.exists():
+        prior = json.loads(prior_path.read_text(encoding="utf-8"))
+        if prior["protocol"] != fixture["protocol"]:
+            raise ValueError("persistent fixture protocol changed")
+        for case in prior["cases"]:
+            prior_cases[case["id"]] = case
+            vectors[case["question"]] = case["embedding"]
+            captured[case["question"]] = case["candidates"]
     current: dict[str, Any] = {"capture": True, "arm": "bge"}
     actual_embed = TeiClient.embed_query
     actual_rerank = retrieval.SearchService._rerank  # pyright: ignore[reportPrivateUsage]
 
     async def embed(self: TeiClient, question: str) -> list[float]:
-        if current["capture"]:
+        if current["capture"] and question not in vectors:
             vectors[question] = await actual_embed(self, question)
         if question not in vectors:
             raise ValueError("unrecorded query embedding would break the paired experiment")
@@ -99,6 +170,8 @@ async def test_public_spanish_answers(
         self: retrieval.SearchService, question: str, hits: list[Hit], limit: int
     ) -> tuple[list[Hit], str | None]:
         serialized = json.loads(json.dumps([asdict(hit) for hit in hits], default=str))
+        if question in captured and serialized != captured[question]:
+            raise ValueError("persistent database retrieval no longer matches its capture")
         if current["capture"]:
             captured[question] = serialized
         elif serialized != captured[question]:
@@ -128,7 +201,18 @@ async def test_public_spanish_answers(
     started = time.monotonic()
     with tasks.app.replace_connector(connector):
         async with tasks.app.open_async():
-            await tasks.app.schema_manager.apply_schema_async()
+            schema_exists = False
+            if os.environ.get("ZENITH_E2E_PERSISTENT_DB"):
+                engine = create_async_engine(owner_url)
+                async with engine.connect() as connection:
+                    schema_exists = bool(
+                        await connection.scalar(
+                            text("SELECT to_regclass('public.procrastinate_jobs') IS NOT NULL")
+                        )
+                    )
+                await engine.dispose()
+            if not schema_exists:
+                await tasks.app.schema_manager.apply_schema_async()
             async with baseline_client(api) as client:
                 login = await client.post(
                     "/auth/login", json={"email": account.admin_email, "password": PASSWORD}
@@ -149,7 +233,7 @@ async def test_public_spanish_answers(
                         files={"file": (document["filename"], corpus, "text/plain")},
                         data={"labels": str(account.finance_label)},
                     )
-                    assert upload.status_code == 201, upload.text
+                    assert upload.status_code in (200, 201), upload.text
                     document_id = upload.json()["document"]["id"]
                     identifiers.append(document_id)
                     uploads.append(
@@ -158,7 +242,7 @@ async def test_public_spanish_answers(
                             "filename": document["filename"],
                             "ack_seconds": time.monotonic() - started,
                             "bytes": len(corpus),
-                            "http_status": 201,
+                            "http_status": upload.status_code,
                             "pending": upload.json()["document"]["status"],
                         }
                     )
@@ -202,6 +286,15 @@ async def test_public_spanish_answers(
                         .all()
                     ]
                 record["upload"]["chunks"] = len(chunks)
+                first_upload = output / "upload-first.json"
+                if first_upload.exists():
+                    original_upload = json.loads(first_upload.read_text(encoding="utf-8"))
+                    if {d["document_id"] for d in original_upload["documents"]} != set(identifiers):
+                        raise ValueError("resumed uploads changed document identities")
+                    record["resumed_upload"] = record["upload"]
+                    record["upload"] = original_upload
+                else:
+                    save(first_upload, record["upload"])
                 for case in fixture["cases"]:
                     current["id"] = case["id"]
                     response = await client.get(
@@ -215,6 +308,11 @@ async def test_public_spanish_answers(
                     case["gold_chunk_ids"] = [
                         str(h["chunk_id"]) for h in chunks if spans_supported(h, case)
                     ]
+                    if case["id"] in prior_cases:
+                        old = prior_cases[case["id"]]
+                        if set(case["gold_chunk_ids"]) != set(old["gold_chunk_ids"]):
+                            raise ValueError("persistent gold-span chunk identities changed")
+                        case["gold_chunk_ids"] = old["gold_chunk_ids"]
                     record["captured_queries"] = len(captured)
                     save(output / "progress.json", record)
                 record["phase"] = "await_rerankers_and_generator"
@@ -223,6 +321,15 @@ async def test_public_spanish_answers(
                     {"protocol": fixture["protocol"], "cases": fixture["cases"]},
                 )
                 save(output / "progress.json", record)
+                save(
+                    output / "capture-ready.json",
+                    {
+                        "panel_sha256": hashlib.sha256(
+                            (output / "candidates.json").read_bytes()
+                        ).hexdigest(),
+                        "validated_actual_queries": len(captured),
+                    },
+                )
                 print(
                     "Public ingestion and actual retrieval completed; waiting for model stages.",
                     flush=True,

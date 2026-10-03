@@ -24,6 +24,7 @@ def main() -> None:
     parser.add_argument("--diagnose", action="store_true")
     parser.add_argument("--network")
     parser.add_argument("--spanish-e2e-panel", type=Path)
+    parser.add_argument("--spanish-e2e-persistent-db", action="store_true")
     parser.add_argument("--public-keycloak-loopback", action="store_true")
     parser.add_argument("--baseline-tcp", action="store_true")
     parser.add_argument(
@@ -186,6 +187,8 @@ def main() -> None:
                 "-e",
                 "ZENITH_E2E_OUTPUT=/results",
             ]
+            if args.spanish_e2e_persistent_db:
+                invocation[2:2] = ["-e", "ZENITH_E2E_PERSISTENT_DB=1"]
         started = time.monotonic()
         log = args.output / f"{args.label}-docker-{label}.log"
         with log.open("w", encoding="utf-8") as stream:
@@ -229,6 +232,8 @@ def main() -> None:
             json.dumps(records, indent=2), encoding="utf-8"
         )
         print(json.dumps(record), flush=True)
+    if any(record["exit"] for record in records["commands"]):
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
