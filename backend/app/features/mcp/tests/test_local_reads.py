@@ -72,9 +72,17 @@ async def test_discovery_and_source_coordinates(
             "zenith_search",
             "zenith_read_source",
             "zenith_get_document",
+            "zenith_capabilities",
+            "zenith_read_sources",
+            "zenith_get_documents",
+            "zenith_list_documents",
+            "zenith_list_labels",
+            "zenith_wait_documents",
         }
         assert client.protocol_version == "2026-07-28"
-        assert (await client.list_resources()).resources == []
+        assert [str(item.uri) for item in (await client.list_resources()).resources] == [
+            "zenith://capabilities"
+        ]
         result = await client.call_tool(
             "zenith_read_source", {"source_id": str(public_source[1]), "offset": 11, "length": 8}
         )
@@ -186,8 +194,9 @@ async def test_search_matches_rest_service_and_rechecks_revocation(
     async with client:
         from app.features.mcp import service
 
-        def lexical(profile: object) -> SearchService:
+        def lexical(profile: object, *, judge_mode: str = "tei") -> SearchService:
             assert isinstance(profile, retrieval.AccessProfile)
+            assert judge_mode == "tei"
             return SearchService(profile, LexicalOnlyEmbedder(), PROFILES["low-spec"])  # type: ignore[arg-type]
 
         monkeypatch.setattr(service, "SearchService", lexical)
