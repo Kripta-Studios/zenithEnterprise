@@ -17,7 +17,8 @@ Jev criterion, citation rules and NLI threshold do not change. Partial GPU resid
 an explicit execution option for shared hardware, recorded rather than presented as an
 isolated online latency benchmark. No unrelated training process is suspended or stopped.
 
-Focused checks before the actual run: three readiness regression tests pass; twelve
+Focused checks before the actual run: three readiness regressions and one child-exit
+propagation regression pass; twelve
 existing Spanish metric/citation/entailment tests pass; the changed pipeline module
 passes strict Linux-target pyright with the actual dependency interpreter. Ruff passes.
 Actual upload/retrieval, interruption/resume, generated-query audit and the complete

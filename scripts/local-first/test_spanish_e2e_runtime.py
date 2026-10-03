@@ -2,9 +2,14 @@
 
 import io
 import json
+import tempfile
 import unittest
+from contextlib import redirect_stdout
+from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
+import docker_checks
 from spanish_e2e_runtime import ready
 
 
@@ -54,6 +59,38 @@ class ReadinessTests(unittest.TestCase):
             ready("http://local", "embed", 5, lambda **data: progress.append(data))
         self.assertEqual(clock[0], 5)
         self.assertEqual(len(progress), 3)
+
+
+class DockerExitTests(unittest.TestCase):
+    def test_failed_child_records_its_exit_and_fails_the_helper(self):
+        with tempfile.TemporaryDirectory(prefix="zenith-e2e-runtime-") as directory:
+            root = Path(directory)
+            destination = root / "records"
+
+            def execute(command, **kwargs):
+                if command[0] == "git":
+                    archive = next(value[9:] for value in command if value.startswith("--output="))
+                    Path(archive).write_bytes(b"test archive")
+                    return SimpleNamespace(returncode=0)
+                return SimpleNamespace(returncode=4)
+
+            with (
+                patch(
+                    "sys.argv",
+                    ["docker_checks", str(root), "failure", str(destination), "--only", "tests"],
+                ),
+                patch(
+                    "docker_checks.subprocess.check_output",
+                    side_effect=[b"head", b"tree", b"image"],
+                ),
+                patch("docker_checks.subprocess.run", side_effect=execute),
+                redirect_stdout(io.StringIO()),
+                self.assertRaises(SystemExit) as failure,
+            ):
+                docker_checks.main()
+            self.assertEqual(failure.exception.code, 1)
+            record = json.loads((destination / "failure-docker-checks.json").read_text())
+            self.assertEqual(record["commands"][0]["exit"], 4)
 
 
 if __name__ == "__main__":
