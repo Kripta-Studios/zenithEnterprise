@@ -200,6 +200,7 @@ async def test_search_matches_rest_service_and_rechecks_revocation(
             return SearchService(profile, LexicalOnlyEmbedder(), PROFILES["low-spec"])  # type: ignore[arg-type]
 
         monkeypatch.setattr(service, "SearchService", lexical)
+        monkeypatch.setattr(settings, "evidence_judge_provider", "jev_noul")
         profile = await LocalReads(token).profile()
         expected = await lexical(profile).search("española", 8)
         response = await client.call_tool("zenith_search", {"query": "española"})

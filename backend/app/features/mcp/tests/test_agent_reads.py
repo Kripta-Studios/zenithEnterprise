@@ -106,7 +106,8 @@ async def test_paginated_discovery_reuses_metadata_policy_and_bounds(
         labels = await connected.call_tool("zenith_list_labels", {})
         assert not labels.is_error
         assert str(account.finance_label) not in str(labels.structured_content)
-        assert str(account.hr_label) in str(labels.structured_content)
+        assert str(account.hr_label) not in str(labels.structured_content)
+        assert str(account.default_label) in str(labels.structured_content)
         batch = await connected.call_tool(
             "zenith_get_documents", {"document_ids": [str(public_source[0]), str(uuid4())]}
         )
@@ -116,7 +117,10 @@ async def test_paginated_discovery_reuses_metadata_policy_and_bounds(
 
 
 async def test_wait_readiness_timeout_failure_and_revocation(
-    client: Client, account: Account, public_source: tuple[UUID, UUID]
+    client: Client,
+    account: Account,
+    public_source: tuple[UUID, UUID],
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     document_id = public_source[0]
     async with client:
@@ -134,12 +138,21 @@ async def test_wait_readiness_timeout_failure_and_revocation(
         assert (
             timeout.structured_content["timed_out"] and not timeout.structured_content["all_ready"]
         )
+        first_snapshot = asyncio.Event()
+        original = LocalReads.documents
+
+        async def observed(self: LocalReads, ids: list[UUID]) -> dict[str, object]:
+            result = await original(self, ids)
+            first_snapshot.set()
+            return result
+
+        monkeypatch.setattr(LocalReads, "documents", observed)
         waiting = asyncio.create_task(
             client.call_tool(
                 "zenith_wait_documents", {"document_ids": [str(document_id)], "timeout_seconds": 5}
             )
         )
-        await asyncio.sleep(0.25)
+        await asyncio.wait_for(first_snapshot.wait(), timeout=10)
         async with owner_session() as session:
             await session.execute(
                 text("UPDATE documents SET status='failed' WHERE id=:d"), {"d": document_id}

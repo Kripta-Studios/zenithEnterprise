@@ -274,9 +274,14 @@ class LocalReads:
             pending = any(row["status"] not in {"ready", "failed"} for row in rows)
             expired = time.monotonic() >= deadline
             if not pending or expired:
+                # A wait is a disclosure boundary: resolve authority again before
+                # returning even when a terminal status raced the first snapshot.
+                snapshot = await self.documents(document_ids)
+                rows = cast(list[dict[str, object]], snapshot["documents"])
+                pending = any(row["status"] not in {"ready", "failed"} for row in rows)
                 return {
                     **snapshot,
-                    "timed_out": pending and expired,
+                    "timed_out": pending and time.monotonic() >= deadline,
                     "elapsed_ms": int((time.monotonic() - started) * 1000),
                     "all_ready": len(rows) == len(document_ids)
                     and all(row["status"] == "ready" for row in rows),
