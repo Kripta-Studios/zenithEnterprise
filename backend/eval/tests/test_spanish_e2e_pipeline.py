@@ -105,7 +105,7 @@ async def account(configured_engines: None) -> Account:
             default_label=UUID(data["default_label"]),
             quarantine_label=UUID(data["quarantine_label"]),
         )
-    seeded = await seed_account.__wrapped__(configured_engines)  # type: ignore[attr-defined]
+    seeded: Account = await seed_account.__wrapped__(configured_engines)  # type: ignore[attr-defined]
     if os.environ.get("ZENITH_E2E_PERSISTENT_DB"):
         save(path, json.loads(json.dumps(asdict(seeded), default=str)))
     return seeded
@@ -149,7 +149,7 @@ async def test_public_spanish_answers(
     vectors: dict[str, list[float]] = {}
     captured: dict[str, list[dict[str, Any]]] = {}
     prior_path = output / "candidates.json"
-    prior_cases = {}
+    prior_cases: dict[str, Any] = {}
     if os.environ.get("ZENITH_E2E_PERSISTENT_DB") and prior_path.exists():
         prior = json.loads(prior_path.read_text(encoding="utf-8"))
         if prior["protocol"] != fixture["protocol"]:
