@@ -1,5 +1,10 @@
 # Completed Spanish generated-answer and citation comparison
 
+Product-decision update, 2026-10-03: the user has authorized offering Jev reranking for
+approved private corpora in this fork. See [the adoption rationale and processing boundary](jev-private-corpus-decision-2026-10-03.md).
+That decision supersedes the earlier recommendation against a private pilot, while the
+measured results, uncertainty, gate limitation and separate upstream acceptance remain unchanged.
+
 Date: 2026-10-03. Research branch: `perf/spanish-e2e-citations`.
 Actual pipeline tested at `2c563142db1551ef5eb68174b23694a2a8af5fb2`.
 
