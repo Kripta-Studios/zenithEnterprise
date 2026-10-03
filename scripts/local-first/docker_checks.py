@@ -28,6 +28,10 @@ def main() -> None:
     parser.add_argument("--spanish-e2e-capture-only", action="store_true")
     parser.add_argument("--public-keycloak-loopback", action="store_true")
     parser.add_argument("--baseline-tcp", action="store_true")
+    parser.add_argument("--persistence-fixture", type=Path)
+    parser.add_argument("--persistence-baseline", type=Path)
+    parser.add_argument("--persistence-mode", choices=["profile", "paired"], default="paired")
+    parser.add_argument("--mcp-benchmark", action="store_true")
     parser.add_argument(
         "--baseline-embed",
         choices=["http://embed:80", "http://embed-gpu:80"],
@@ -149,6 +153,25 @@ def main() -> None:
             invocation[2:2] = ["--network", args.network]
         if args.public_keycloak_loopback:
             invocation[2:2] = ["-e", "ZENITH_TEST_PUBLIC_KEYCLOAK=1"]
+        if args.persistence_fixture:
+            if not args.persistence_baseline:
+                parser.error("persistence benchmark requires a frozen baseline source")
+            invocation[2:2] = [
+                "-v", f"{args.persistence_fixture.resolve()}:/public/persistence.json:ro",
+                "-v", f"{args.persistence_baseline.resolve()}:/public/baseline_pipeline.py:ro",
+                "-v", f"{args.output.resolve()}:/results",
+                "-e", "ZENITH_RUN_PERSISTENCE_BENCHMARK=1",
+                "-e", "ZENITH_PERSISTENCE_FIXTURE=/public/persistence.json",
+                "-e", "ZENITH_PERSISTENCE_BASELINE=/public/baseline_pipeline.py",
+                "-e", f"ZENITH_PERSISTENCE_MODE={args.persistence_mode}",
+                "-e", "ZENITH_PERSISTENCE_OUTPUT=/results/persistence.json",
+            ]
+        if args.mcp_benchmark:
+            invocation[2:2] = [
+                "-v", f"{args.output.resolve()}:/results",
+                "-e", "ZENITH_RUN_MCP_BATCH_BENCHMARK=1",
+                "-e", "ZENITH_MCP_BATCH_OUTPUT=/results/mcp-batch.json",
+            ]
         cached_node = Path(".local-evidence/runner-node/node").resolve()
         if cached_node.exists():
             invocation[2:2] = ["-v", f"{cached_node}:/usr/local/bin/node:ro"]

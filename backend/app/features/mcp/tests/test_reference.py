@@ -55,9 +55,15 @@ async def test_completion_and_fresh_citation_gate(
 
         async def call_tool(self, name: str, arguments: dict[str, object]) -> CallToolResult:
             self.calls += 1
-            assert name == "zenith_read_source" and "source_id" in arguments
+            assert name == "zenith_read_sources" and "source_ids" in arguments
             return CallToolResult(
-                content=[], is_error=source is None, structured_content={"text": source}
+                content=[],
+                is_error=source is None,
+                structured_content={
+                    "sources": [
+                        {"source_id": cast(list[str], arguments["source_ids"])[0], "text": source}
+                    ]
+                },
             )
 
     sources = Sources()

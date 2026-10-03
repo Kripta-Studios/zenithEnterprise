@@ -31,15 +31,21 @@ async def evidence(client: Client, query: str, document_id: UUID | None) -> list
     result = await client.call_tool("zenith_search", arguments)
     if result.is_error:
         raise RuntimeError("search was refused")
+    selected = [HitResponse.model_validate(item) for item in result.structured_content["hits"]]
+    if not selected:
+        return []
+    response = await client.call_tool(
+        "zenith_read_sources",
+        {"source_ids": [str(hit.chunk_id) for hit in selected], "length": 1000},
+    )
+    if response.is_error:
+        raise RuntimeError("source batch was refused")
+    sources = {item["source_id"]: item for item in response.structured_content["sources"]}
     hits: list[Hit] = []
-    for item in result.structured_content["hits"]:
-        hit = HitResponse.model_validate(item)
-        response = await client.call_tool(
-            "zenith_read_source", {"source_id": str(hit.chunk_id), "length": 1000}
-        )
-        if response.is_error:
+    for hit in selected:
+        source = sources.get(str(hit.chunk_id))
+        if source is None:
             continue
-        source = response.structured_content
         hit.text = source["text"]
         hit.char_start, hit.char_end = source["char_start"], source["char_end"]
         hit.filename = source["filename"]
@@ -83,15 +89,20 @@ async def local_answer(client: Client, query: str, hits: list[Hit]) -> dict[str,
         }
     bound = bind(body["message"]["content"], hits)
     # Reauthorize citations after generation too. A retained source handle is not a grant.
-    for citation in bound.citations:
+    if bound.citations:
+        identifiers = list(dict.fromkeys(str(citation.chunk_id) for citation in bound.citations))
         checked = await client.call_tool(
-            "zenith_read_source",
-            {
-                "source_id": str(citation.chunk_id),
-                "length": 1000,
-            },
+            "zenith_read_sources", {"source_ids": identifiers, "length": 1000}
         )
-        if checked.is_error or checked.structured_content["text"] != citation.text:
+        sources = (
+            {item["source_id"]: item for item in checked.structured_content["sources"]}
+            if not checked.is_error
+            else {}
+        )
+        if any(
+            sources.get(str(citation.chunk_id), {}).get("text") != citation.text
+            for citation in bound.citations
+        ):
             return {
                 "answer": ABSTENTION,
                 "citations": [],
