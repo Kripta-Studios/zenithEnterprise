@@ -21,7 +21,7 @@ writes the new ones.
 from dataclasses import dataclass
 from itertools import batched
 from pathlib import Path
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import structlog
 from sqlalchemy import delete, select, text
@@ -496,6 +496,10 @@ class IngestionPipeline:
 
             rows = [
                 ChunkRow(
+                    # Server-generated IDs force one INSERT per row to correlate ORM
+                    # RETURNING on this composite primary key. Client UUIDs let SQLAlchemy
+                    # batch the writes while preserving triggers, RLS and vector alignment.
+                    id=uuid4(),
                     document_id=document_id,
                     tenant_id=self.context.tenant_id,
                     page_num=chunk.page_num,
