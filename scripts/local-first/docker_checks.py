@@ -157,20 +157,31 @@ def main() -> None:
             if not args.persistence_baseline:
                 parser.error("persistence benchmark requires a frozen baseline source")
             invocation[2:2] = [
-                "-v", f"{args.persistence_fixture.resolve()}:/public/persistence.json:ro",
-                "-v", f"{args.persistence_baseline.resolve()}:/public/baseline_pipeline.py:ro",
-                "-v", f"{args.output.resolve()}:/results",
-                "-e", "ZENITH_RUN_PERSISTENCE_BENCHMARK=1",
-                "-e", "ZENITH_PERSISTENCE_FIXTURE=/public/persistence.json",
-                "-e", "ZENITH_PERSISTENCE_BASELINE=/public/baseline_pipeline.py",
-                "-e", f"ZENITH_PERSISTENCE_MODE={args.persistence_mode}",
-                "-e", "ZENITH_PERSISTENCE_OUTPUT=/results/persistence.json",
+                "-v",
+                f"{args.persistence_fixture.resolve()}:/public/persistence.json:ro",
+                "-v",
+                f"{args.persistence_baseline.resolve()}:/public/baseline_pipeline.py:ro",
+                "-v",
+                f"{args.output.resolve()}:/results",
+                "-e",
+                "ZENITH_RUN_PERSISTENCE_BENCHMARK=1",
+                "-e",
+                "ZENITH_PERSISTENCE_FIXTURE=/public/persistence.json",
+                "-e",
+                "ZENITH_PERSISTENCE_BASELINE=/public/baseline_pipeline.py",
+                "-e",
+                f"ZENITH_PERSISTENCE_MODE={args.persistence_mode}",
+                "-e",
+                "ZENITH_PERSISTENCE_OUTPUT=/results/persistence.json",
             ]
         if args.mcp_benchmark:
             invocation[2:2] = [
-                "-v", f"{args.output.resolve()}:/results",
-                "-e", "ZENITH_RUN_MCP_BATCH_BENCHMARK=1",
-                "-e", "ZENITH_MCP_BATCH_OUTPUT=/results/mcp-batch.json",
+                "-v",
+                f"{args.output.resolve()}:/results",
+                "-e",
+                "ZENITH_RUN_MCP_BATCH_BENCHMARK=1",
+                "-e",
+                "ZENITH_MCP_BATCH_OUTPUT=/results/mcp-batch.json",
             ]
         cached_node = Path(".local-evidence/runner-node/node").resolve()
         if cached_node.exists():
