@@ -4,6 +4,7 @@ from collections.abc import AsyncIterator, Sequence
 from pathlib import Path
 from uuid import UUID
 
+import pytest
 from sqlalchemy import text
 
 from app.core.database import tenant_session
@@ -13,8 +14,14 @@ from app.features.embeddings.client import DIMENSION
 from app.features.ingestion.pipeline import IngestionPipeline
 from app.features.tenancy.context import TenantContext
 from conftest import Account
+from conftest import account as seed_account
 
 from ...documents.tests.test_upload import profile_for
+
+
+@pytest.fixture
+async def other_account(configured_engines: None) -> Account:
+    return await seed_account.__wrapped__(configured_engines)  # type: ignore[attr-defined]
 
 
 class IndexedEmbedder:
