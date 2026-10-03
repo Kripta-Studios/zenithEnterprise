@@ -74,8 +74,10 @@ def postgres() -> Any:
 
         yield ExistingDatabase()
     else:
-        with PostgresContainer(IMAGE, driver="psycopg").with_command(
-            f"postgres -c max_locks_per_transaction={MAX_LOCKS_PER_TRANSACTION}"
+        with (
+            PostgresContainer(IMAGE, driver="psycopg")
+            .with_command(f"postgres -c max_locks_per_transaction={MAX_LOCKS_PER_TRANSACTION}")
+            .with_kwargs(mem_limit="768m", nano_cpus=2_000_000_000)
         ) as container:
             yield container
 
