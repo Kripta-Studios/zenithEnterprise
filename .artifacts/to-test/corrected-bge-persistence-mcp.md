@@ -18,3 +18,10 @@ inference and revocation checks. Validate real SDK calls, RLS, pagination and ou
 No arbitrary URL/filesystem imports or general agent framework.
 
 Publish only to the fork after checks. Preserve all upstream PRs and source branches.
+
+Implementation and all three measured experiments are complete. Results and next
+experiments: docs/local-first/corrected-baseline-continuation-2026-10-03.md.
+Focused application-role checks pass: 22 atomic ingestion, 54 MCP (3 optional skips),
+three opt-in performance checks and the 128-pair integration/independent grading.
+The complete local backend runner timed out; full GitHub checks are required before
+fork-main integration. Docker and WSL are stopped at the user's explicit request.

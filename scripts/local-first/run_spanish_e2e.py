@@ -75,7 +75,9 @@ def main():
             shutil.copyfile(source, attempt / name)
     for name in ("models-ready.json", "capture-ready.json", "embed.done", "generation.done"):
         (args.output / name).unlink(missing_ok=True)
-    clean_env = {k: v for k, v in os.environ.items() if k not in {"TYPESAFE_API_KEY", "JEV_API_KEY"}}
+    clean_env = {
+        k: v for k, v in os.environ.items() if k not in {"TYPESAFE_API_KEY", "JEV_API_KEY"}
+    }
     clean_env["PYTHONPATH"] = str(Path("backend").resolve())
     python = str(args.python.resolve())
     processes, handles = [], []
@@ -181,7 +183,9 @@ def main():
                     raise ValueError("capture reuse target differs from its bound source")
                 shutil.copyfile(source, target)
             shutil.copytree(
-                args.previous / "public-documents", args.output / "public-documents", dirs_exist_ok=True
+                args.previous / "public-documents",
+                args.output / "public-documents",
+                dirs_exist_ok=True,
             )
         if probe.returncode:
             run(

@@ -1,11 +1,20 @@
 # Decision: offer Jev reranking for authorized private corpora
 
+**Evidence update:** the [completed corrected-BGE repeat](corrected-bge-e2e-results-2026-10-03.md)
+produces BGE 34/128 versus Jev 31/128 strict successes. Jev's paired difference is
+-2.34375 points, 95% interval [-9.02256, +3.96825]; neither improvement criterion passes.
+The original positive comparison below is historical and no longer supports a quality
+advantage against the corrected local baseline. The user's optional adoption direction
+remains recorded, but retain BGE as default and do not justify private-data export using
+the old gain. Any optional deployment remains a corpus-owner product decision under the
+existing processing/topology boundaries, not a demonstrated superiority result.
+
 Status: approved product direction for this fork by the user's 2026-10-03 instruction.
 This supersedes the previous recommendation against a private-corpus pilot. It records
 an adoption decision and its implementation boundary; it does not assert that a private
 deployment has been enabled or that Martin has approved this optional contribution.
 
-## Why the result supports this decision
+## Original adoption rationale (historical comparator, now superseded)
 
 The completed Spanish generated-answer experiment replaces the small saturated pilot
 with 128 published-reference questions and mandatory citation checks, followed by a
@@ -132,5 +141,6 @@ This supports fixing the local comparator before drawing a new provider superior
 claim. The fork's approved optional adoption decision remains a product tradeoff,
 but the old 10-versus-20 generated-answer result must not be presented as measured
 against this corrected local baseline. No new generation, Jev calls or private data
-processing occurred in this validation. The next quality measurement is generated
-support and abstention with citations on that corrected path.
+processing occurred in that gate validation. The subsequent generated-answer repeat
+is now complete: [corrected BGE results](corrected-bge-e2e-results-2026-10-03.md),
+34/128 BGE versus 31/128 Jev, with neither Jev improvement threshold met.
