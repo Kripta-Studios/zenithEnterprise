@@ -32,5 +32,5 @@ export default defineConfig({
       "/users": apiTarget,
     },
   },
-  test: { environment: "jsdom", globals: true, maxWorkers: 2 },
+  test: { environment: "jsdom", globals: true, minWorkers: 1, maxWorkers: 2 },
 });

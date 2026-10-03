@@ -19,6 +19,7 @@ writes the new ones.
 """
 
 from dataclasses import dataclass
+from itertools import batched
 from pathlib import Path
 from uuid import UUID
 
@@ -47,6 +48,10 @@ from app.features.labels.repository import LabelRepository
 from app.features.tenancy.context import TenantContext
 
 log = structlog.get_logger()
+
+# Bound each vector INSERT without weakening atomic replacement or the DB timeout.
+# The complete 939-vector public corpus exceeded the statement budget in one flush.
+_EMBEDDING_INSERT_BATCH = 64
 
 #: What the document's status says when the classifier named nothing and it was released
 #: into the tenant default. One sentence per ending, because they have one remedy each and a
@@ -508,16 +513,20 @@ class IngestionPipeline:
             # empty array would be retrievable by the whole tenant.
             await session.flush()
 
-            session.add_all(
-                ChunkEmbedding(
-                    chunk_id=row.id,
-                    tenant_id=self.context.tenant_id,
-                    embedding_model=MODEL,
-                    embedding_version=VERSION,
-                    embedding=vector,
+            for pairs in batched(zip(rows, vectors, strict=True), _EMBEDDING_INSERT_BATCH):
+                session.add_all(
+                    ChunkEmbedding(
+                        chunk_id=row.id,
+                        tenant_id=self.context.tenant_id,
+                        embedding_model=MODEL,
+                        embedding_version=VERSION,
+                        embedding=vector,
+                    )
+                    for row, vector in pairs
                 )
-                for row, vector in zip(rows, vectors, strict=True)
-            )
+                # Flush is not commit: a later failure restores the previous complete
+                # document, including any chunks deleted at the start of this transaction.
+                await session.flush()
 
             document = await session.get(Document, document_id)
             if document is not None:

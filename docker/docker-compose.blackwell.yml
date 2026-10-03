@@ -1,0 +1,11 @@
+# Apply AFTER the existing GPU overlay on RTX 50-series hosts.
+# Retain its device reservations and the base file's cache/batching/worker configuration.
+# The tested tag reported TEI 1.9.4; the digest keeps that observation reproducible.
+# The measured GPU reranker used TEI_RERANK_MODEL=BAAI/bge-reranker-v2-m3.
+# This overlay retains the base model selection; it does not qualify GPU mMiniLM.
+services:
+  tei-embed:
+    image: ghcr.io/huggingface/text-embeddings-inference:120-1.9@sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400
+
+  tei-rerank:
+    image: ghcr.io/huggingface/text-embeddings-inference:120-1.9@sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400

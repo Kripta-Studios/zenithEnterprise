@@ -1,0 +1,193 @@
+{
+  "mminilm": {
+    "panel_sha256": "73a22b895cec9c9b5a7c906232831145f39a59c50ea118e2353946060e92cfa0",
+    "queries": 648,
+    "family_clusters": 601,
+    "means": {
+      "baseline": {
+        "ndcg8": 0.6997086110882332,
+        "mrr8": 0.6945877425044091,
+        "hit1": 0.5277777777777778,
+        "recall8": 0.8518775720164609
+      },
+      "local": {
+        "ndcg8": 0.7890511724522894,
+        "mrr8": 0.849647266313933,
+        "hit1": 0.7669753086419753,
+        "recall8": 0.8518775720164609
+      },
+      "jev": {
+        "ndcg8": 0.8297628525295351,
+        "mrr8": 0.8951388888888889,
+        "hit1": 0.8271604938271605,
+        "recall8": 0.8518775720164609
+      }
+    },
+    "paired_comparison": {
+      "ndcg8": {
+        "jev_minus_local": 0.04071168007724564,
+        "family_cluster_95_percent_interval": [
+          0.028662887750803213,
+          0.053487004164584025
+        ]
+      },
+      "mrr8": {
+        "jev_minus_local": 0.04549162257495591,
+        "family_cluster_95_percent_interval": [
+          0.024077193770589995,
+          0.06591677456481082
+        ]
+      },
+      "hit1": {
+        "jev_minus_local": 0.06018518518518518,
+        "family_cluster_95_percent_interval": [
+          0.025039123630672927,
+          0.09472049689440994
+        ]
+      },
+      "recall8": {
+        "jev_minus_local": 0.0,
+        "family_cluster_95_percent_interval": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "calls": 5173,
+    "accounted_cost_upper_bound_usd": 0.11391105600000001,
+    "reported_input_tokens": 2712168,
+    "unknown_outcomes_reserved_at_64k": true,
+    "local_fallback_queries": 0,
+    "jev_fallback_queries": 0,
+    "local_latency_seconds": {
+      "median": 1.488123600007384,
+      "p95": 3.2008165000006557
+    },
+    "jev_pair_latency_seconds_median": 0.25466200002119876,
+    "scope": "conditional judged-pool reranking; not whole-corpus retrieval or legal QA",
+    "raw_summary_sha256": "c3de917a1d3d4dd8a88077fcb1dfb45429c6386bbf979b161861174c471da6e9"
+  },
+  "bge": {
+    "panel_sha256": "73a22b895cec9c9b5a7c906232831145f39a59c50ea118e2353946060e92cfa0",
+    "queries": 648,
+    "family_clusters": 601,
+    "means": {
+      "baseline": {
+        "ndcg8": 0.6997086110882332,
+        "mrr8": 0.6945877425044091,
+        "hit1": 0.5277777777777778,
+        "recall8": 0.8518775720164609
+      },
+      "local": {
+        "ndcg8": 0.8176111849877843,
+        "mrr8": 0.8836199294532627,
+        "hit1": 0.8132716049382716,
+        "recall8": 0.8518775720164609
+      },
+      "jev": {
+        "ndcg8": 0.8297628525295351,
+        "mrr8": 0.8951388888888889,
+        "hit1": 0.8271604938271605,
+        "recall8": 0.8518775720164609
+      }
+    },
+    "paired_comparison": {
+      "ndcg8": {
+        "jev_minus_local": 0.012151667541750748,
+        "family_cluster_95_percent_interval": [
+          0.002467226672331087,
+          0.022189867339224845
+        ]
+      },
+      "mrr8": {
+        "jev_minus_local": 0.011518959435626103,
+        "family_cluster_95_percent_interval": [
+          -0.005677797434763379,
+          0.02870062753783684
+        ]
+      },
+      "hit1": {
+        "jev_minus_local": 0.013888888888888888,
+        "family_cluster_95_percent_interval": [
+          -0.016923076923076923,
+          0.04447852760736196
+        ]
+      },
+      "recall8": {
+        "jev_minus_local": 0.0,
+        "family_cluster_95_percent_interval": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "calls": 5173,
+    "accounted_cost_upper_bound_usd": 0.11391105600000001,
+    "reported_input_tokens": 2712168,
+    "unknown_outcomes_reserved_at_64k": true,
+    "local_fallback_queries": 0,
+    "jev_fallback_queries": 0,
+    "local_latency_seconds": {
+      "median": 0.44302319998678286,
+      "p95": 0.7274806999776047
+    },
+    "jev_pair_latency_seconds_median": 0.25466200002119876,
+    "scope": "conditional judged-pool reranking; not whole-corpus retrieval or legal QA",
+    "raw_summary_sha256": "e1fecfd5916d320a09e6756477c5d3c145232f1e09969bb4b345b0bc2bb04201"
+  },
+  "artifacts": {
+    "frozen-panel.json": {
+      "bytes": 3897351,
+      "sha256": "73a22b895cec9c9b5a7c906232831145f39a59c50ea118e2353946060e92cfa0"
+    },
+    "jev-ledger.jsonl": {
+      "bytes": 2151921,
+      "sha256": "dd58a13c084d35786022f3a600603cee971fec81ba0ce37984b9bf5bc66aac52"
+    },
+    "local-mminilm.json": {
+      "bytes": 191954,
+      "sha256": "db6bb04cc2b5085f66a2f685043b6828d19442dcf63d161eabb32109b3236928"
+    },
+    "local-bge-gpu.json": {
+      "bytes": 192314,
+      "sha256": "2eae2c9c84c8d7fdf4c67c30d3d948a7d47f61772cc5f717fc7837f5f8b3f0c8"
+    }
+  },
+  "bge_model": {
+    "repository": "BAAI/bge-reranker-v2-m3",
+    "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+    "dtype": "float16",
+    "tei_image_digest": "sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400",
+    "reported_tei_version": "1.9.4",
+    "files": {
+      "config.json": {
+        "bytes": 795,
+        "sha256": "13dcd6c31d9fec9d1d8e158702072f62d7fa7d312a64b9fe057bec9a08cfe41a"
+      },
+      "model.safetensors": {
+        "bytes": 2271071852,
+        "sha256": "d9e3e081faff1eefb84019509b2f5558fd74c1a05a2c7db22f74174fcedb5286"
+      },
+      "README.md": {
+        "bytes": 17229,
+        "sha256": "c887aa6dd2598f908bf0582ca7068cc816585c7a1b6a07df305b631ede0cb174"
+      },
+      "sentencepiece.bpe.model": {
+        "bytes": 5069051,
+        "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+      },
+      "special_tokens_map.json": {
+        "bytes": 964,
+        "sha256": "8c785abebea9ae3257b61681b4e6fd8365ceafde980c21970d001e834cf10835"
+      },
+      "tokenizer.json": {
+        "bytes": 17098273,
+        "sha256": "69564b696052886ed0ac63fa393e928384e0f8caada38c1f4864a9bfbf379c15"
+      },
+      "tokenizer_config.json": {
+        "bytes": 1173,
+        "sha256": "7e4c1cc848840aeccdd763458c18dd525eb0f795c992e00ebe9c28554e7db2d4"
+      }
+    }
+  }
+}

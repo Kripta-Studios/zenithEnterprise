@@ -1,5 +1,7 @@
 # Evidence retrieval v3
 
+The [v10 upstream submission index](../evidence-v3-hardening/upstream-submission-2026-09-28.md) distinguishes the merged fork integration from the 13 logical review slices, optional R1, and final reports. Its upstream CI runs are awaiting maintainer approval.
+
 Evidence v3 is an optional extension to Zenith's existing retrieval and
 citation flow. It does not change the shipped `legacy` search or local TEI
 reranker defaults, create a database migration, or replace the active index.

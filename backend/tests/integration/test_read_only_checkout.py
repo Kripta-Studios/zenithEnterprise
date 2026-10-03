@@ -55,6 +55,11 @@ def test_a_rewritten_file_is_seen_even_at_the_same_length(tmp_path: Path) -> Non
     original_mtime_ns = before[Path("corpus.toml")][1]
     os.utime(rewritten, ns=(original_mtime_ns, original_mtime_ns + 1_000_000_000))
 
+    # The guard compares timestamps, so make the write observable even when the
+    # filesystem coalesces two immediate writes into one clock tick. No sleeps.
+    path = tmp_path / "corpus.toml"
+    os.utime(path, ns=(path.stat().st_atime_ns, before[Path("corpus.toml")][1] + 1_000_000_000))
+
     assert written_between(before, tree(tmp_path)) == [Path("corpus.toml")]
 
 
