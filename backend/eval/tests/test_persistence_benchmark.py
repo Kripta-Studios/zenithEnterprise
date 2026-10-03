@@ -97,9 +97,12 @@ async def test_public_persistence_profile(account: Account, tmp_path: Path) -> N
             category = "delete_" + normalized.split()[2]
         else:
             category = normalized.split()[0]
-        item = timings.setdefault(category, {"seconds": 0.0, "calls": 0})
+        item = timings.setdefault(
+            category, {"seconds": 0.0, "calls": 0, "dbapi_executemany_calls": 0}
+        )
         item["seconds"] += elapsed
         item["calls"] += 1
+        item["dbapi_executemany_calls"] += int(many)
 
     mode = os.environ.get("ZENITH_PERSISTENCE_MODE", "paired")
     orders = (
