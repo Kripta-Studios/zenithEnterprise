@@ -515,22 +515,22 @@ class IngestionPipeline:
             # Keep a bounded statement and preserve server-side label/tsvector triggers.
             for group in batched(rows, _CHUNK_INSERT_BATCH):
                 await session.execute(
-                    insert(ChunkRow),
-                    [
-                        {
-                            "id": row.id,
-                            "document_id": row.document_id,
-                            "tenant_id": row.tenant_id,
-                            "page_num": row.page_num,
-                            "char_start": row.char_start,
-                            "char_end": row.char_end,
-                            "bboxes": row.bboxes,
-                            "section": row.section,
-                            "text": row.text,
-                        }
-                        for row in group
-                    ],
-                    execution_options={"render_nulls": True},
+                    insert(ChunkRow).values(
+                        [
+                            {
+                                "id": row.id,
+                                "document_id": row.document_id,
+                                "tenant_id": row.tenant_id,
+                                "page_num": row.page_num,
+                                "char_start": row.char_start,
+                                "char_end": row.char_end,
+                                "bboxes": row.bboxes,
+                                "section": row.section,
+                                "text": row.text,
+                            }
+                            for row in group
+                        ]
+                    ),
                 )
             # Page writes autoflush before the bulk inserts. Chunk labels are filled by
             # migration 0003's trigger before embeddings reference these explicit IDs.
