@@ -33,6 +33,7 @@ from app.features.ingestion.pipeline import IngestionPipeline, Result
 from app.features.query.router import router as query_router
 from app.features.retrieval import service as retrieval
 from app.features.retrieval.breaker import Breaker
+from app.features.retrieval.judging.protocol import AssessmentBatch
 from app.features.retrieval.reranker import Scored, TeiReranker
 from app.features.retrieval.router import router as search_router
 from app.features.retrieval.search import Hit
@@ -171,7 +172,7 @@ async def test_public_spanish_answers(
 
     async def rerank(
         self: retrieval.SearchService, question: str, hits: list[Hit], limit: int
-    ) -> tuple[list[Hit], str | None]:
+    ) -> tuple[list[Hit], str | None, AssessmentBatch | None]:
         serialized = json.loads(json.dumps([asdict(hit) for hit in hits], default=str))
         if question in captured and serialized != captured[question]:
             raise ValueError("persistent database retrieval no longer matches its capture")
@@ -179,9 +180,9 @@ async def test_public_spanish_answers(
             captured[question] = serialized
         elif serialized != captured[question]:
             raise ValueError("retrieval candidates changed between paired model stages")
-        ordered, reason = await actual_rerank(self, question, hits, limit)
+        ordered, reason, assessment = await actual_rerank(self, question, hits, limit)
         current["shortlist"] = json.loads(json.dumps([asdict(hit) for hit in ordered], default=str))
-        return ordered, reason
+        return ordered, reason, assessment
 
     async def rank(self: TeiReranker, question: str, passages: list[str]) -> list[Scored]:
         if current["capture"]:
