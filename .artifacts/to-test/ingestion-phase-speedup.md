@@ -18,3 +18,19 @@ coordinates and vectors; quantify any float16 batch numerical effects rather tha
 claiming bitwise equality across batch shapes. Run actual embedding/ingestion tests
 and complete backend/frontend checks before authorized fork-main integration.
 Preserve all upstream PRs. Stop owned services, Docker Desktop and WSL after operations.
+
+Completed: diagnostic fresh upload, preliminary bounded tuning, eight actual paired
+GPU uploads (one warmup pair and three measured pairs), full source/vector integrity
+checks, and a source-free reproducible report. Embedding median falls 62.579710 to
+29.176888 seconds; ready falls 93.420162 to 59.270400 seconds. Persistence did not
+improve in this task. Profile `gpu-local` and the existing Blackwell overlay deliver
+matching 4096/eight limits to both application processes and TEI services.
+
+Validation: 24 focused host tests pass; strict Pyright has zero errors. Full fork
+backend/frontend CI remains the integration gate. A full local make check is not
+claimed; the user's request to close Docker/WSL takes precedence over retaining
+them for a duplicate full suite. Both are off after completing GPU operations.
+
+Report: docs/local-first/ingestion-phase-results-2026-10-03.md with JSON/CSV artifact
+bindings. Next measurement: vector serialization/index/commit versus the now-balanced
+embedding phase, preserving atomic replacement and RLS. No provider calls or downloads.

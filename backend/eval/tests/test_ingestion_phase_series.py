@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 import numpy as np
+import numpy.typing as npt
 import pytest
 from sqlalchemy import text
 
@@ -54,7 +55,7 @@ async def test_paired_fresh_ingestion(
     assert len(record["upload"]["documents"]) == 1
     assert record["upload"]["documents"][0]["http_status"] == 201
     binding = json.loads((output / "embedding-source-bindings.json").read_text())
-    array = np.load(output / "embedding-vectors.npy", allow_pickle=False)
+    array: npt.NDArray[np.float32] = np.load(output / "embedding-vectors.npy", allow_pickle=False)
     assert array.shape == (938, 1024) and np.isfinite(array).all()
     # Verify actual application-role stored text/ranges, labels and full vectors.
     profile = await profile_for(account)
@@ -81,11 +82,16 @@ async def test_paired_fresh_ingestion(
         assert row.label_ids == [account.finance_label]
         assert np.array_equal(np.asarray(json.loads(row.vector), dtype=np.float32), array[index])
     reference_dir = output.parent / "trial-0-baseline"
-    reference = np.load(reference_dir / "embedding-vectors.npy", allow_pickle=False)
+    reference: npt.NDArray[np.float32] = np.load(
+        reference_dir / "embedding-vectors.npy", allow_pickle=False
+    )
     assert binding == json.loads((reference_dir / "embedding-source-bindings.json").read_text())
-    norms = np.linalg.norm(array, axis=1)
+    norms: npt.NDArray[np.float32] = np.linalg.norm(array, axis=1)
     assert np.allclose(norms, 1, atol=1e-4)
-    cosine = np.sum(array * reference, axis=1) / (norms * np.linalg.norm(reference, axis=1))
+    cosine = np.asarray(
+        np.sum(array * reference, axis=1) / (norms * np.linalg.norm(reference, axis=1)),
+        dtype=np.float64,
+    )
     assert float(cosine.min()) >= 0.9999
     (output / "vector-integrity.json").write_text(
         json.dumps(
