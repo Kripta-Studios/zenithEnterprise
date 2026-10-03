@@ -297,9 +297,15 @@ async def test_public_spanish_answers(
                     save(first_upload, record["upload"])
                 for case in fixture["cases"]:
                     current["id"] = case["id"]
-                    response = await client.get(
-                        "/search", params={"q": case["question"], "limit": 8}, headers=auth
-                    )
+                    params = {"q": case["question"], "limit": "8"}
+                    if case.get("scope_filename"):
+                        scoped = next(
+                            d["document_id"]
+                            for d in record["upload"]["documents"]
+                            if d["filename"] == case["scope_filename"]
+                        )
+                        params["documents"] = scoped
+                    response = await client.get("/search", params=params, headers=auth)
                     assert response.status_code == 200 and not response.json()["degraded"], (
                         response.text
                     )
@@ -334,6 +340,10 @@ async def test_public_spanish_answers(
                     "Public ingestion and actual retrieval completed; waiting for model stages.",
                     flush=True,
                 )
+                if os.environ.get("ZENITH_E2E_CAPTURE_ONLY"):
+                    record["phase"] = "capture_complete"
+                    save(output / "capture-results.json", record)
+                    return
                 deadline = time.monotonic() + 4 * 3600
                 await await_file(output / "models-ready.json", deadline)
                 scores = {}

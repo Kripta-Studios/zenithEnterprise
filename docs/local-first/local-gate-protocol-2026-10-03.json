@@ -1,0 +1,32 @@
+{
+  "seed": 20261003,
+  "test_cases": 128,
+  "negative_cases": 32,
+  "development_cases": 0,
+  "corpus_sha256": "b1b7d0a5fc83e081b5e7bf141af74d1e41e47c635807f68adcf5f4ca9715263d",
+  "corpus_bytes": 844643,
+  "document_count": 33,
+  "retrieved_candidates": 32,
+  "generated_passages": 8,
+  "batch_tokens": 1024,
+  "batch_items": 2,
+  "experiment": "local reranking and admission, no generated-answer accuracy claim",
+  "old_fixture_sha256": "2c99e0e8982aaa467d1b90ea084e5747bd1d4c1f70968c191a1d95a4951d61dc",
+  "sqac_sha256": "af84d20d4afeba9a6936c3c7d8b5f577a15af5461c8f0e29f94286bb2205b18d",
+  "negative_sha256": "72a201f47b5dbd5b642ca2ce856c6c9e45306c887b7605125ec088614b3e9b38",
+  "selection": "one fresh SQAC question per previously unused article family",
+  "negative_scope": "published impossible question restricted to its own source document",
+  "negative_limits": "automatically translated SQuAD v2; not human Spanish adjudication",
+  "positive_labels": "published SQAC human answer spans",
+  "policies": {
+    "old": "lexical share in selected eight",
+    "new": "lexical share in hydrated candidates"
+  },
+  "lexical_share_floor": 0.3333333333333333,
+  "rerank_floor": 0.02,
+  "acceptance": {
+    "gold_admission_gain_at_least": 0.05,
+    "negative_admission_increase_at_most": 0
+  },
+  "paid_provider_calls": 0
+}
