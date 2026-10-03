@@ -1,0 +1,1846 @@
+{
+  "gpu-tcp-ready": {
+    "fixture_source_sha256": "ec748f222626e5081a34193ca469bcf8112092837678a6948a2d6ae7d6629d1a",
+    "transport": "actual loopback TCP multipart; excludes intranet/WAN latency",
+    "worker_concurrency": 1,
+    "queued_jobs": 3,
+    "model_health": {
+      "embed": true,
+      "rerank": true
+    },
+    "final_statuses": [
+      "ready",
+      "ready",
+      "ready"
+    ],
+    "upload_to_ready": [
+      {
+        "document_id": "67532721-df5d-4523-981c-8041f0e7fdd6",
+        "seconds": 6.021166
+      },
+      {
+        "document_id": "b1dc0a14-3de9-4ca6-b183-630e42d5ade3",
+        "seconds": 44.043329
+      },
+      {
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "seconds": 51.544228
+      }
+    ],
+    "event_loop_lag_seconds": {
+      "samples": 2463,
+      "maximum": 3.036594807005022,
+      "method": "10ms heartbeat in combined ASGI/worker benchmark"
+    },
+    "blocked": null,
+    "uploads": [
+      {
+        "filename": "small.txt",
+        "bytes": 2801,
+        "sha256": "19c4d03e43e112a30362df5fde727b3043a9d3beef724c94c06ff300d530e9ba",
+        "document_id": "67532721-df5d-4523-981c-8041f0e7fdd6",
+        "upload_start_seconds": 3.434393,
+        "ack_seconds": 0.640223,
+        "http_status": 201,
+        "document_status_at_ack": "pending",
+        "duplicate_ack_seconds": 0.377843,
+        "duplicate_http_status": 200
+      },
+      {
+        "filename": "medium.txt",
+        "bytes": 144683,
+        "sha256": "0daf0f20f7c403e8e0b43b2690921c4ec5e0b746b381c4f8e6cf4f151faea2f1",
+        "document_id": "b1dc0a14-3de9-4ca6-b183-630e42d5ade3",
+        "upload_start_seconds": 4.493973,
+        "ack_seconds": 0.472338,
+        "http_status": 201,
+        "document_status_at_ack": "pending",
+        "duplicate_ack_seconds": 0.370853,
+        "duplicate_http_status": 200
+      },
+      {
+        "filename": "public-qa.pdf",
+        "bytes": 13371,
+        "sha256": "520d3fd608c265130482a23315e873885739c6f963270919afedef4585bb9416",
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "upload_start_seconds": 5.377516,
+        "ack_seconds": 0.4589,
+        "http_status": 201,
+        "document_status_at_ack": "pending",
+        "duplicate_ack_seconds": 0.480764,
+        "duplicate_http_status": 200
+      }
+    ],
+    "query_statistics": {
+      "queries_ingesting": {
+        "count": 20,
+        "wall_ms_median": 1928.9559860044392,
+        "wall_ms_p95_nearest_index": 5036.39336800552,
+        "degraded_count": 0,
+        "http_200_count": 20
+      },
+      "queries_idle": {
+        "count": 20,
+        "wall_ms_median": 1527.9328505130252,
+        "wall_ms_p95_nearest_index": 2005.448134004837,
+        "degraded_count": 0,
+        "http_200_count": 20
+      }
+    },
+    "stage_totals": [
+      {
+        "document_id": "67532721-df5d-4523-981c-8041f0e7fdd6",
+        "stage": "parse",
+        "count": 1,
+        "seconds": 0.0006902159948367625
+      },
+      {
+        "document_id": "67532721-df5d-4523-981c-8041f0e7fdd6",
+        "stage": "chunk_stream",
+        "count": 1,
+        "seconds": 0.00035573000786826015
+      },
+      {
+        "document_id": "67532721-df5d-4523-981c-8041f0e7fdd6",
+        "stage": "send_batch",
+        "count": 1,
+        "seconds": 0.7219307039922569
+      },
+      {
+        "document_id": "67532721-df5d-4523-981c-8041f0e7fdd6",
+        "stage": "embed",
+        "count": 1,
+        "seconds": 0.9433298910153098
+      },
+      {
+        "document_id": "67532721-df5d-4523-981c-8041f0e7fdd6",
+        "stage": "_persist",
+        "count": 1,
+        "seconds": 0.7128440040105488
+      },
+      {
+        "document_id": "67532721-df5d-4523-981c-8041f0e7fdd6",
+        "stage": "_file",
+        "count": 1,
+        "seconds": 0.09727338602533564
+      },
+      {
+        "document_id": "b1dc0a14-3de9-4ca6-b183-630e42d5ade3",
+        "stage": "parse",
+        "count": 1,
+        "seconds": 0.0016778779972810298
+      },
+      {
+        "document_id": "b1dc0a14-3de9-4ca6-b183-630e42d5ade3",
+        "stage": "chunk_stream",
+        "count": 1,
+        "seconds": 0.006252933002542704
+      },
+      {
+        "document_id": "unknown",
+        "stage": "send_batch",
+        "count": 40,
+        "seconds": 7.564315155905206
+      },
+      {
+        "document_id": "b1dc0a14-3de9-4ca6-b183-630e42d5ade3",
+        "stage": "send_batch",
+        "count": 39,
+        "seconds": 15.520687149983132
+      },
+      {
+        "document_id": "b1dc0a14-3de9-4ca6-b183-630e42d5ade3",
+        "stage": "embed",
+        "count": 1,
+        "seconds": 17.683396914973855
+      },
+      {
+        "document_id": "b1dc0a14-3de9-4ca6-b183-630e42d5ade3",
+        "stage": "_persist",
+        "count": 1,
+        "seconds": 19.8669132310024
+      },
+      {
+        "document_id": "b1dc0a14-3de9-4ca6-b183-630e42d5ade3",
+        "stage": "_file",
+        "count": 1,
+        "seconds": 0.07858500999282114
+      },
+      {
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "stage": "page_count",
+        "count": 1,
+        "seconds": 0.04181303299264982
+      },
+      {
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "stage": "parse",
+        "count": 1,
+        "seconds": 2.9290058170154225
+      },
+      {
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "stage": "chunk_page",
+        "count": 10,
+        "seconds": 0.04106444600620307
+      },
+      {
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "stage": "send_batch",
+        "count": 4,
+        "seconds": 1.2027557700057514
+      },
+      {
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "stage": "embed",
+        "count": 1,
+        "seconds": 1.541256781987613
+      },
+      {
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "stage": "_persist",
+        "count": 1,
+        "seconds": 1.7792735100083519
+      },
+      {
+        "document_id": "0062db69-7c6b-4c71-b39a-08ac62f137fc",
+        "stage": "_file",
+        "count": 1,
+        "seconds": 0.08383797900751233
+      }
+    ],
+    "evidence_sha256": "d96a67fc81fa72e82d84b25b57a9ceea0862cf6701f3918e616a44b8a5ba0973",
+    "check": {
+      "head": "d2599154b28cc33be131f90a86f73dafb8e23289",
+      "tree": "5d88dd05baa7e1083da4da198dfdbcc1a3290939",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "8fef7d3fc7923060ce91c570a86d82ccadf82f7fb685f8f2705ebc8b6f9e41a8",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-check-env-lean",
+      "commands": [
+        {
+          "command": "uv run python -m pytest eval/tests/test_local_first_baseline.py -q --tb=short -s",
+          "exit": 0,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 216.138,
+          "log": "gpu-tcp-ready-docker-upload-ready.log",
+          "log_sha256": "924310f0d731fd50d6675a55ef78aa185fe061ac67704def3a76b74bbc96602f"
+        }
+      ]
+    }
+  },
+  "cpu-tcp-ready": {
+    "fixture_source_sha256": "ec748f222626e5081a34193ca469bcf8112092837678a6948a2d6ae7d6629d1a",
+    "transport": "actual loopback TCP multipart; excludes intranet/WAN latency",
+    "worker_concurrency": 1,
+    "queued_jobs": 3,
+    "model_health": {
+      "embed": true,
+      "rerank": true
+    },
+    "final_statuses": [
+      "ready",
+      "ready",
+      "ready"
+    ],
+    "upload_to_ready": [
+      {
+        "document_id": "157bbb0e-3939-4e5d-8204-d990dc4296c7",
+        "seconds": 3.984353
+      },
+      {
+        "document_id": "3767db68-0cd3-408e-a9b0-eaf2b166bc66",
+        "seconds": 203.932285
+      },
+      {
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "seconds": 218.860079
+      }
+    ],
+    "event_loop_lag_seconds": {
+      "samples": 20734,
+      "maximum": 0.34548784301499835,
+      "method": "10ms heartbeat in combined ASGI/worker benchmark"
+    },
+    "blocked": null,
+    "uploads": [
+      {
+        "filename": "small.txt",
+        "bytes": 2801,
+        "sha256": "19c4d03e43e112a30362df5fde727b3043a9d3beef724c94c06ff300d530e9ba",
+        "document_id": "157bbb0e-3939-4e5d-8204-d990dc4296c7",
+        "upload_start_seconds": 0.344558,
+        "ack_seconds": 0.139307,
+        "http_status": 201,
+        "document_status_at_ack": "pending",
+        "duplicate_ack_seconds": 0.095834,
+        "duplicate_http_status": 200
+      },
+      {
+        "filename": "medium.txt",
+        "bytes": 144683,
+        "sha256": "0daf0f20f7c403e8e0b43b2690921c4ec5e0b746b381c4f8e6cf4f151faea2f1",
+        "document_id": "3767db68-0cd3-408e-a9b0-eaf2b166bc66",
+        "upload_start_seconds": 0.58596,
+        "ack_seconds": 0.122019,
+        "http_status": 201,
+        "document_status_at_ack": "pending",
+        "duplicate_ack_seconds": 0.091716,
+        "duplicate_http_status": 200
+      },
+      {
+        "filename": "public-qa.pdf",
+        "bytes": 13371,
+        "sha256": "520d3fd608c265130482a23315e873885739c6f963270919afedef4585bb9416",
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "upload_start_seconds": 0.805969,
+        "ack_seconds": 0.146398,
+        "http_status": 201,
+        "document_status_at_ack": "pending",
+        "duplicate_ack_seconds": 0.155634,
+        "duplicate_http_status": 200
+      }
+    ],
+    "query_statistics": {
+      "queries_ingesting": {
+        "count": 20,
+        "wall_ms_median": 5170.813536999049,
+        "wall_ms_p95_nearest_index": 6432.105990999844,
+        "degraded_count": 6,
+        "http_200_count": 20
+      },
+      "queries_idle": {
+        "count": 20,
+        "wall_ms_median": 429.71090150240343,
+        "wall_ms_p95_nearest_index": 804.4786429964006,
+        "degraded_count": 0,
+        "http_200_count": 20
+      }
+    },
+    "stage_totals": [
+      {
+        "document_id": "157bbb0e-3939-4e5d-8204-d990dc4296c7",
+        "stage": "parse",
+        "count": 1,
+        "seconds": 0.00012173500726930797
+      },
+      {
+        "document_id": "157bbb0e-3939-4e5d-8204-d990dc4296c7",
+        "stage": "chunk_stream",
+        "count": 1,
+        "seconds": 5.182798486202955e-05
+      },
+      {
+        "document_id": "157bbb0e-3939-4e5d-8204-d990dc4296c7",
+        "stage": "send_batch",
+        "count": 1,
+        "seconds": 2.814599725010339
+      },
+      {
+        "document_id": "157bbb0e-3939-4e5d-8204-d990dc4296c7",
+        "stage": "embed",
+        "count": 1,
+        "seconds": 2.838568553997902
+      },
+      {
+        "document_id": "157bbb0e-3939-4e5d-8204-d990dc4296c7",
+        "stage": "_persist",
+        "count": 1,
+        "seconds": 0.12682458601193503
+      },
+      {
+        "document_id": "157bbb0e-3939-4e5d-8204-d990dc4296c7",
+        "stage": "_file",
+        "count": 1,
+        "seconds": 0.012282051000511274
+      },
+      {
+        "document_id": "3767db68-0cd3-408e-a9b0-eaf2b166bc66",
+        "stage": "parse",
+        "count": 1,
+        "seconds": 0.0003894549736287445
+      },
+      {
+        "document_id": "3767db68-0cd3-408e-a9b0-eaf2b166bc66",
+        "stage": "chunk_stream",
+        "count": 1,
+        "seconds": 0.000652655988233164
+      },
+      {
+        "document_id": "unknown",
+        "stage": "send_batch",
+        "count": 40,
+        "seconds": 93.79055316204904
+      },
+      {
+        "document_id": "3767db68-0cd3-408e-a9b0-eaf2b166bc66",
+        "stage": "send_batch",
+        "count": 39,
+        "seconds": 197.76963879202958
+      },
+      {
+        "document_id": "3767db68-0cd3-408e-a9b0-eaf2b166bc66",
+        "stage": "embed",
+        "count": 1,
+        "seconds": 198.1367590079899
+      },
+      {
+        "document_id": "3767db68-0cd3-408e-a9b0-eaf2b166bc66",
+        "stage": "_persist",
+        "count": 1,
+        "seconds": 1.8383654179924633
+      },
+      {
+        "document_id": "3767db68-0cd3-408e-a9b0-eaf2b166bc66",
+        "stage": "_file",
+        "count": 1,
+        "seconds": 0.011051223002141342
+      },
+      {
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "stage": "page_count",
+        "count": 1,
+        "seconds": 0.0029001410002820194
+      },
+      {
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "stage": "parse",
+        "count": 1,
+        "seconds": 0.33380490299896337
+      },
+      {
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "stage": "chunk_page",
+        "count": 10,
+        "seconds": 0.008795262954663485
+      },
+      {
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "stage": "send_batch",
+        "count": 4,
+        "seconds": 14.193236594990594
+      },
+      {
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "stage": "embed",
+        "count": 1,
+        "seconds": 14.258700938982656
+      },
+      {
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "stage": "_persist",
+        "count": 1,
+        "seconds": 0.2393503510102164
+      },
+      {
+        "document_id": "84fdedf5-75f3-4489-9732-d32e86cbbdae",
+        "stage": "_file",
+        "count": 1,
+        "seconds": 0.010668111004633829
+      }
+    ],
+    "evidence_sha256": "338d9274350aa335f406d05bd549f834820d8bb83db2967ee6a72ffaa24cf27e",
+    "check": {
+      "head": "d2599154b28cc33be131f90a86f73dafb8e23289",
+      "tree": "5d88dd05baa7e1083da4da198dfdbcc1a3290939",
+      "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+      "archive_sha256": "8fef7d3fc7923060ce91c570a86d82ccadf82f7fb685f8f2705ebc8b6f9e41a8",
+      "excluded_offline_wheels": [
+        "torch",
+        "nvidia",
+        "triton"
+      ],
+      "dependency_volume": "zenith-lf-check-env-lean",
+      "commands": [
+        {
+          "command": "uv run python -m pytest eval/tests/test_local_first_baseline.py -q --tb=short -s",
+          "exit": 0,
+          "timeout_seconds": 900.0,
+          "cleanup": null,
+          "seconds": 250.065,
+          "log": "cpu-tcp-ready-docker-upload-ready.log",
+          "log_sha256": "031c1ced51c359459b87cb9986ce4bc815e614abd5b1058c24df7743912ef056"
+        }
+      ]
+    }
+  },
+  "embed-gpu-controlled": {
+    "container": "zenith-lf-embed-gpu-controlled",
+    "image": "sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400",
+    "args": [
+      "--model-id",
+      "/data/models--BAAI--bge-m3/snapshots/5617a9f61b028005a4858fdac845db406aefb181",
+      "--max-batch-tokens",
+      "2048",
+      "--max-client-batch-size",
+      "4",
+      "--auto-truncate",
+      "--dtype",
+      "float32",
+      "--port",
+      "80"
+    ],
+    "memory_limit": 4294967296,
+    "cpu_limit": 4000000000,
+    "samples": [
+      {
+        "seconds": 1.636,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.52%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"2.66%\",\"MemUsage\":\"109.1MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"988B / 222B\",\"PIDs\":\"5\"}",
+        "gpu": "3578, 12227, 9"
+      },
+      {
+        "seconds": 17.087,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.76%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"2.66%\",\"MemUsage\":\"109.1MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.1kB / 318B\",\"PIDs\":\"5\"}",
+        "gpu": "3622, 12227, 8"
+      },
+      {
+        "seconds": 32.178,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.52%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"2.66%\",\"MemUsage\":\"109.1MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.18kB / 372B\",\"PIDs\":\"5\"}",
+        "gpu": "2907, 12227, 6"
+      },
+      {
+        "seconds": 45.868,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.45%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"2.66%\",\"MemUsage\":\"109.1MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.29kB / 468B\",\"PIDs\":\"5\"}",
+        "gpu": "2921, 12227, 6"
+      },
+      {
+        "seconds": 58.667,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"48.51%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"3.35%\",\"MemUsage\":\"137.1MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.41kB / 564B\",\"PIDs\":\"5\"}",
+        "gpu": "2921, 12227, 5"
+      },
+      {
+        "seconds": 71.493,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"9.48%\",\"MemUsage\":\"388.4MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.48kB / 618B\",\"PIDs\":\"7\"}",
+        "gpu": "2907, 12227, 6"
+      },
+      {
+        "seconds": 84.213,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"9.48%\",\"MemUsage\":\"388.4MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.56kB / 672B\",\"PIDs\":\"7\"}",
+        "gpu": "2921, 12227, 7"
+      },
+      {
+        "seconds": 97.082,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"9.48%\",\"MemUsage\":\"388.4MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.63kB / 726B\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 7"
+      },
+      {
+        "seconds": 109.946,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"9.48%\",\"MemUsage\":\"388.4MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.75kB / 822B\",\"PIDs\":\"7\"}",
+        "gpu": "2908, 12227, 6"
+      },
+      {
+        "seconds": 124.991,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"9.48%\",\"MemUsage\":\"388.1MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.86kB / 918B\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 9"
+      },
+      {
+        "seconds": 139.73,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.46%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"9.48%\",\"MemUsage\":\"388.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"1.94kB / 972B\",\"PIDs\":\"7\"}",
+        "gpu": "2908, 12227, 7"
+      },
+      {
+        "seconds": 153.006,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"9.48%\",\"MemUsage\":\"388.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.01kB / 1.03kB\",\"PIDs\":\"7\"}",
+        "gpu": "2908, 12227, 6"
+      },
+      {
+        "seconds": 166.768,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"126.12%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"25.24%\",\"MemUsage\":\"1.009GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.13kB / 1.12kB\",\"PIDs\":\"10\"}",
+        "gpu": "2922, 12227, 7"
+      },
+      {
+        "seconds": 179.925,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.42%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.2kB / 1.18kB\",\"PIDs\":\"9\"}",
+        "gpu": "2936, 12227, 8"
+      },
+      {
+        "seconds": 192.53,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.53%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.32kB / 1.27kB\",\"PIDs\":\"9\"}",
+        "gpu": "2908, 12227, 6"
+      },
+      {
+        "seconds": 205.163,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.43kB / 1.37kB\",\"PIDs\":\"9\"}",
+        "gpu": "2908, 12227, 6"
+      },
+      {
+        "seconds": 217.642,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.37%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.51kB / 1.42kB\",\"PIDs\":\"9\"}",
+        "gpu": "2922, 12227, 8"
+      },
+      {
+        "seconds": 230.902,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.52%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.58kB / 1.48kB\",\"PIDs\":\"9\"}",
+        "gpu": "2922, 12227, 6"
+      },
+      {
+        "seconds": 245.676,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.49%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.74kB / 1.61kB\",\"PIDs\":\"9\"}",
+        "gpu": "2922, 12227, 8"
+      },
+      {
+        "seconds": 259.416,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.70%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.81kB / 1.67kB\",\"PIDs\":\"9\"}",
+        "gpu": "2922, 12227, 8"
+      },
+      {
+        "seconds": 273.028,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"2.93kB / 1.76kB\",\"PIDs\":\"9\"}",
+        "gpu": "2908, 12227, 6"
+      },
+      {
+        "seconds": 285.973,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.44%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3kB / 1.82kB\",\"PIDs\":\"9\"}",
+        "gpu": "4066, 12227, 6"
+      },
+      {
+        "seconds": 298.776,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"2.36%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.12kB / 1.91kB\",\"PIDs\":\"9\"}",
+        "gpu": "4079, 12227, 8"
+      },
+      {
+        "seconds": 311.626,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.37%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.24kB / 2.01kB\",\"PIDs\":\"9\"}",
+        "gpu": "4079, 12227, 7"
+      },
+      {
+        "seconds": 324.405,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.33%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.31kB / 2.06kB\",\"PIDs\":\"9\"}",
+        "gpu": "4066, 12227, 6"
+      },
+      {
+        "seconds": 337.266,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"1.79%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.38kB / 2.12kB\",\"PIDs\":\"9\"}",
+        "gpu": "4079, 12227, 7"
+      },
+      {
+        "seconds": 351.544,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"3.15MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"20.74%\",\"MemUsage\":\"849.5MiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.54kB / 2.26kB\",\"PIDs\":\"9\"}",
+        "gpu": "4079, 12227, 7"
+      },
+      {
+        "seconds": 364.971,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"11.9MB / 0B\",\"CPUPerc\":\"107.82%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"29.78%\",\"MemUsage\":\"1.191GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.62kB / 2.31kB\",\"PIDs\":\"11\"}",
+        "gpu": "3847, 12227, 6"
+      },
+      {
+        "seconds": 378.275,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"76.5MB / 0B\",\"CPUPerc\":\"105.73%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"48.59%\",\"MemUsage\":\"1.944GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.73kB / 2.41kB\",\"PIDs\":\"11\"}",
+        "gpu": "4948, 12227, 12"
+      },
+      {
+        "seconds": 392.155,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"334MB / 69.6kB\",\"CPUPerc\":\"101.99%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"30.88%\",\"MemUsage\":\"1.235GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.81kB / 2.46kB\",\"PIDs\":\"11\"}",
+        "gpu": "5940, 12227, 10"
+      },
+      {
+        "seconds": 405.567,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"342MB / 69.6kB\",\"CPUPerc\":\"105.21%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"31.39%\",\"MemUsage\":\"1.255GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"3.96kB / 2.6kB\",\"PIDs\":\"12\"}",
+        "gpu": "6505, 12227, 4"
+      },
+      {
+        "seconds": 418.658,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"343MB / 1.14MB\",\"CPUPerc\":\"105.63%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"34.01%\",\"MemUsage\":\"1.36GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.04kB / 2.65kB\",\"PIDs\":\"12\"}",
+        "gpu": "6578, 12227, 3"
+      },
+      {
+        "seconds": 431.94,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"343MB / 1.14MB\",\"CPUPerc\":\"101.91%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"35.22%\",\"MemUsage\":\"1.409GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.11kB / 2.71kB\",\"PIDs\":\"12\"}",
+        "gpu": "6674, 12227, 4"
+      },
+      {
+        "seconds": 445.864,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"343MB / 1.14MB\",\"CPUPerc\":\"110.86%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"35.29%\",\"MemUsage\":\"1.412GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.23kB / 2.8kB\",\"PIDs\":\"12\"}",
+        "gpu": "6738, 12227, 3"
+      },
+      {
+        "seconds": 458.998,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"343MB / 1.14MB\",\"CPUPerc\":\"106.40%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"35.36%\",\"MemUsage\":\"1.414GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.34kB / 2.9kB\",\"PIDs\":\"12\"}",
+        "gpu": "6799, 12227, 3"
+      },
+      {
+        "seconds": 472.011,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"343MB / 1.14MB\",\"CPUPerc\":\"102.16%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"35.47%\",\"MemUsage\":\"1.419GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.46kB / 2.99kB\",\"PIDs\":\"12\"}",
+        "gpu": "6799, 12227, 4"
+      },
+      {
+        "seconds": 485.843,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"343MB / 1.14MB\",\"CPUPerc\":\"107.73%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"35.50%\",\"MemUsage\":\"1.42GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.53kB / 3.05kB\",\"PIDs\":\"12\"}",
+        "gpu": "6799, 12227, 4"
+      },
+      {
+        "seconds": 498.816,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"343MB / 1.14MB\",\"CPUPerc\":\"102.16%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"35.60%\",\"MemUsage\":\"1.424GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.65kB / 3.14kB\",\"PIDs\":\"12\"}",
+        "gpu": "6799, 12227, 4"
+      },
+      {
+        "seconds": 512.433,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"343MB / 1.14MB\",\"CPUPerc\":\"102.07%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"35.84%\",\"MemUsage\":\"1.434GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.77kB / 3.24kB\",\"PIDs\":\"12\"}",
+        "gpu": "6790, 12227, 4"
+      },
+      {
+        "seconds": 525.186,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"348MB / 1.14MB\",\"CPUPerc\":\"104.19%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"38.84%\",\"MemUsage\":\"1.554GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.88kB / 3.34kB\",\"PIDs\":\"12\"}",
+        "gpu": "6822, 12227, 3"
+      },
+      {
+        "seconds": 538.068,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"350MB / 9.2MB\",\"CPUPerc\":\"103.37%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"39.52%\",\"MemUsage\":\"1.581GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"4.96kB / 3.39kB\",\"PIDs\":\"12\"}",
+        "gpu": "6854, 12227, 4"
+      },
+      {
+        "seconds": 552.086,
+        "stats": "{\"BlockIO\":\"350MB / 9.2MB\",\"CPUPerc\":\"2.29%\",\"Container\":\"zenith-lf-embed-gpu-controlled\",\"ID\":\"e33cde2dfa39\",\"MemPerc\":\"39.03%\",\"MemUsage\":\"1.561GiB / 4GiB\",\"Name\":\"zenith-lf-embed-gpu-controlled\",\"NetIO\":\"5.46kB / 3.97kB\",\"PIDs\":\"13\"}",
+        "gpu": "6886, 12227, 3"
+      }
+    ],
+    "ready": true,
+    "info": {
+      "model_id": "/data/models--BAAI--bge-m3/snapshots/5617a9f61b028005a4858fdac845db406aefb181",
+      "model_sha": null,
+      "model_dtype": "float32",
+      "served_model_name": "/data/models--BAAI--bge-m3/snapshots/5617a9f61b028005a4858fdac845db406aefb181",
+      "model_type": {
+        "embedding": {
+          "pooling": "cls"
+        }
+      },
+      "max_concurrent_requests": 512,
+      "max_input_length": 2048,
+      "max_batch_tokens": 2048,
+      "max_batch_requests": null,
+      "max_client_batch_size": 4,
+      "auto_truncate": true,
+      "tokenization_workers": 3,
+      "version": "1.9.4",
+      "sha": "e80ef225ed0e6cb1717ce632a6a84b6cf211bb67",
+      "docker_label": "sha-e80ef22"
+    },
+    "elapsed_seconds": 556.19,
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 1928830,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-01T19:35:53.472389355Z",
+      "FinishedAt": "0001-01-01T00:00:00Z"
+    }
+  },
+  "embed-cpu-controlled": {
+    "container": "zenith-lf-embed-cpu-controlled",
+    "image": "sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d",
+    "args": [
+      "--model-id",
+      "/data/models--BAAI--bge-m3/snapshots/5617a9f61b028005a4858fdac845db406aefb181",
+      "--max-batch-tokens",
+      "2048",
+      "--max-client-batch-size",
+      "4",
+      "--auto-truncate",
+      "--dtype",
+      "float32",
+      "--port",
+      "80"
+    ],
+    "memory_limit": 5368709120,
+    "cpu_limit": 4000000000,
+    "samples": [
+      {
+        "seconds": 0.298,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"12.3kB / 0B\",\"CPUPerc\":\"164.48%\",\"Container\":\"zenith-lf-embed-cpu-controlled\",\"ID\":\"c6053d4ffee3\",\"MemPerc\":\"21.46%\",\"MemUsage\":\"1.073GiB / 5GiB\",\"Name\":\"zenith-lf-embed-cpu-controlled\",\"NetIO\":\"548B / 180B\",\"PIDs\":\"7\"}",
+        "gpu": "4356, 12227, 9"
+      },
+      {
+        "seconds": 11.76,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"32.8kB / 0B\",\"CPUPerc\":\"374.29%\",\"Container\":\"zenith-lf-embed-cpu-controlled\",\"ID\":\"c6053d4ffee3\",\"MemPerc\":\"58.24%\",\"MemUsage\":\"2.912GiB / 5GiB\",\"Name\":\"zenith-lf-embed-cpu-controlled\",\"NetIO\":\"1.15kB / 318B\",\"PIDs\":\"16\"}",
+        "gpu": "4356, 12227, 6"
+      },
+      {
+        "seconds": 23.176,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"32.8kB / 0B\",\"CPUPerc\":\"399.47%\",\"Container\":\"zenith-lf-embed-cpu-controlled\",\"ID\":\"c6053d4ffee3\",\"MemPerc\":\"58.39%\",\"MemUsage\":\"2.92GiB / 5GiB\",\"Name\":\"zenith-lf-embed-cpu-controlled\",\"NetIO\":\"1.22kB / 372B\",\"PIDs\":\"16\"}",
+        "gpu": "4357, 12227, 6"
+      },
+      {
+        "seconds": 35.5,
+        "stats": "{\"BlockIO\":\"32.8kB / 0B\",\"CPUPerc\":\"0.44%\",\"Container\":\"zenith-lf-embed-cpu-controlled\",\"ID\":\"c6053d4ffee3\",\"MemPerc\":\"57.28%\",\"MemUsage\":\"2.864GiB / 5GiB\",\"Name\":\"zenith-lf-embed-cpu-controlled\",\"NetIO\":\"1.68kB / 913B\",\"PIDs\":\"17\"}",
+        "gpu": "4357, 12227, 6"
+      }
+    ],
+    "ready": true,
+    "info": {
+      "model_id": "/data/models--BAAI--bge-m3/snapshots/5617a9f61b028005a4858fdac845db406aefb181",
+      "model_sha": null,
+      "model_dtype": "float32",
+      "served_model_name": "/data/models--BAAI--bge-m3/snapshots/5617a9f61b028005a4858fdac845db406aefb181",
+      "model_type": {
+        "embedding": {
+          "pooling": "cls"
+        }
+      },
+      "max_concurrent_requests": 512,
+      "max_input_length": 2048,
+      "max_batch_tokens": 2048,
+      "max_batch_requests": 4,
+      "max_client_batch_size": 4,
+      "auto_truncate": true,
+      "tokenization_workers": 3,
+      "version": "1.9.4",
+      "sha": "e80ef225ed0e6cb1717ce632a6a84b6cf211bb67",
+      "docker_label": "sha-e80ef22"
+    },
+    "elapsed_seconds": 37.675,
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 1978624,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-01T19:55:06.528093645Z",
+      "FinishedAt": "0001-01-01T00:00:00Z"
+    }
+  },
+  "bge-gpu-long": {
+    "container": "zenith-lf-bge-gpu",
+    "image": "sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400",
+    "args": [
+      "--model-id",
+      "/model",
+      "--max-batch-tokens",
+      "2048",
+      "--max-client-batch-size",
+      "4",
+      "--auto-truncate",
+      "--dtype",
+      "float16",
+      "--port",
+      "80"
+    ],
+    "memory_limit": 4294967296,
+    "cpu_limit": 4000000000,
+    "samples": [
+      {
+        "seconds": 2.059,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"104.87%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"7.33%\",\"MemUsage\":\"300.1MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.03kB / 222B\",\"PIDs\":\"5\"}",
+        "gpu": "3016, 12227, 3"
+      },
+      {
+        "seconds": 16.675,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.78%\",\"MemUsage\":\"400.7MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.15kB / 318B\",\"PIDs\":\"7\"}",
+        "gpu": "3015, 12227, 7"
+      },
+      {
+        "seconds": 30.293,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.78%\",\"MemUsage\":\"400.7MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.22kB / 372B\",\"PIDs\":\"7\"}",
+        "gpu": "3012, 12227, 3"
+      },
+      {
+        "seconds": 44.265,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.78%\",\"MemUsage\":\"400.7MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.29kB / 426B\",\"PIDs\":\"7\"}",
+        "gpu": "3012, 12227, 3"
+      },
+      {
+        "seconds": 57.273,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.78%\",\"MemUsage\":\"400.7MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.45kB / 564B\",\"PIDs\":\"7\"}",
+        "gpu": "3076, 12227, 4"
+      },
+      {
+        "seconds": 69.953,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.78%\",\"MemUsage\":\"400.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.53kB / 618B\",\"PIDs\":\"7\"}",
+        "gpu": "3077, 12227, 5"
+      },
+      {
+        "seconds": 82.343,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.78%\",\"MemUsage\":\"400.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.6kB / 672B\",\"PIDs\":\"7\"}",
+        "gpu": "3073, 12227, 3"
+      },
+      {
+        "seconds": 94.879,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.78%\",\"MemUsage\":\"400.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.72kB / 768B\",\"PIDs\":\"7\"}",
+        "gpu": "3010, 12227, 4"
+      },
+      {
+        "seconds": 107.452,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"108.93%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"26.14%\",\"MemUsage\":\"1.045GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.83kB / 864B\",\"PIDs\":\"9\"}",
+        "gpu": "3002, 12227, 3"
+      },
+      {
+        "seconds": 121.01,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.56%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"1.91kB / 918B\",\"PIDs\":\"10\"}",
+        "gpu": "3002, 12227, 2"
+      },
+      {
+        "seconds": 135.801,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.56%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.02kB / 1.01kB\",\"PIDs\":\"10\"}",
+        "gpu": "3002, 12227, 4"
+      },
+      {
+        "seconds": 150.592,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.56%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.1kB / 1.07kB\",\"PIDs\":\"10\"}",
+        "gpu": "3024, 12227, 4"
+      },
+      {
+        "seconds": 163.634,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.56%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.21kB / 1.16kB\",\"PIDs\":\"10\"}",
+        "gpu": "3010, 12227, 4"
+      },
+      {
+        "seconds": 176.292,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.56%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.45kB / 1.26kB\",\"PIDs\":\"10\"}",
+        "gpu": "3080, 12227, 4"
+      },
+      {
+        "seconds": 189.008,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.54%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.53kB / 1.31kB\",\"PIDs\":\"10\"}",
+        "gpu": "3025, 12227, 4"
+      },
+      {
+        "seconds": 201.856,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.54%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.6kB / 1.37kB\",\"PIDs\":\"10\"}",
+        "gpu": "3022, 12227, 4"
+      },
+      {
+        "seconds": 214.825,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.54%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.76kB / 1.51kB\",\"PIDs\":\"10\"}",
+        "gpu": "3023, 12227, 5"
+      },
+      {
+        "seconds": 228.782,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.54%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.83kB / 1.56kB\",\"PIDs\":\"10\"}",
+        "gpu": "3021, 12227, 3"
+      },
+      {
+        "seconds": 243.933,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.54%\",\"MemUsage\":\"1.102GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.12kB / 1.66kB\",\"PIDs\":\"10\"}",
+        "gpu": "3014, 12227, 3"
+      },
+      {
+        "seconds": 257.525,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"119.86%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"26.28%\",\"MemUsage\":\"1.051GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.36kB / 1.71kB\",\"PIDs\":\"11\"}",
+        "gpu": "3155, 12227, 8"
+      },
+      {
+        "seconds": 272.113,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"16.34%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"23.84%\",\"MemUsage\":\"976.6MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.52kB / 1.85kB\",\"PIDs\":\"11\"}",
+        "gpu": "4329, 12227, 5"
+      },
+      {
+        "seconds": 285.555,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"19.91%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"23.85%\",\"MemUsage\":\"977MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.59kB / 1.9kB\",\"PIDs\":\"11\"}",
+        "gpu": "4279, 12227, 10"
+      },
+      {
+        "seconds": 298.611,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"19.33%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"23.87%\",\"MemUsage\":\"977.8MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.75kB / 2kB\",\"PIDs\":\"11\"}",
+        "gpu": "4292, 12227, 7"
+      },
+      {
+        "seconds": 314.041,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"16.82%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"23.88%\",\"MemUsage\":\"978.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.95kB / 2.05kB\",\"PIDs\":\"11\"}",
+        "gpu": "4322, 12227, 7"
+      },
+      {
+        "seconds": 327.562,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"16.60%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"23.89%\",\"MemUsage\":\"978.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.28kB / 2.19kB\",\"PIDs\":\"11\"}",
+        "gpu": "4278, 12227, 7"
+      },
+      {
+        "seconds": 341.596,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"48.50%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"23.90%\",\"MemUsage\":\"978.9MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.48kB / 2.24kB\",\"PIDs\":\"11\"}",
+        "gpu": "4292, 12227, 9"
+      },
+      {
+        "seconds": 354.867,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"16.94%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"23.95%\",\"MemUsage\":\"981.1MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.59kB / 2.34kB\",\"PIDs\":\"11\"}",
+        "gpu": "4278, 12227, 7"
+      },
+      {
+        "seconds": 368.735,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"8.64%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.00%\",\"MemUsage\":\"983.1MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.67kB / 2.39kB\",\"PIDs\":\"11\"}",
+        "gpu": "4292, 12227, 6"
+      },
+      {
+        "seconds": 382.919,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"909kB / 0B\",\"CPUPerc\":\"30.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.24%\",\"MemUsage\":\"992.9MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.82kB / 2.53kB\",\"PIDs\":\"11\"}",
+        "gpu": "3898, 12227, 8"
+      },
+      {
+        "seconds": 397.52,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"59.09%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.11%\",\"MemUsage\":\"987.6MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.9kB / 2.59kB\",\"PIDs\":\"11\"}",
+        "gpu": "4008, 12227, 6"
+      },
+      {
+        "seconds": 412.32,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"39.01%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.13%\",\"MemUsage\":\"988.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.06kB / 2.68kB\",\"PIDs\":\"11\"}",
+        "gpu": "4040, 12227, 8"
+      },
+      {
+        "seconds": 427.657,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"51.67%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.13%\",\"MemUsage\":\"988.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.13kB / 2.74kB\",\"PIDs\":\"11\"}",
+        "gpu": "4090, 12227, 7"
+      },
+      {
+        "seconds": 441.629,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"38.79%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.15%\",\"MemUsage\":\"989.3MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.29kB / 2.87kB\",\"PIDs\":\"11\"}",
+        "gpu": "4133, 12227, 8"
+      },
+      {
+        "seconds": 455.549,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"30.68%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.15%\",\"MemUsage\":\"989.4MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.36kB / 2.93kB\",\"PIDs\":\"11\"}",
+        "gpu": "4212, 12227, 7"
+      },
+      {
+        "seconds": 470.528,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"11.67%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.18%\",\"MemUsage\":\"990.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.44kB / 2.98kB\",\"PIDs\":\"11\"}",
+        "gpu": "4258, 12227, 8"
+      },
+      {
+        "seconds": 485.301,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"41.85%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.19%\",\"MemUsage\":\"990.9MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.55kB / 3.08kB\",\"PIDs\":\"11\"}",
+        "gpu": "4328, 12227, 9"
+      },
+      {
+        "seconds": 500.01,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"11.78%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.20%\",\"MemUsage\":\"991.4MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.67kB / 3.17kB\",\"PIDs\":\"11\"}",
+        "gpu": "4410, 12227, 7"
+      },
+      {
+        "seconds": 514.015,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"975kB / 65.5kB\",\"CPUPerc\":\"23.48%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.22%\",\"MemUsage\":\"992.1MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.74kB / 3.23kB\",\"PIDs\":\"11\"}",
+        "gpu": "4485, 12227, 9"
+      },
+      {
+        "seconds": 528.004,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"1.54MB / 65.5kB\",\"CPUPerc\":\"106.60%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.62%\",\"MemUsage\":\"1009MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.32kB / 3.32kB\",\"PIDs\":\"12\"}",
+        "gpu": "4471, 12227, 7"
+      },
+      {
+        "seconds": 541.477,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 65.5kB\",\"CPUPerc\":\"100.93%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.53%\",\"MemUsage\":\"1005MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.5kB / 3.42kB\",\"PIDs\":\"12\"}",
+        "gpu": "4474, 12227, 7"
+      },
+      {
+        "seconds": 554.184,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 65.5kB\",\"CPUPerc\":\"103.15%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"27.81%\",\"MemUsage\":\"1.112GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.77kB / 3.47kB\",\"PIDs\":\"12\"}",
+        "gpu": "4491, 12227, 8"
+      },
+      {
+        "seconds": 566.943,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 1.13MB\",\"CPUPerc\":\"103.55%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"28.48%\",\"MemUsage\":\"1.139GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.88kB / 3.57kB\",\"PIDs\":\"12\"}",
+        "gpu": "4488, 12227, 8"
+      },
+      {
+        "seconds": 580.013,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 1.13MB\",\"CPUPerc\":\"104.14%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"28.53%\",\"MemUsage\":\"1.141GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"7.92kB / 3.67kB\",\"PIDs\":\"12\"}",
+        "gpu": "4474, 12227, 8"
+      },
+      {
+        "seconds": 594.428,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 1.13MB\",\"CPUPerc\":\"101.99%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"28.57%\",\"MemUsage\":\"1.143GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"9.31kB / 3.72kB\",\"PIDs\":\"12\"}",
+        "gpu": "4488, 12227, 9"
+      },
+      {
+        "seconds": 609.143,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 1.13MB\",\"CPUPerc\":\"104.58%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"28.63%\",\"MemUsage\":\"1.145GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"9.82kB / 3.82kB\",\"PIDs\":\"12\"}",
+        "gpu": "4474, 12227, 8"
+      },
+      {
+        "seconds": 623.528,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 1.13MB\",\"CPUPerc\":\"105.51%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"28.69%\",\"MemUsage\":\"1.148GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"9.93kB / 3.91kB\",\"PIDs\":\"12\"}",
+        "gpu": "4842, 12227, 9"
+      },
+      {
+        "seconds": 637.509,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 1.13MB\",\"CPUPerc\":\"106.40%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"28.76%\",\"MemUsage\":\"1.15GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"10.3kB / 3.97kB\",\"PIDs\":\"12\"}",
+        "gpu": "4975, 12227, 10"
+      },
+      {
+        "seconds": 651.348,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 1.13MB\",\"CPUPerc\":\"108.44%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"28.80%\",\"MemUsage\":\"1.152GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"10.5kB / 4.06kB\",\"PIDs\":\"12\"}",
+        "gpu": "4454, 12227, 7"
+      },
+      {
+        "seconds": 664.487,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"4.69MB / 1.13MB\",\"CPUPerc\":\"100.95%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"29.17%\",\"MemUsage\":\"1.167GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"10.6kB / 4.16kB\",\"PIDs\":\"12\"}",
+        "gpu": "4468, 12227, 8"
+      },
+      {
+        "seconds": 677.022,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"46.2MB / 8.2MB\",\"CPUPerc\":\"104.83%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"35.75%\",\"MemUsage\":\"1.43GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"10.7kB / 4.21kB\",\"PIDs\":\"12\"}",
+        "gpu": "4500, 12227, 8"
+      },
+      {
+        "seconds": 690.468,
+        "stats": "{\"BlockIO\":\"51MB / 8.2MB\",\"CPUPerc\":\"1.94%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"35.51%\",\"MemUsage\":\"1.42GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"11.2kB / 4.79kB\",\"PIDs\":\"13\"}",
+        "gpu": "4486, 12227, 7"
+      }
+    ],
+    "ready": true,
+    "info": {
+      "model_id": "/model",
+      "model_sha": null,
+      "model_dtype": "float16",
+      "served_model_name": "/model",
+      "model_type": {
+        "reranker": {
+          "id2label": {
+            "0": "LABEL_0"
+          },
+          "label2id": {
+            "LABEL_0": 0
+          }
+        }
+      },
+      "max_concurrent_requests": 512,
+      "max_input_length": 2048,
+      "max_batch_tokens": 2048,
+      "max_batch_requests": null,
+      "max_client_batch_size": 4,
+      "auto_truncate": true,
+      "tokenization_workers": 3,
+      "version": "1.9.4",
+      "sha": "e80ef225ed0e6cb1717ce632a6a84b6cf211bb67",
+      "docker_label": "sha-e80ef22"
+    },
+    "elapsed_seconds": 693.535,
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 1800560,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-01T18:59:58.193313552Z",
+      "FinishedAt": "2026-10-01T18:50:24.633559309Z"
+    }
+  },
+  "bge-gpu-warm-restart": {
+    "container": "zenith-lf-bge-gpu",
+    "image": "sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400",
+    "args": [
+      "--model-id",
+      "/model",
+      "--max-batch-tokens",
+      "2048",
+      "--max-client-batch-size",
+      "4",
+      "--auto-truncate",
+      "--dtype",
+      "float16",
+      "--port",
+      "80"
+    ],
+    "memory_limit": 4294967296,
+    "cpu_limit": 4000000000,
+    "samples": [
+      {
+        "seconds": 1.534,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.3MB / 0B\",\"CPUPerc\":\"101.48%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"6.95%\",\"MemUsage\":\"284.8MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.2kB / 348B\",\"PIDs\":\"5\"}",
+        "gpu": "2923, 12227, 8"
+      },
+      {
+        "seconds": 15.039,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.90%\",\"MemUsage\":\"405.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.32kB / 444B\",\"PIDs\":\"7\"}",
+        "gpu": "2921, 12227, 7"
+      },
+      {
+        "seconds": 27.69,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.90%\",\"MemUsage\":\"405.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.39kB / 498B\",\"PIDs\":\"7\"}",
+        "gpu": "2932, 12227, 9"
+      },
+      {
+        "seconds": 40.477,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.90%\",\"MemUsage\":\"405.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.47kB / 552B\",\"PIDs\":\"7\"}",
+        "gpu": "2932, 12227, 7"
+      },
+      {
+        "seconds": 55.02,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.90%\",\"MemUsage\":\"405.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.58kB / 648B\",\"PIDs\":\"7\"}",
+        "gpu": "2918, 12227, 6"
+      },
+      {
+        "seconds": 68.631,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.90%\",\"MemUsage\":\"405.4MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.7kB / 744B\",\"PIDs\":\"7\"}",
+        "gpu": "2929, 12227, 7"
+      },
+      {
+        "seconds": 82.742,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.91%\",\"MemUsage\":\"405.8MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"2.77kB / 798B\",\"PIDs\":\"7\"}",
+        "gpu": "2937, 12227, 8"
+      },
+      {
+        "seconds": 96.682,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.95%\",\"MemUsage\":\"407.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.14kB / 894B\",\"PIDs\":\"7\"}",
+        "gpu": "3554, 12227, 12"
+      },
+      {
+        "seconds": 110.236,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.95%\",\"MemUsage\":\"407.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.26kB / 948B\",\"PIDs\":\"7\"}",
+        "gpu": "3622, 12227, 9"
+      },
+      {
+        "seconds": 123.294,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.95%\",\"MemUsage\":\"407.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.33kB / 1kB\",\"PIDs\":\"7\"}",
+        "gpu": "2916, 12227, 8"
+      },
+      {
+        "seconds": 136.077,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.95%\",\"MemUsage\":\"407.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.45kB / 1.1kB\",\"PIDs\":\"7\"}",
+        "gpu": "2907, 12227, 7"
+      },
+      {
+        "seconds": 148.632,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.95%\",\"MemUsage\":\"407.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.52kB / 1.15kB\",\"PIDs\":\"7\"}",
+        "gpu": "2907, 12227, 6"
+      },
+      {
+        "seconds": 161.503,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.94%\",\"MemUsage\":\"407.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.59kB / 1.21kB\",\"PIDs\":\"7\"}",
+        "gpu": "2921, 12227, 7"
+      },
+      {
+        "seconds": 176.021,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"9.94%\",\"MemUsage\":\"407.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.75kB / 1.34kB\",\"PIDs\":\"7\"}",
+        "gpu": "2907, 12227, 6"
+      },
+      {
+        "seconds": 189.815,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.72%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.65%\",\"MemUsage\":\"436.3MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.83kB / 1.4kB\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 6"
+      },
+      {
+        "seconds": 203.386,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.89%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.65%\",\"MemUsage\":\"436.3MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"3.9kB / 1.45kB\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 7"
+      },
+      {
+        "seconds": 216.502,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.43%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.65%\",\"MemUsage\":\"436.3MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.02kB / 1.55kB\",\"PIDs\":\"7\"}",
+        "gpu": "2908, 12227, 8"
+      },
+      {
+        "seconds": 229.509,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.65%\",\"MemUsage\":\"436.3MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.13kB / 1.64kB\",\"PIDs\":\"7\"}",
+        "gpu": "2936, 12227, 7"
+      },
+      {
+        "seconds": 242.097,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.72%\",\"MemUsage\":\"439MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.21kB / 1.7kB\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 8"
+      },
+      {
+        "seconds": 254.769,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.72%\",\"MemUsage\":\"439MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.32kB / 1.79kB\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 9"
+      },
+      {
+        "seconds": 267.582,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.72%\",\"MemUsage\":\"439MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.4kB / 1.85kB\",\"PIDs\":\"7\"}",
+        "gpu": "2908, 12227, 7"
+      },
+      {
+        "seconds": 281.551,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.72%\",\"MemUsage\":\"439MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.51kB / 1.94kB\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 7"
+      },
+      {
+        "seconds": 296.365,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.71%\",\"MemUsage\":\"438.9MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.59kB / 2kB\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 6"
+      },
+      {
+        "seconds": 309.79,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.72%\",\"MemUsage\":\"438.9MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.7kB / 2.09kB\",\"PIDs\":\"7\"}",
+        "gpu": "2908, 12227, 7"
+      },
+      {
+        "seconds": 324.005,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"2.81%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.75%\",\"MemUsage\":\"440.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.82kB / 2.19kB\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 8"
+      },
+      {
+        "seconds": 337.188,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.75%\",\"MemUsage\":\"440.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"4.89kB / 2.24kB\",\"PIDs\":\"7\"}",
+        "gpu": "2936, 12227, 6"
+      },
+      {
+        "seconds": 349.98,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.75%\",\"MemUsage\":\"440.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.01kB / 2.34kB\",\"PIDs\":\"7\"}",
+        "gpu": "2908, 12227, 7"
+      },
+      {
+        "seconds": 362.813,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"10.75%\",\"MemUsage\":\"440.2MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.12kB / 2.44kB\",\"PIDs\":\"7\"}",
+        "gpu": "2922, 12227, 7"
+      },
+      {
+        "seconds": 375.602,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"22.7MB / 0B\",\"CPUPerc\":\"118.92%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"13.96%\",\"MemUsage\":\"571.9MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.2kB / 2.49kB\",\"PIDs\":\"8\"}",
+        "gpu": "2933, 12227, 9"
+      },
+      {
+        "seconds": 388.451,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.4MB / 0B\",\"CPUPerc\":\"18.88%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"30.34%\",\"MemUsage\":\"1.213GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.31kB / 2.59kB\",\"PIDs\":\"11\"}",
+        "gpu": "4066, 12227, 7"
+      },
+      {
+        "seconds": 402.253,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.4MB / 0B\",\"CPUPerc\":\"18.40%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"30.37%\",\"MemUsage\":\"1.215GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.43kB / 2.68kB\",\"PIDs\":\"11\"}",
+        "gpu": "4079, 12227, 8"
+      },
+      {
+        "seconds": 416.388,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.4MB / 0B\",\"CPUPerc\":\"12.49%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"30.38%\",\"MemUsage\":\"1.215GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.5kB / 2.74kB\",\"PIDs\":\"11\"}",
+        "gpu": "4079, 12227, 8"
+      },
+      {
+        "seconds": 430.195,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.4MB / 0B\",\"CPUPerc\":\"18.50%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"30.39%\",\"MemUsage\":\"1.216GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.74kB / 2.83kB\",\"PIDs\":\"11\"}",
+        "gpu": "4066, 12227, 7"
+      },
+      {
+        "seconds": 444.665,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.4MB / 0B\",\"CPUPerc\":\"17.20%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.29%\",\"MemUsage\":\"994.8MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.85kB / 2.93kB\",\"PIDs\":\"11\"}",
+        "gpu": "4079, 12227, 7"
+      },
+      {
+        "seconds": 458.615,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.6MB / 0B\",\"CPUPerc\":\"21.82%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.30%\",\"MemUsage\":\"995.3MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"5.93kB / 2.98kB\",\"PIDs\":\"11\"}",
+        "gpu": "3828, 12227, 6"
+      },
+      {
+        "seconds": 472.647,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.6MB / 0B\",\"CPUPerc\":\"16.86%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.32%\",\"MemUsage\":\"996.3MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.04kB / 3.08kB\",\"PIDs\":\"11\"}",
+        "gpu": "3911, 12227, 8"
+      },
+      {
+        "seconds": 486.138,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.6MB / 0B\",\"CPUPerc\":\"20.08%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.34%\",\"MemUsage\":\"996.9MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.16kB / 3.17kB\",\"PIDs\":\"11\"}",
+        "gpu": "5620, 12227, 7"
+      },
+      {
+        "seconds": 499.221,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.6MB / 0B\",\"CPUPerc\":\"19.27%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.36%\",\"MemUsage\":\"997.6MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.23kB / 3.23kB\",\"PIDs\":\"11\"}",
+        "gpu": "6390, 12227, 6"
+      },
+      {
+        "seconds": 512.374,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.6MB / 0B\",\"CPUPerc\":\"21.63%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.38%\",\"MemUsage\":\"998.5MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.35kB / 3.32kB\",\"PIDs\":\"11\"}",
+        "gpu": "6578, 12227, 4"
+      },
+      {
+        "seconds": 525.586,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.6MB / 0B\",\"CPUPerc\":\"17.90%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.39%\",\"MemUsage\":\"999.1MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.46kB / 3.42kB\",\"PIDs\":\"11\"}",
+        "gpu": "6642, 12227, 4"
+      },
+      {
+        "seconds": 539.592,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"23.6MB / 0B\",\"CPUPerc\":\"20.35%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"24.41%\",\"MemUsage\":\"999.8MiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"6.54kB / 3.47kB\",\"PIDs\":\"11\"}",
+        "gpu": "6738, 12227, 3"
+      },
+      {
+        "seconds": 552.706,
+        "stats": "{\"BlockIO\":\"31.9MB / 0B\",\"CPUPerc\":\"3.00%\",\"Container\":\"zenith-lf-bge-gpu\",\"ID\":\"2dfd0555b528\",\"MemPerc\":\"35.47%\",\"MemUsage\":\"1.419GiB / 4GiB\",\"Name\":\"zenith-lf-bge-gpu\",\"NetIO\":\"7.04kB / 4.06kB\",\"PIDs\":\"13\"}",
+        "gpu": "6799, 12227, 3"
+      }
+    ],
+    "ready": true,
+    "info": {
+      "model_id": "/model",
+      "model_sha": null,
+      "model_dtype": "float16",
+      "served_model_name": "/model",
+      "model_type": {
+        "reranker": {
+          "id2label": {
+            "0": "LABEL_0"
+          },
+          "label2id": {
+            "LABEL_0": 0
+          }
+        }
+      },
+      "max_concurrent_requests": 512,
+      "max_input_length": 2048,
+      "max_batch_tokens": 2048,
+      "max_batch_requests": null,
+      "max_client_batch_size": 4,
+      "auto_truncate": true,
+      "tokenization_workers": 3,
+      "version": "1.9.4",
+      "sha": "e80ef225ed0e6cb1717ce632a6a84b6cf211bb67",
+      "docker_label": "sha-e80ef22"
+    },
+    "elapsed_seconds": 555.58,
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 1927492,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-01T19:34:14.862056043Z",
+      "FinishedAt": "2026-10-01T19:26:00.430463006Z"
+    }
+  },
+  "embed-threads4-long": {
+    "container": "zenith-lf-embed-threads4",
+    "image": "sha256:8de25e75ce39617f17f2f6c77d60a4f75b65e779ed5005420eb1400072a15c1c",
+    "args": [
+      "--model-id",
+      "/data/models--BAAI--bge-m3/snapshots/5617a9f61b028005a4858fdac845db406aefb181",
+      "--max-batch-tokens",
+      "2048",
+      "--max-client-batch-size",
+      "4",
+      "--auto-truncate",
+      "--port",
+      "80"
+    ],
+    "memory_limit": 5368709120,
+    "cpu_limit": 4000000000,
+    "samples": [
+      {
+        "seconds": 3.686,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"19.5MB / 0B\",\"CPUPerc\":\"105.00%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"2.74%\",\"MemUsage\":\"140.4MiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.03kB / 222B\",\"PIDs\":\"5\"}",
+        "gpu": "4481, 12227, 19"
+      },
+      {
+        "seconds": 18.517,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"19.5MB / 0B\",\"CPUPerc\":\"112.55%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"21.23%\",\"MemUsage\":\"1.061GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.15kB / 318B\",\"PIDs\":\"9\"}",
+        "gpu": "4470, 12227, 13"
+      },
+      {
+        "seconds": 31.785,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"41.6MB / 0B\",\"CPUPerc\":\"108.39%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"31.04%\",\"MemUsage\":\"1.552GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.22kB / 372B\",\"PIDs\":\"9\"}",
+        "gpu": "4478, 12227, 15"
+      },
+      {
+        "seconds": 45.435,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"66.7MB / 0B\",\"CPUPerc\":\"109.52%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"40.06%\",\"MemUsage\":\"2.003GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.34kB / 468B\",\"PIDs\":\"9\"}",
+        "gpu": "4475, 12227, 21"
+      },
+      {
+        "seconds": 59.298,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"66.9MB / 0B\",\"CPUPerc\":\"104.82%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"41.70%\",\"MemUsage\":\"2.085GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.41kB / 522B\",\"PIDs\":\"9\"}",
+        "gpu": "4470, 12227, 14"
+      },
+      {
+        "seconds": 72.523,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"67MB / 0B\",\"CPUPerc\":\"104.68%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"43.51%\",\"MemUsage\":\"2.175GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.57kB / 660B\",\"PIDs\":\"9\"}",
+        "gpu": "4484, 12227, 13"
+      },
+      {
+        "seconds": 85.454,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"67.1MB / 0B\",\"CPUPerc\":\"103.52%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"45.32%\",\"MemUsage\":\"2.266GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.64kB / 714B\",\"PIDs\":\"9\"}",
+        "gpu": "4481, 12227, 20"
+      },
+      {
+        "seconds": 99.327,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"67.6MB / 0B\",\"CPUPerc\":\"105.87%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"46.99%\",\"MemUsage\":\"2.35GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.76kB / 810B\",\"PIDs\":\"9\"}",
+        "gpu": "4470, 12227, 14"
+      },
+      {
+        "seconds": 112.57,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"67.9MB / 0B\",\"CPUPerc\":\"105.89%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"48.56%\",\"MemUsage\":\"2.428GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.83kB / 864B\",\"PIDs\":\"9\"}",
+        "gpu": "4921, 12227, 22"
+      },
+      {
+        "seconds": 127.137,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"67.9MB / 0B\",\"CPUPerc\":\"107.43%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"49.73%\",\"MemUsage\":\"2.486GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"1.99kB / 1kB\",\"PIDs\":\"9\"}",
+        "gpu": "5634, 12227, 27"
+      },
+      {
+        "seconds": 141.697,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"170MB / 0B\",\"CPUPerc\":\"105.72%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"52.14%\",\"MemUsage\":\"2.607GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.06kB / 1.06kB\",\"PIDs\":\"9\"}",
+        "gpu": "5798, 12227, 24"
+      },
+      {
+        "seconds": 155.463,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"337MB / 0B\",\"CPUPerc\":\"104.61%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"55.18%\",\"MemUsage\":\"2.759GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.18kB / 1.15kB\",\"PIDs\":\"9\"}",
+        "gpu": "5812, 12227, 21"
+      },
+      {
+        "seconds": 169.069,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"495MB / 0B\",\"CPUPerc\":\"110.15%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"58.08%\",\"MemUsage\":\"2.904GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.25kB / 1.21kB\",\"PIDs\":\"9\"}",
+        "gpu": "5801, 12227, 8"
+      },
+      {
+        "seconds": 182.534,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"408.15%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"62.71%\",\"MemUsage\":\"3.135GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.41kB / 1.34kB\",\"PIDs\":\"17\"}",
+        "gpu": "4470, 12227, 9"
+      },
+      {
+        "seconds": 196.522,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"110.60%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"70.90%\",\"MemUsage\":\"3.545GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.49kB / 1.4kB\",\"PIDs\":\"17\"}",
+        "gpu": "4487, 12227, 8"
+      },
+      {
+        "seconds": 210.659,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"290.32%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"70.37%\",\"MemUsage\":\"3.519GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.6kB / 1.49kB\",\"PIDs\":\"17\"}",
+        "gpu": "4470, 12227, 8"
+      },
+      {
+        "seconds": 223.731,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"196.94%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"68.50%\",\"MemUsage\":\"3.425GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.68kB / 1.55kB\",\"PIDs\":\"17\"}",
+        "gpu": "4470, 12227, 6"
+      },
+      {
+        "seconds": 236.29,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"386.32%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"71.74%\",\"MemUsage\":\"3.587GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.83kB / 1.69kB\",\"PIDs\":\"17\"}",
+        "gpu": "4484, 12227, 7"
+      },
+      {
+        "seconds": 249.565,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"385.39%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"62.44%\",\"MemUsage\":\"3.122GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.91kB / 1.74kB\",\"PIDs\":\"17\"}",
+        "gpu": "4484, 12227, 8"
+      },
+      {
+        "seconds": 262.383,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"342.50%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"62.66%\",\"MemUsage\":\"3.133GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"2.98kB / 1.79kB\",\"PIDs\":\"17\"}",
+        "gpu": "4470, 12227, 7"
+      },
+      {
+        "seconds": 275.39,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"323.55%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"68.62%\",\"MemUsage\":\"3.431GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"3.1kB / 1.89kB\",\"PIDs\":\"17\"}",
+        "gpu": "4484, 12227, 8"
+      },
+      {
+        "seconds": 290.054,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"357.31%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"63.00%\",\"MemUsage\":\"3.15GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"3.21kB / 1.99kB\",\"PIDs\":\"17\"}",
+        "gpu": "4484, 12227, 7"
+      },
+      {
+        "seconds": 303.512,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"357.28%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"61.07%\",\"MemUsage\":\"3.053GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"3.29kB / 2.04kB\",\"PIDs\":\"17\"}",
+        "gpu": "4470, 12227, 7"
+      },
+      {
+        "seconds": 318.147,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"397.17%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"69.89%\",\"MemUsage\":\"3.494GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"3.45kB / 2.18kB\",\"PIDs\":\"17\"}",
+        "gpu": "4484, 12227, 8"
+      },
+      {
+        "seconds": 333.367,
+        "health_error": "RemoteDisconnected",
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"385.99%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"63.31%\",\"MemUsage\":\"3.166GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"3.52kB / 2.23kB\",\"PIDs\":\"17\"}",
+        "gpu": "4470, 12227, 8"
+      },
+      {
+        "seconds": 348.579,
+        "stats": "{\"BlockIO\":\"613MB / 0B\",\"CPUPerc\":\"5.49%\",\"Container\":\"zenith-lf-embed-threads4\",\"ID\":\"43f577bc6612\",\"MemPerc\":\"60.43%\",\"MemUsage\":\"3.022GiB / 5GiB\",\"Name\":\"zenith-lf-embed-threads4\",\"NetIO\":\"4.03kB / 2.81kB\",\"PIDs\":\"18\"}",
+        "gpu": "4475, 12227, 8"
+      }
+    ],
+    "ready": true,
+    "info": {
+      "model_id": "/data/models--BAAI--bge-m3/snapshots/5617a9f61b028005a4858fdac845db406aefb181",
+      "model_sha": null,
+      "model_dtype": "float32",
+      "model_type": {
+        "embedding": {
+          "pooling": "cls"
+        }
+      },
+      "max_concurrent_requests": 512,
+      "max_input_length": 2048,
+      "max_batch_tokens": 2048,
+      "max_batch_requests": 4,
+      "max_client_batch_size": 4,
+      "auto_truncate": true,
+      "tokenization_workers": 4,
+      "version": "1.8.3",
+      "sha": "78502d8e61223d2c73d4bb7aeaea46787e90d596",
+      "docker_label": "sha-78502d8"
+    },
+    "elapsed_seconds": 353.83,
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 1861707,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-01T19:18:33.83865231Z",
+      "FinishedAt": "2026-10-01T19:17:39.072512557Z"
+    }
+  },
+  "gpu-controlled-resources": {
+    "samples": 105,
+    "minimum_host_free_mib": 1744.0546875,
+    "resource_abort_count": 0,
+    "sha256": "669b8584e45731f3a3c0389b85f444bddea48487ae4d10f9bd82aace4a645ce8"
+  },
+  "cpu-controlled-resources": {
+    "samples": 64,
+    "minimum_host_free_mib": 2414.03125,
+    "resource_abort_count": 0,
+    "sha256": "2a990af5fe928d69543efe097b170f4064854f0137a97842f079d0941ea3dc9e"
+  },
+  "threads4-resources": {
+    "samples": 70,
+    "minimum_host_free_mib": 944.85546875,
+    "resource_abort_count": 1,
+    "sha256": "2b00cd0f81281806c82c6ef0d9b9c772df3dee6f2d97a1555cc154b1a264c09e"
+  },
+  "comparison_scope": "same bge-m3 revision, float32, TEI 1.9.4, four-CPU cap, batch 2048/4, worker 1, shared fixed GPU BGE reranker; sequential single trials with changing shared-host load and warm caches; not a fully CPU-versus-GPU stack or a causal speedup distribution",
+  "blackwell_config": {
+    "tei-embed": {
+      "image": "ghcr.io/huggingface/text-embeddings-inference:120-1.9@sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400",
+      "command": [
+        "--model-id",
+        "BAAI/bge-m3",
+        "--auto-truncate",
+        "--max-batch-tokens",
+        "2048",
+        "--max-client-batch-size",
+        "4"
+      ],
+      "deploy": {
+        "resources": {
+          "reservations": {
+            "devices": [
+              {
+                "capabilities": [
+                  "gpu"
+                ],
+                "driver": "nvidia",
+                "count": -1
+              }
+            ]
+          }
+        },
+        "placement": {}
+      },
+      "cpus": 4,
+      "mem_limit": null,
+      "volumes": [
+        {
+          "type": "volume",
+          "source": "hf_cache",
+          "target": "/data",
+          "volume": {}
+        }
+      ]
+    },
+    "tei-rerank": {
+      "image": "ghcr.io/huggingface/text-embeddings-inference:120-1.9@sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400",
+      "command": [
+        "--model-id",
+        "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+        "--auto-truncate",
+        "--max-batch-tokens",
+        "2048",
+        "--max-client-batch-size",
+        "4"
+      ],
+      "deploy": {
+        "resources": {
+          "reservations": {
+            "devices": [
+              {
+                "capabilities": [
+                  "gpu"
+                ],
+                "driver": "nvidia",
+                "count": -1
+              }
+            ]
+          }
+        },
+        "placement": {}
+      },
+      "cpus": 4,
+      "mem_limit": null,
+      "volumes": [
+        {
+          "type": "volume",
+          "source": "hf_cache",
+          "target": "/data",
+          "volume": {}
+        }
+      ]
+    }
+  }
+}

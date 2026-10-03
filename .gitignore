@@ -56,3 +56,7 @@ backend/.data/
 
 # Backups hold customer documents and a full database dump. Never in the repository.
 backups/
+
+# Local public fixtures and raw measurement logs; hashed manifests are tracked.
+/.local-data/
+/.local-evidence/

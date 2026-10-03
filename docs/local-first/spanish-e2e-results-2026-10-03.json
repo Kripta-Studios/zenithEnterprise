@@ -1,0 +1,364 @@
+{
+  "bge": {
+    "entailed_grounded_reference_match": 0.078125,
+    "grounded_reference_match": 0.203125,
+    "answer_token_f1": 0.1579170175831571,
+    "cited_answer_token_f1": 0.13434133731104825,
+    "reference_match": 0.2578125,
+    "nli_supported_sentence_fraction": 0.11002604166666667,
+    "sentence_citation_coverage": 0.3131510416666667,
+    "reference_source_citation_precision": 0.22916666666666666,
+    "ndcg8": 0.8441538844867598,
+    "gold_span_recall8": 0.890625,
+    "gold_span_hit8": 0.90625,
+    "abstained": 0.671875,
+    "raw_fabricated_markers": 0.0,
+    "invalid_citations": 0.0,
+    "generation": {
+      "called_cases": 43,
+      "reused_identical_prompts": 3,
+      "maximum_prompt_tokens": 3150,
+      "length_limited_completions": 1,
+      "median_original_generation_seconds": 3.2277971130097285
+    }
+  },
+  "jev": {
+    "entailed_grounded_reference_match": 0.15625,
+    "grounded_reference_match": 0.3828125,
+    "answer_token_f1": 0.3175398855632663,
+    "cited_answer_token_f1": 0.2873279344312973,
+    "reference_match": 0.4375,
+    "nli_supported_sentence_fraction": 0.20225074404761906,
+    "sentence_citation_coverage": 0.5698474702380952,
+    "reference_source_citation_precision": 0.4244791666666667,
+    "ndcg8": 0.883364495822756,
+    "gold_span_recall8": 0.8984375,
+    "gold_span_hit8": 0.9140625,
+    "abstained": 0.421875,
+    "raw_fabricated_markers": 0.0,
+    "invalid_citations": 0.0,
+    "generation": {
+      "called_cases": 76,
+      "reused_identical_prompts": 6,
+      "maximum_prompt_tokens": 3190,
+      "length_limited_completions": 3,
+      "median_original_generation_seconds": 2.9241332365199924
+    }
+  },
+  "paired_jev_minus_bge": {
+    "entailed_grounded_reference_match": {
+      "delta": 0.078125,
+      "ci95": [
+        0.015503875968992248,
+        0.14728682170542637
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "grounded_reference_match": {
+      "delta": 0.1796875,
+      "ci95": [
+        0.09523809523809523,
+        0.26229508196721313
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "answer_token_f1": {
+      "delta": 0.15962286798010916,
+      "ci95": [
+        0.09831517320849524,
+        0.22342173914972244
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "cited_answer_token_f1": {
+      "delta": 0.15298659712024903,
+      "ci95": [
+        0.08846362907430103,
+        0.21850494699201187
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "reference_match": {
+      "delta": 0.1796875,
+      "ci95": [
+        0.09836065573770492,
+        0.25984251968503935
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "nli_supported_sentence_fraction": {
+      "delta": 0.09222470238095239,
+      "ci95": [
+        0.028953107960741548,
+        0.16353383458646617
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "sentence_citation_coverage": {
+      "delta": 0.25669642857142855,
+      "ci95": [
+        0.16917293233082706,
+        0.3444813584348468
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "reference_source_citation_precision": {
+      "delta": 0.1953125,
+      "ci95": [
+        0.112,
+        0.2768595041322314
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "ndcg8": {
+      "delta": 0.039210611335996244,
+      "ci95": [
+        0.013230694590622948,
+        0.069049948935573
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "gold_span_recall8": {
+      "delta": 0.0078125,
+      "ci95": [
+        0.0,
+        0.024193548387096774
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "gold_span_hit8": {
+      "delta": 0.0078125,
+      "ci95": [
+        0.0,
+        0.024193548387096774
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "abstained": {
+      "delta": -0.25,
+      "ci95": [
+        -0.3409090909090909,
+        -0.16129032258064516
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "raw_fabricated_markers": {
+      "delta": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    },
+    "invalid_citations": {
+      "delta": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "article_clusters": 114,
+      "samples": 128
+    }
+  },
+  "meaningful_gain_met": true,
+  "clearly_larger_gain_met": false,
+  "protocol": {
+    "seed": 20261002,
+    "test_cases": 128,
+    "development_cases": 16,
+    "corpus_contexts": 650,
+    "corpus_sha256": "b1b7d0a5fc83e081b5e7bf141af74d1e41e47c635807f68adcf5f4ca9715263d",
+    "corpus_bytes": 844643,
+    "document_count": 14,
+    "document_layout": "target 64000 characters, split only between published contexts",
+    "retrieved_candidates": 32,
+    "generated_passages": 8,
+    "batch_tokens": 1024,
+    "batch_items": 2,
+    "source_sha256": {
+      "dev": "ec748f222626e5081a34193ca469bcf8112092837678a6948a2d6ae7d6629d1a",
+      "test": "af84d20d4afeba9a6936c3c7d8b5f577a15af5461c8f0e29f94286bb2205b18d"
+    },
+    "generator": {
+      "model": "llama3.1:8b-instruct-q4_K_M",
+      "model_digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+      "thinking": false,
+      "temperature": 0,
+      "seed": 20261002,
+      "num_ctx": 8192,
+      "num_predict": 256
+    },
+    "meaningful_gain": {
+      "mean": 0.02,
+      "lower_ci_above": 0
+    },
+    "clearly_larger_gain": {
+      "mean": 0.05,
+      "lower_ci_at_least": 0.02
+    },
+    "primary_metric": "entailed_grounded_reference_match",
+    "reference_span_metric": "grounded_reference_match",
+    "nli": {
+      "model": "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli",
+      "revision": "8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c",
+      "entailment_threshold": 0.8,
+      "maximum_tokens": 512,
+      "truncation": "none; split long premises into overlapping token windows",
+      "limits": "independent automatic multilingual NLI, not human claim adjudication"
+    },
+    "limits": [
+      "automatic reference/span proxies, not full semantic adjudication",
+      "staged model execution, not simultaneous online latency",
+      "experimental depth 32; production CPU depth is eight"
+    ]
+  },
+  "paid_accounting": {
+    "cumulative_calls": 15175,
+    "cumulative_dollars": 0.385689192,
+    "new_calls": 274,
+    "new_dollars": 0.007437990000000001
+  },
+  "test_pairs": 128,
+  "limits": [
+    "reference matching misses valid paraphrases and does not alone establish correctness",
+    "automatic NLI can make mistakes; no new human adjudication of generated claims",
+    "test is public Spanish QA, not client contracts or legal accuracy",
+    "staged real services with response caches; no simultaneous deployment latency claim",
+    "depth 32 is experimental in both arms; it does not change product defaults"
+  ],
+  "upload": {
+    "documents": 14,
+    "uploaded_bytes": 844617,
+    "chunks": 939,
+    "ready_seconds": 199.38509184500435,
+    "corpus_sha256": "b1b7d0a5fc83e081b5e7bf141af74d1e41e47c635807f68adcf5f4ca9715263d"
+  },
+  "diagnostic_counts": {
+    "bge": {
+      "candidate_gold_hit32": 118,
+      "shortlist_gold_hit8": 116,
+      "lexical_hits8": 263,
+      "lexical_veto": 83,
+      "lexical_veto_with_gold8": 75,
+      "score_floor_veto": 8,
+      "score_floor_only_veto": 2,
+      "generation_called": 43,
+      "pre_generation_abstained": 85,
+      "post_generation_abstained": 1,
+      "answered": 42,
+      "english_canned_abstention": 86,
+      "primary": 10,
+      "reference_and_citation_match": 26,
+      "reference_match": 33,
+      "citation_count": 54,
+      "invalid_citations": 0,
+      "raw_fabricated_markers": 0,
+      "all_sentences_entailed": 13,
+      "checked_claims": 58
+    },
+    "jev": {
+      "candidate_gold_hit32": 118,
+      "shortlist_gold_hit8": 117,
+      "lexical_hits8": 384,
+      "lexical_veto": 52,
+      "lexical_veto_with_gold8": 47,
+      "score_floor_veto": 0,
+      "score_floor_only_veto": 0,
+      "generation_called": 76,
+      "pre_generation_abstained": 52,
+      "post_generation_abstained": 2,
+      "answered": 74,
+      "english_canned_abstention": 54,
+      "primary": 20,
+      "reference_and_citation_match": 49,
+      "reference_match": 56,
+      "citation_count": 103,
+      "invalid_citations": 0,
+      "raw_fabricated_markers": 0,
+      "all_sentences_entailed": 24,
+      "checked_claims": 103
+    }
+  },
+  "paired_primary_counts": {
+    "both_fail": 105,
+    "both_generated": 38,
+    "both_generated_bge_primary": 8,
+    "both_generated_jev_primary": 9,
+    "both_pass": 7,
+    "jev_only_pass": 13,
+    "jev_only_pass_bge_pre_generation_abstained": 11,
+    "jev_only_pass_both_generated": 2,
+    "bge_only_pass": 3
+  },
+  "article_clusters": 114,
+  "independent_nli": {
+    "input_sha256": "f044f3cc8093d1f4738c3c56e59c4225b01445e29cc0c39f42faa11cb0386642",
+    "positive_sanity": 0.9977084398269653,
+    "negative_sanity": 0.010114537551999092,
+    "dtype": "float32",
+    "device": "cpu"
+  },
+  "integration_check": {
+    "head": "2c563142db1551ef5eb68174b23694a2a8af5fb2",
+    "tree": "11e7a8939e36da1d5d430f1aa12d3420b1f96163",
+    "runner_image": "sha256:906ce21d27968f6b2ec1d5d83601bec84f875d74bef5cbfaf8eafee948458d88",
+    "archive_sha256": "66c148d769a67041a54df70a6d7bb6dabe0dbdc3af25f37d7a4541e846ef9a58",
+    "excluded_offline_wheels": [
+      "torch",
+      "nvidia",
+      "triton"
+    ],
+    "dependency_volume": "zenith-lf-check-env-lean",
+    "commands": [
+      {
+        "command": "uv run python -m pytest -q --tb=short eval/tests/test_spanish_e2e_pipeline.py",
+        "exit": 0,
+        "timeout_seconds": 21600.0,
+        "cleanup": null,
+        "seconds": 983.86,
+        "log": "spanish-e2e-docker-tests.log",
+        "log_sha256": "2382010e1b791d3d9074972367a64e4082c73e164a49f65c3f128e56c6698fde"
+      }
+    ]
+  },
+  "execution_readiness": {
+    "embedder_warm_ready_seconds": 0.7810000000172295,
+    "reranker_ready_seconds": 181.7029999999795,
+    "generator_resident_bytes": 5812781055,
+    "generator_vram_bytes": 5812781055,
+    "generator_context_length": 8192,
+    "generation_resource_samples": 323,
+    "minimum_generation_free_host_mib": 2566.43359375
+  },
+  "input_sha256": {
+    "generated-results.json": "f044f3cc8093d1f4738c3c56e59c4225b01445e29cc0c39f42faa11cb0386642",
+    "independently-graded.json": "56e8c0fe5f6e4aad6b56d41cb11a52c084d002fda57996dda9616e2eca2dca99",
+    "candidates.json": "f189be892b735ae1ff1e68570a80adec5fbfa34e797dc78a13fed88f9c175ab5",
+    "bge-scores.json": "f87610c2f2bad3ed5d282bb9f62b7e55aa1723621a8740a3f40341dd490d6a33",
+    "jev-scores.json": "3e20b640a239a0f6b132303a7c3b1300ccce4124123c35fab03eeb69be959a4a",
+    "e2e-summary.json": "e7b67af53cf012ab92fb0bfb18f7c117051bfdf154bb171a4063cafd41328aa6",
+    "generator-preflight.json": "0c26e9c61e07ef129d5ab24d831d4a8b8bfc13e96de9cf1e45f8974e3b297eab",
+    "embed-preflight.json": "bd227cbdeaf08a10790d96b3bc36f5a8c13f6a2de8e480433c582f241306ac23",
+    "bge-preflight.json": "82c816015f20ddf751dba5bfc713a80093483161476988672ae1578ef4c15690",
+    "generation-resources.jsonl": "c57b43ee53305edd02dad65ea48422d59cf4b1daf21162fbc21fb241db549d47"
+  },
+  "diagnostic_limits": [
+    "gate counts reproduce frozen lexical share <1/3 and top-score floor <0.02",
+    "veto-with-gold is an admission diagnostic, not a counterfactual generated success",
+    "both-generated subset is post-treatment selection, not a causal provider estimate",
+    "English canned abstentions are preserved; generated answers were not translated"
+  ]
+}
