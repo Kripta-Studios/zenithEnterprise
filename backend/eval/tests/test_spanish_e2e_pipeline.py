@@ -27,6 +27,9 @@ from app.features.embeddings.client import TeiClient
 from app.features.generation import service as generation
 from app.features.generation.answering.citations import MARKER
 from app.features.ingestion import tasks
+from app.features.ingestion.chunking.chunker import Chunk
+from app.features.ingestion.parsers.base import ParsedPage
+from app.features.ingestion.pipeline import IngestionPipeline, Result
 from app.features.query.router import router as query_router
 from app.features.retrieval import service as retrieval
 from app.features.retrieval.breaker import Breaker
@@ -199,6 +202,45 @@ async def test_public_spanish_answers(
         conninfo=owner_url.replace("postgresql+psycopg://", "postgresql://")
     )
     started = time.monotonic()
+    if os.environ.get("ZENITH_E2E_CAPTURE_ONLY"):
+        telemetry: dict[str, dict[str, Any]] = {}
+        actual_persist = IngestionPipeline._persist  # pyright: ignore[reportPrivateUsage]
+        actual_ingest = IngestionPipeline._ingest  # pyright: ignore[reportPrivateUsage]
+
+        async def timed_persist(
+            self: IngestionPipeline,
+            document_id: UUID,
+            pages: list[ParsedPage],
+            chunks: list[Chunk],
+            embeddings: list[list[float]],
+        ) -> None:
+            before = time.monotonic()
+            item = telemetry.setdefault(str(document_id), {})
+            item["chunks"] = len(chunks)
+            item["persist_succeeded"] = False
+            try:
+                await actual_persist(self, document_id, pages, chunks, embeddings)
+                item["persist_succeeded"] = True
+            finally:
+                item["persist_seconds"] = time.monotonic() - before
+                save(output / "ingestion-telemetry.json", telemetry)
+
+        async def timed_ingest(
+            self: IngestionPipeline, document_id: UUID, path: Path, media_type: str
+        ) -> Result:
+            before = time.monotonic()
+            try:
+                result = await actual_ingest(self, document_id, path, media_type)
+                telemetry.setdefault(str(document_id), {})["status"] = result.status
+                return result
+            finally:
+                item = telemetry.setdefault(str(document_id), {})
+                item["ingest_seconds"] = time.monotonic() - before
+                item["finished_after_upload_start_seconds"] = time.monotonic() - started
+                save(output / "ingestion-telemetry.json", telemetry)
+
+        monkeypatch.setattr(IngestionPipeline, "_persist", timed_persist)
+        monkeypatch.setattr(IngestionPipeline, "_ingest", timed_ingest)
     with tasks.app.replace_connector(connector):
         async with tasks.app.open_async():
             schema_exists = False

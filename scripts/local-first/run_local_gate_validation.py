@@ -33,8 +33,9 @@ def main():
     def save(name, value):
         (args.output / name).write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
 
-    def emit(value):
-        print(json.dumps(value), flush=True)
+    def emit(value, **fields):
+        record = value if isinstance(value, dict) else {"stage": value, **fields}
+        print(json.dumps(record), flush=True)
 
     def run(command, label):
         with (args.output / (label + ".log")).open("w", encoding="utf-8") as log:
@@ -118,45 +119,50 @@ def main():
             if time.monotonic() > deadline:
                 raise TimeoutError("no available measured GPU window")
             time.sleep(10)
-        if (
-            subprocess.run(
-                ["docker", "container", "inspect", database], capture_output=True
-            ).returncode
-            == 0
-        ):
-            raise ValueError("existing dedicated gate database must be inspected before a new run")
-        run(
-            [
-                "docker",
-                "run",
-                "-d",
-                "--name",
-                database,
-                "--network",
-                "zenith-lf-benchmark",
-                "--network-alias",
-                "db-e2e",
-                "--cpus",
-                "2",
-                "--memory",
-                "768m",
-                "--label",
-                "zenith.gate.fixture=" + fixture_hash,
-                "-e",
-                "POSTGRES_USER=test",
-                "-e",
-                "POSTGRES_PASSWORD=test",
-                "-e",
-                "POSTGRES_DB=test",
-                "-v",
-                "zenith-lf-gate-db:/var/lib/postgresql/data",
-                "paradedb/paradedb:0.15.26-pg17",
-                "postgres",
-                "-c",
-                "max_locks_per_transaction=2560",
-            ],
-            "database-create",
+        probe = subprocess.run(
+            ["docker", "container", "inspect", database],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
         )
+        if probe.returncode == 0:
+            config = json.loads(probe.stdout)[0]
+            if config["Config"]["Labels"].get("zenith.gate.fixture") != fixture_hash:
+                raise ValueError("dedicated database belongs to another fixture")
+            run(["docker", "start", database], "database-start")
+        else:
+            run(
+                [
+                    "docker",
+                    "run",
+                    "-d",
+                    "--name",
+                    database,
+                    "--network",
+                    "zenith-lf-benchmark",
+                    "--network-alias",
+                    "db-e2e",
+                    "--cpus",
+                    "2",
+                    "--memory",
+                    "768m",
+                    "--label",
+                    "zenith.gate.fixture=" + fixture_hash,
+                    "-e",
+                    "POSTGRES_USER=test",
+                    "-e",
+                    "POSTGRES_PASSWORD=test",
+                    "-e",
+                    "POSTGRES_DB=test",
+                    "-v",
+                    "zenith-lf-gate-db:/var/lib/postgresql/data",
+                    "paradedb/paradedb:0.15.26-pg17",
+                    "postgres",
+                    "-c",
+                    "max_locks_per_transaction=2560",
+                ],
+                "database-create",
+            )
         emit({"stage": "embedding_readiness"})
         model_stage("zenith-lf-e2e-embed", "embed", 18096)
         emit({"stage": "monolithic_upload_and_fresh_retrieval"})
