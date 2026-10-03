@@ -33,8 +33,8 @@ def main():
     def save(name, value):
         (args.output / name).write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
 
-    def emit(value, **fields):
-        record = value if isinstance(value, dict) else {"stage": value, **fields}
+    def emit(value=None, **fields):
+        record = value if isinstance(value, dict) else {"stage": value or "readiness", **fields}
         print(json.dumps(record), flush=True)
 
     def run(command, label):
