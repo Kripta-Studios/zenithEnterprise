@@ -6,6 +6,24 @@
 services:
   tei-embed:
     image: ghcr.io/huggingface/text-embeddings-inference:120-1.9@sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400
+    environment:
+      # The local GPU preset pins the measured admission/dtype bounds. Defaults retain
+      # the image's capacity; this flag is never added to the CPU 1.8 deployment.
+      MAX_CONCURRENT_REQUESTS: ${TEI_GPU_MAX_CONCURRENT_REQUESTS:-512}
+      DTYPE: ${TEI_GPU_DTYPE:-float16}
 
   tei-rerank:
     image: ghcr.io/huggingface/text-embeddings-inference:120-1.9@sha256:bd8e5b1954146f7fe8590b64b959bc194433c6c38c036592a84d736841ca9400
+    environment:
+      MAX_CONCURRENT_REQUESTS: ${TEI_GPU_MAX_CONCURRENT_REQUESTS:-512}
+      DTYPE: ${TEI_GPU_DTYPE:-float16}
+
+  # CLI --env-file supplies interpolation values; service env_file alone does not
+  # inherit the additional public preset. Bind both application processes explicitly.
+  api:
+    environment:
+      ZENITH_HARDWARE: ${ZENITH_HARDWARE:-cpu}
+
+  worker:
+    environment:
+      ZENITH_HARDWARE: ${ZENITH_HARDWARE:-cpu}

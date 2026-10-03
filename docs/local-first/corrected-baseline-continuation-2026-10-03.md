@@ -52,11 +52,16 @@ existing Keycloak intranet transport retain their current user/tenant/label boun
    remains explicitly automatic; obtain external adjudication if Martin requires it.
    Do not retune thresholds or select questions to manufacture a provider win.
 
-2. **Remaining ingestion time.** Instrument parsing/chunking, embedding requests,
-   queue waits, persistence and classification separately. The measured non-persistence
-   phase is 93.349 seconds; identify its dominant component before tuning request
-   concurrency. Keep current token/item memory bounds, full-vector storage and one
-   atomic replacement transaction. Profile the 10.393-second vector INSERT phase.
+2. **Remaining ingestion time.** The subsequent
+   [paired GPU ingestion experiment](ingestion-phase-results-2026-10-03.md) identifies
+   embeddings as the dominant component of the historical 93.349-second observation.
+   The optional bounded `gpu-local` recipe reduces measured non-persistence medians
+   from 63.383 to 29.863 seconds and observed ready from 93.420 to 59.270 seconds.
+   These are three new paired uploads per arm, not a controlled comparison to the
+   earlier 136-second upload. Embedding and persistence now take about 29 and 27
+   seconds respectively. Profile vector serialization, INSERT/index work and commit
+   in this new workload; the old 10.393-second vector INSERT is historical evidence.
+   Keep full-vector storage and one atomic replacement transaction.
    Compare fresh upload pairs at fixed layouts/sizes and include dedup hits, retry,
    cancellation, RLS and failed-job behavior. Accept further tuning only with lower
    ready p50/p95 and no isolation, rollback or content loss regression.

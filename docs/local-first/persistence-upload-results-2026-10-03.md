@@ -1,5 +1,9 @@
 # Atomic persistence and fresh upload-to-ready measurements
 
+Subsequent work isolates and optimizes the non-persistence embedding bottleneck;
+see [the paired GPU ingestion report](ingestion-phase-results-2026-10-03.md).
+The figures below remain the original persistence experiment, not its new comparator.
+
 For the same 938 public chunks and full 1024-dimensional vectors, persistence falls
 from **111.082928 seconds to 26.826970 seconds** at the median: **4.140718x faster,
 75.849601% less wall time**. These are three alternating measured replacement pairs,
