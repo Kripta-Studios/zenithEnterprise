@@ -160,6 +160,13 @@ async def test_metadata_http_tool_current_authority_and_revocation(
                 )
                 assert not disclosed.is_error and disclosed.structured_content is not None
                 assert disclosed.structured_content["id"] == str(labelled_document)
+                batch = await connected.call_tool(
+                    "zenith_get_documents", {"document_ids": [str(labelled_document)]}
+                )
+                assert not batch.is_error
+                assert batch.structured_content["documents"] == [disclosed.structured_content]
+                capabilities = await connected.call_tool("zenith_capabilities", {})
+                assert capabilities.structured_content["processing"] == "local"
                 async with owner_session() as session:
                     await session.execute(
                         text("UPDATE users SET token_version=token_version+1 WHERE id=:u"),
@@ -169,6 +176,10 @@ async def test_metadata_http_tool_current_authority_and_revocation(
                     "zenith_get_document", {"document_id": str(labelled_document)}
                 )
                 assert invalidated.is_error and invalidated.structured_content is None
+                invalidated_batch = await connected.call_tool(
+                    "zenith_get_documents", {"document_ids": [str(labelled_document)]}
+                )
+                assert invalidated_batch.is_error
             revoked = True
             async with httpx.AsyncClient(base_url=base, trust_env=False) as client:
                 assert (

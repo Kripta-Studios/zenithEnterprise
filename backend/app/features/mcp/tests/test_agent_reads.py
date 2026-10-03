@@ -17,11 +17,10 @@ from app.core.database import get_session_factory, owner_session
 from app.features.auth.service import AuthService
 from app.features.mcp.server import create_server
 from app.features.mcp.service import LocalReads
+from app.features.mcp.tests.test_local_reads import client as client
+from app.features.mcp.tests.test_local_reads import public_source as public_source
+from app.features.mcp.tests.test_local_reads import token as token
 from conftest import PASSWORD, Account
-
-from .test_local_reads import client as client
-from .test_local_reads import public_source as public_source
-from .test_local_reads import token as token
 
 
 class BatchTrial(TypedDict):
