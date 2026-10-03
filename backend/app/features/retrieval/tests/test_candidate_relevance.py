@@ -2,12 +2,18 @@
 
 import json
 from dataclasses import replace
+from uuid import UUID
 
 import httpx
 import pytest
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.hardware import PROFILES
+from app.features.embeddings.space import Space
+from app.features.retrieval import service as retrieval_service
 from app.features.retrieval.relevance import Relevance
+from app.features.retrieval.search import dense
 from app.features.retrieval.service import SearchService
 from conftest import Account, WorkingEmbedder
 from conftest import account as seed_account
@@ -34,7 +40,24 @@ def prefer_semantic(request: httpx.Request) -> httpx.Response:
 
 async def test_semantic_selection_does_not_erase_authorized_lexical_evidence(
     account: Account,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    # This guard needs the complete seeded pool, not an ANN recall experiment over
+    # every earlier tenant's tied one-hot vectors. Keep the real dense SQL and RLS,
+    # but use its exact scan; vector index planning has separate acceptance tests.
+    async def exact_dense(
+        session: AsyncSession,
+        embedding: list[float],
+        space: Space,
+        limit: int,
+        ef_search: int | None,
+        documents: list[UUID] | None,
+    ) -> list[tuple[UUID, float]]:
+        await session.execute(text("SET LOCAL enable_indexscan = off"))
+        await session.execute(text("SET LOCAL enable_bitmapscan = off"))
+        return await dense(session, embedding, space, limit, ef_search, documents)
+
+    monkeypatch.setattr(retrieval_service, "dense", exact_dense)
     passages = [(f"The controller implements measure {i}.", i) for i in range(1, 5)] + [
         (f"Semantic paraphrase about safeguarding data, example {i}.", i) for i in range(5, 13)
     ]
