@@ -1,9 +1,14 @@
 # Spanish generated answers with mandatory citations
 
+Completion update, 2026-10-03: all 128 paired generated-query outcomes and independent
+automatic NLI grading are complete. See [the measured results](spanish-e2e-results-2026-10-03.md),
+including the relevance-gate limitation, uncertainty and next local-product work. The
+execution notes below preserve earlier attempts; their pending status is historical.
+
 This experiment evaluates the actual Zenith upload, ingestion, retrieval, generated-answer,
 citation-binding and audit path. It does not enable Jev in the product. The comparison is
-against the existing BGE GPU reranker. Results and a publication decision are pending the
-completed paired run and independent local entailment checks.
+against the existing BGE GPU reranker. Completed results and the measured publication
+boundary are recorded in the report linked above.
 
 ## Frozen design
 

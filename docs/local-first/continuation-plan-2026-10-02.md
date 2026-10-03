@@ -1,5 +1,11 @@
 # Continuation plan based on the measured Zenith results
 
+Completion update, 2026-10-03: [all 128 paired Spanish generated-query and automatic NLI comparisons](spanish-e2e-results-2026-10-03.md)
+are finished. The next measured research bottleneck is local lexical admission despite
+correct retrieved evidence, followed by generated-claim support. This exposed test set
+must not become a new blind confirmation set. The historical recovery checklist below
+is complete for this cohort; local product delivery and upstream CI remain separate work.
+
 Date: 2026-10-02. Evidence inspected at commit `d1cb4d7` on
 `perf/spanish-e2e-citations`, based on `894d209`. This is a plan, not a completed
 end-to-end evaluation or authorization to merge existing branches.

@@ -12,8 +12,6 @@ from uuid import UUID
 
 import procrastinate
 import pytest
-from conftest import IMAGE, MAX_LOCKS_PER_TRANSACTION, PASSWORD, Account
-from conftest import account as seed_account
 from fastapi import FastAPI
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -38,6 +36,8 @@ from app.features.retrieval.search import Hit
 from app.features.retrieval.tests.test_search import profile_for
 from app.features.tenancy.context import TenantContext
 from app.main import handle_domain_error
+from conftest import IMAGE, MAX_LOCKS_PER_TRANSACTION, PASSWORD, Account
+from conftest import account as seed_account
 from eval.e2e_generator import LocalEvaluationProvider
 from eval.spanish_e2e import measure, save, spans_supported
 from eval.tests.test_local_first_baseline import baseline_client

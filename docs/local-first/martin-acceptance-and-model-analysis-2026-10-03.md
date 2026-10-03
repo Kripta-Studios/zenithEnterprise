@@ -1,5 +1,13 @@
 # Zenith: model evidence, Martin's acceptance requirements, and the next delivery plan
 
+Completion update, 2026-10-03: [the frozen 128-pair Spanish end-to-end evaluation](spanish-e2e-results-2026-10-03.md)
+now has complete generated-query and independent automatic NLI results. Primary Jev gain
+is +7.8125 pp, CI [1.5504, 14.7287]: meaningful gain passes, clearly-larger gain fails.
+Eleven of thirteen Jev-only successes coincide with a lexical veto stopping BGE before
+generation. Qualify a local gate correction on fresh data before provider promotion.
+The incomplete-run status throughout this earlier analysis is historical; its upstream
+PR/CI, privacy, upload and MCP acceptance requirements remain separate.
+
 Date: 2026-10-03 (Europe/Madrid). GitHub state rechecked on 2026-10-02 at approximately
 23:00 UTC. Analysis starts from local commit `24cafcc` on
 `perf/spanish-e2e-citations`; that branch descends from local-first baseline
