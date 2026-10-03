@@ -11,6 +11,7 @@ from typing import Any, cast
 from uuid import UUID
 
 import httpx
+import numpy as np
 import procrastinate
 import pytest
 from fastapi import FastAPI
@@ -297,6 +298,21 @@ async def test_public_spanish_answers(
             item = telemetry.setdefault(str(document_id), {})
             item["chunks"] = len(chunks)
             item["persist_succeeded"] = False
+            array = np.asarray(embeddings, dtype=np.float32)
+            assert array.shape == (len(chunks), 1024) and np.isfinite(array).all()
+            np.save(output / "embedding-vectors.npy", array, allow_pickle=False)
+            save(
+                output / "embedding-source-bindings.json",
+                [
+                    {
+                        "sha256": hashlib.sha256(chunk.text.encode()).hexdigest(),
+                        "page_num": chunk.page_num,
+                        "char_start": chunk.char_start,
+                        "char_end": chunk.char_end,
+                    }
+                    for chunk in chunks
+                ],
+            )
             try:
                 await actual_persist(self, document_id, pages, chunks, embeddings)
                 item["persist_succeeded"] = True
