@@ -6,6 +6,29 @@ import time
 import urllib.request
 
 
+def completed_scores(panel_path, output):
+    """A completed stage can resume only against its exact ordered capture."""
+    import hashlib
+
+    panel = json.loads(panel_path.read_text(encoding="utf-8"))
+    panel_hash = hashlib.sha256(panel_path.read_bytes()).hexdigest()
+    expected = {case["id"]: len(case["candidates"]) for case in panel["cases"]}
+    for arm in ("bge", "jev"):
+        path = output / f"{arm}-scores.json"
+        if not path.exists():
+            return False
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if data["panel_sha256"] != panel_hash or set(data["queries"]) != set(expected):
+            raise ValueError("completed scores do not match the resumed capture")
+        for qid, length in expected.items():
+            values = data["queries"][qid]["scores"]
+            if len(values) != length or any(
+                isinstance(v, bool) or not math.isfinite(v) or not 0 <= v <= 1 for v in values
+            ):
+                raise ValueError("completed scores are incomplete or malformed")
+    return True
+
+
 def ready(base, kind, seconds, emit):
     deadline = time.monotonic() + seconds
     started = time.monotonic()

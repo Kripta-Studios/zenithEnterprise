@@ -17,9 +17,16 @@ Jev criterion, citation rules and NLI threshold do not change. Partial GPU resid
 an explicit execution option for shared hardware, recorded rather than presented as an
 isolated online latency benchmark. No unrelated training process is suspended or stopped.
 
-Focused checks before the actual run: three readiness regressions and one child-exit
-propagation regression pass; twelve
+Focused checks: three readiness, one child-exit and two score-resume regressions pass; twelve
 existing Spanish metric/citation/entailment tests pass; the changed pipeline module
 passes strict Linux-target pyright with the actual dependency interpreter. Ruff passes.
 Actual upload/retrieval, interruption/resume, generated-query audit and the complete
 128-pair NLI result remain required run evidence, not inferred from these unit tests.
+
+The first persistent attempt uploaded fourteen documents / 939 chunks in 199.385 seconds
+and captured all 144 queries. It reused 4,334 exact pairs and scored 274 new pairs per
+arm. Jev's cumulative ledger reached 15,175 calls / $0.385689192 estimated input cost.
+Ten actual generated pairs completed before the harness's per-question logins hit the
+unchanged login limiter. Preserve that failure; use normal refresh-token rotation on a
+ten-minute cadence. Reuse fully completed score stages only after exact panel-hash,
+question-set and finite complete-score validation. No paid-stage replay is needed.

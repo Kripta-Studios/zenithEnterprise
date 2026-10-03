@@ -356,15 +356,21 @@ async def test_public_spanish_answers(
 
                 monkeypatch.setattr(generation, "provider_for", resolve)
                 record["phase"] = "generated_answers"
+                refresh_token = login.json()["refresh_token"]
+                refreshed_at = 0.0
                 for case in fixture["cases"]:
                     if case["split"] != "test":
                         continue
                     current["id"] = case["id"]
-                    login = await client.post(
-                        "/auth/login", json={"email": account.admin_email, "password": PASSWORD}
-                    )
-                    assert login.status_code == 200
-                    auth = {"Authorization": f"Bearer {login.json()['access_token']}"}
+                    if time.monotonic() - refreshed_at >= 600:
+                        renewed = await client.post(
+                            "/auth/refresh", json={"refresh_token": refresh_token}
+                        )
+                        assert renewed.status_code == 200
+                        pair = renewed.json()
+                        auth = {"Authorization": f"Bearer {pair['access_token']}"}
+                        refresh_token = pair["refresh_token"]
+                        refreshed_at = time.monotonic()
                     item = {
                         "id": case["id"],
                         "article": case["article"],

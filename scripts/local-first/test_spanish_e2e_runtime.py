@@ -1,5 +1,6 @@
 """A health response alone must not release the expensive evaluation stages."""
 
+import hashlib
 import io
 import json
 import tempfile
@@ -10,7 +11,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import docker_checks
-from spanish_e2e_runtime import ready
+from spanish_e2e_runtime import completed_scores, ready
 
 
 class ReadinessTests(unittest.TestCase):
@@ -59,6 +60,44 @@ class ReadinessTests(unittest.TestCase):
             ready("http://local", "embed", 5, lambda **data: progress.append(data))
         self.assertEqual(clock[0], 5)
         self.assertEqual(len(progress), 3)
+
+
+class ScoreResumeTests(unittest.TestCase):
+    def test_changed_order_is_rejected_before_reuse(self):
+        with tempfile.TemporaryDirectory(prefix="zenith-e2e-resume-") as directory:
+            root = Path(directory)
+            panel = root / "candidates.json"
+            data = {"cases": [{"id": "q", "candidates": [{"id": "a"}, {"id": "b"}]}]}
+            panel.write_text(json.dumps(data))
+            score = {
+                "panel_sha256": hashlib.sha256(panel.read_bytes()).hexdigest(),
+                "queries": {"q": {"scores": [0.2, 0.9]}},
+            }
+            for arm in ("bge", "jev"):
+                (root / f"{arm}-scores.json").write_text(json.dumps(score))
+            self.assertTrue(completed_scores(panel, root))
+            data["cases"][0]["candidates"].reverse()
+            panel.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, "resumed capture"):
+                completed_scores(panel, root)
+
+    def test_incomplete_or_boolean_scores_are_not_complete(self):
+        with tempfile.TemporaryDirectory(prefix="zenith-e2e-resume-") as directory:
+            root = Path(directory)
+            panel = root / "candidates.json"
+            panel.write_text(json.dumps({"cases": [{"id": "q", "candidates": [{}, {}]}]}))
+            self.assertFalse(completed_scores(panel, root))
+            for values in ([0.5], [0.5, True]):
+                (root / "bge-scores.json").write_text(
+                    json.dumps(
+                        {
+                            "panel_sha256": hashlib.sha256(panel.read_bytes()).hexdigest(),
+                            "queries": {"q": {"scores": values}},
+                        }
+                    )
+                )
+                with self.assertRaisesRegex(ValueError, "incomplete or malformed"):
+                    completed_scores(panel, root)
 
 
 class DockerExitTests(unittest.TestCase):

@@ -12,7 +12,7 @@ from pathlib import Path
 
 from spanish_e2e import digest, save
 from spanish_e2e_pairs import combine, prepare
-from spanish_e2e_runtime import ready
+from spanish_e2e_runtime import completed_scores, ready
 
 
 def request(path, payload=None):
@@ -267,7 +267,12 @@ def main():
         stage = "scoring_uncached_pairs"
         emit(panel_sha256=digest(panel))
         missing_by_arm = {}
+        reused_stage = completed_scores(panel, args.output)
         for arm in ("bge", "jev"):
+            if reused_stage:
+                missing_by_arm[arm] = 0
+                print(json.dumps({"arm": arm, "reused_completed_stage": True}), flush=True)
+                continue
             target = args.output / "pair-stages" / arm
             missing = prepare(
                 panel,
@@ -341,6 +346,8 @@ def main():
         if paid is not None and paid.wait() != 0:
             raise RuntimeError("Paid stage failed; retained reservations, no retry")
         for arm in ("bge", "jev"):
+            if reused_stage:
+                continue
             target = args.output / "pair-stages" / arm
             combine(
                 panel,
