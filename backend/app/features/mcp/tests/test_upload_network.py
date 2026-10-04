@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import socket
+import subprocess
 import sys
 from pathlib import Path
 
@@ -64,28 +65,31 @@ async def test_selected_binary_upload_over_tcp_and_cli(
             }
         }
         environment["ZENITH_MCP_ACCESS_TOKEN"] = token
-        process = await asyncio.create_subprocess_exec(
-            sys.executable,
-            "-m",
-            "app.features.mcp.upload",
-            "--api",
-            f"http://127.0.0.1:{port}",
-            "--root",
-            str(tmp_path),
-            "--file",
-            "selected.pdf",
-            "--label",
-            str(account.finance_label),
+        # The Windows Selector loop supports psycopg, but not asyncio subprocesses.
+        process = await asyncio.to_thread(
+            subprocess.Popen,
+            [
+                sys.executable,
+                "-m",
+                "app.features.mcp.upload",
+                "--api",
+                f"http://127.0.0.1:{port}",
+                "--root",
+                str(tmp_path),
+                "--file",
+                "selected.pdf",
+                "--label",
+                str(account.finance_label),
+            ],
             env=environment,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
         try:
-            async with asyncio.timeout(30):
-                stdout, stderr = await process.communicate()
+            stdout, stderr = await asyncio.to_thread(process.communicate, timeout=30)
         except BaseException:
             process.kill()
-            await process.wait()
+            await asyncio.to_thread(process.wait)
             raise
         assert process.returncode == 0, stderr.decode()
         first = json.loads(stdout)
